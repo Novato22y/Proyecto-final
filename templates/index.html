@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Planner</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header>
+    <img src="/static/images/banner.jpeg" alt="Indoor garden pixel art scene" onerror="this.onerror=null;this.src='https://placehold.co/1200x180/2a2a2a/f0f0f0?text=Header+Image+Not+Found';">
+  </header>
+
+</header>
+
+<div class="title-strip">
+    <span>School Planner</span>
+    <div class="header-info">
+        {% if current_user.is_authenticated %}
+            <span>Hola, {{ current_user.name }}</span> | <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Iniciar Sesión</a> | <a href="{{ url_for('register') }}">Registrarse</a>
+        {% endif %}
+    </div>
+    <div class="header-clock">
+        <span class="time"></span>
+        <span class="day"></span>
+    </div>
+</div>
+
+<div class="main-container">
+    <section class="clock-panel">
+      <div class="clock">
+        <span class="time">01:56</span>
+        <span class="day">PM | Thursday</span>
+      </div>
+      <img src="/static/images/left.jpeg" alt="Balcony scene" onerror="this.onerror=null;this.src='https://placehold.co/300x200/2a2a2a/f0f0f0?text=Panel+Image+Not+Found';">
+    </section>
+
+    <main class="week-schedule">
+      <div class="day-card" data-day="monday">
+        <h3>Monday  <button onclick="showAddForm('Monday')">+</button></h3>
+        <form id="addFormMonday" style="display: none;" onsubmit="addSubject('Monday', event)">
+          <input type="time" id="timeMonday" required>
+          <input type="text" id="subjectMonday" required>
+          <button type="submit">Agregar</button>
+        </form>
+        <ul>
+          {% for time, subject in schedule.get('Monday', {}).items() %}
+            <li data-day="Monday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="day-card" data-day="tuesday">
+        <h3>Tuesday 💚 <button onclick="showAddForm('Tuesday')">+</button></h3>
+        <form id="addFormTuesday" style="display: none;" onsubmit="addSubject('Tuesday', event)">
+          <input type="time" id="timeTuesday" required>
+          <input type="text" id="subjectTuesday" required>
+          <button type="submit">Agregar</button>
+        </form>
+        <ul>
+          {% for time, subject in schedule.get('Tuesday', {}).items() %}
+            <li data-day="Tuesday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="day-card" data-day="wednesday">
+        <h3>Wednesday 💚 <button onclick="showAddForm('Wednesday')">+</button></h3>
+        <form id="addFormWednesday" style="display: none;" onsubmit="addSubject('Wednesday', event)">
+          <input type="time" id="timeWednesday" required>
+          <input type="text" id="subjectWednesday" required>
+          <button type="submit">Agregar</button>
+        </form>
+        <ul>
+          {% for time, subject in schedule.get('Wednesday', {}).items() %}
+            <li data-day="Wednesday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="day-card" data-day="thursday">
+        <h3>Thursday 💚 <button onclick="showAddForm('Thursday')">+</button></h3>
+        <form id="addFormThursday" style="display: none;" onsubmit="addSubject('Thursday', event)">
+          <input type="time" id="timeThursday" required>
+          <input type="text" id="subjectThursday" required>
+          <button type="submit">Agregar</button>
+        </form>
+        <ul>
+          {% for time, subject in schedule.get('Thursday', {}).items() %}
+            <li data-day="Thursday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="day-card" data-day="friday">
+        <h3>Friday 💚 <button onclick="showAddForm('Friday')">+</button></h3>
+        <form id="addFormFriday" style="display: none;" onsubmit="addSubject('Friday', event)">
+          <input type="time" id="timeFriday" required>
+          <input type="text" id="subjectFriday" required>
+          <button type="submit">Agregar</button>
+        </form>
+        <ul>
+          {% for time, subject in schedule.get('Friday', {}).items() %}
+            <li data-day="Friday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <nav class="weekly-nav">
+        <h3>WEEKLY TO DO'S</h3>
+        <ul>
+          <li><a href="#">Monday</a></li>
+          <li><a href="#">Tuesday</a></li>
+          <li><a href="#">Wednesday</a></li>
+          <li><a href="#">Thursday</a></li>
+          <li><a href="#">Friday</a></li>
+          <li><a href="#">Saturday</a></li>
+          <li><a href="#">Sunday</a></li>
+        </ul>
+      </nav>
+      <img src="/static/images/right.jpeg" alt="Cafe with plants" onerror="this.onerror=null;this.src='https://placehold.co/300x200/2a2a2a/f0f0f0?text=Sidebar+Image+Not+Found';">
+
+      <!-- Nueva sección para Materias -->
+      {% if current_user.is_authenticated %}
+      <nav class="materias-nav">
+        <h3>MATERIAS <button onclick="showAddForm('Materias')">+</button></h3>
+        <form id="addFormMaterias" style="display: none;" onsubmit="addMateria(event)">
+          <input type="text" id="materiaName" placeholder="Nombre de la materia" required>
+          <button type="submit">Agregar Materia</button>
+        </form>
+        <ul id="materiasList">
+          {# Aquí se listarán las materias dinámicamente #}
+          {% for materia in materias %}
+            <li data-materia-id="{{ materia.id }}">
+              <a href="/materia/{{ materia.id }}">{{ materia.name }}</a> <button class="delete-button" onclick="deleteMateria(this)">🗑️</button>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      <div class="inspiration">
+        “Never forget why you started this journey.”
+      </div>
+    </aside>
+  </div>
+
+  <script src="/static/js/script.js" defer></script>
+</body>
+</html>

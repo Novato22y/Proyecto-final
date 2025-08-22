@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Planner - {{ materia.name }}</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header>
+    <img src="/static/images/banner.jpeg" alt="Indoor garden pixel art scene" onerror="this.onerror=null;this.src='https://placehold.co/1200x180/2a2a2a/f0f0f0?text=Header+Image+Not+Found';">
+  </header>
+
+  <div class="title-strip">
+      <span>{{ materia.name }}</span>
+      <div class="header-info">
+          {% if current_user.is_authenticated %}
+              <span>Hola, {{ current_user.name }}</span> | <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+          {% else %}
+              <a href="{{ url_for('login') }}">Iniciar Sesión</a> | <a href="{{ url_for('register') }}">Registrarse</a>
+          {% endif %}
+      </div>
+      <div class="header-clock">
+          <span class="time"></span>
+          <span class="day"></span>
+      </div>
+  </div>
+
+  <div class="main-container">
+    <section class="clock-panel" style="display: none;">
+      <!-- Contenido del panel izquierdo, puedes incluir el reloj o dejarlo vacío/personalizar -->
+      <div class="clock">
+        <span class="time"></span>
+        <span class="day"></span>
+      </div>
+      <img src="/static/images/left.jpeg" alt="Balcony scene" onerror="this.onerror=null;this.src='https://placehold.co/300x200/2a2a2a/f0f0f0?text=Panel+Image+Not+Found';">
+    </section>
+
+    <main class="subject-details three-columns">
+
+
+      <!-- Sección de Tareas (Izquierda) -->
+      <section class="tasks-section">
+        <h3>Tareas <button onclick="showAddForm('Task')">+</button></h3>
+        <form id="addFormTask" style="display: none;" onsubmit="addTask(event, {{ materia.id }})">
+          <input type="text" id="taskDescription" placeholder="Descripción de la tarea" required>
+          <input type="date" id="taskDueDate">
+          <button type="submit">Agregar Tarea</button>
+        </form>
+        <ul id="tasksList">
+          {% for task in materia.tasks %}
+            <li data-task-id="{{ task.id }}">
+              <span class="task-description" contenteditable="true" onblur="saveTask(this)">{{ task.description }}</span> (Fecha límite: {{ task.due_date }}) {% if task.completed %}✅{% endif %}
+              <button class="delete-button" onclick="deleteTask(this)">🗑️</button>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <!-- Sección de Exámenes (Centro) -->
+      <section class="exams-section">
+        <h3>Exámenes <button onclick="showAddForm('Exam')">+</button></h3>
+        <form id="addFormExam" style="display: none;" onsubmit="addExam(event, {{ materia.id }})">
+          <input type="text" id="examTopic" placeholder="Tema del examen" required>
+          <input type="date" id="examDate">
+          <input type="number" id="examGrade" placeholder="Nota" step="0.01" style="display: none;">
+          <button type="submit">Agregar Examen</button>
+        </form>
+        <ul id="examsList">
+          {% for exam in materia.exams %}
+            <li data-exam-id="{{ exam.id }}">
+              <span class="exam-topic" contenteditable="true" onblur="saveExam(this)">{{ exam.topic }}</span> (Fecha: {{ exam.exam_date }}) Nota: <span class="exam-grade" contenteditable="true" onblur="saveExam(this)">{{ exam.grade if exam.grade is not none else 'N/A' }}</span>
+              <button class="delete-button" onclick="deleteExam(this)">🗑️</button>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <!-- Sección de Notas (Derecha) -->
+      <section class="notes-section">
+        <h3>Notas <button onclick="showAddForm('Note')">+</button></h3>
+        <form id="addFormNote" style="display: none;" onsubmit="addNote(event, {{ materia.id }})">
+          <textarea id="noteContent" placeholder="Escribe tus notas aquí" required></textarea>
+          <button type="submit">Agregar Nota</button>
+        </form>
+        <ul id="notesList">
+          {% for note in materia.notes %}
+            <li data-note-id="{{ note.id }}">
+              <span class="note-content" contenteditable="true" onblur="saveNote(this)">{{ note.content }}</span><br><small>Creado: {{ note.created_at }}</small>
+              <button class="delete-button" onclick="deleteNote(this)">🗑️</button>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+    </main>
+
+    <aside class="sidebar" style="display: none;">
+      <!-- Contenido de la barra lateral, puedes incluir la lista de materias u otra info -->
+        <nav class="weekly-nav">
+            <h3>WEEKLY TO DO'S</h3>
+            <ul>
+              <li><a href="#">Monday</a></li>
+              <li><a href="#">Tuesday</a></li>
+              <li><a href="#">Wednesday</a></li>
+              <li><a href="#">Thursday</a></li>
+              <li><a href="#">Friday</a></li>
+              <li><a href="#">Saturday</a></li>
+              <li><a href="#">Sunday</a></li>
+            </ul>
+          </nav>
+          <img src="/static/images/right.jpeg" alt="Cafe with plants" onerror="this.onerror=null;this.src='https://placehold.co/300x200/2a2a2a/f0f0f0?text=Sidebar+Image+Not+Found';">
+      <div class="inspiration">
+        "Never forget why you started this journey."
+      </div>
+    </aside>
+  </div>
+
+  <script src="/static/js/script.js" defer></script>
+  <!-- Posiblemente necesitemos un script adicional para la página de detalle o modificar el existente -->
+</body>
+</html> 

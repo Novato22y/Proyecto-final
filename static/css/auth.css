@@ -1,0 +1,107 @@
+/* Estilos para las páginas de autenticación (registro y login) */
+
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #2a2a2a; /* Fondo oscuro */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #f0f0f0; /* Texto claro */
+}
+
+.auth-container h2 {
+    text-align: center;
+    color: #90ee90; /* Color de acento */
+    margin-bottom: 20px;
+}
+
+.auth-container .form-group {
+    margin-bottom: 15px;
+}
+
+.auth-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ccc; /* Color ligeramente más claro para las etiquetas */
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #444; /* Borde oscuro */
+    border-radius: 5px;
+    background-color: #333; /* Fondo oscuro para los inputs */
+    color: #f0f0f0; /* Texto claro */
+    box-sizing: border-box; /* Incluir padding y borde en el ancho total */
+}
+
+.auth-container input[type="text"]::placeholder,
+.auth-container input[type="email"]::placeholder,
+.auth-container input[type="password"]::placeholder {
+    color: #bbb; /* Color para el placeholder */
+}
+
+.auth-container button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #004d40; /* Verde oscuro */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-container button[type="submit"]:hover {
+    background-color: #00251a; /* Verde más oscuro al pasar el ratón */
+}
+
+.auth-container p {
+    text-align: center;
+    margin-top: 20px;
+    color: #ccc;
+}
+
+.auth-container p a {
+    color: #90ee90; /* Color de acento para enlaces */
+    text-decoration: none;
+}
+
+.auth-container p a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para mensajes flash */
+.flashes {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.flashes li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.flashes .success {
+    background-color: #4CAF50; /* Verde para éxito */
+    color: white;
+}
+
+.flashes .warning {
+    background-color: #ff9800; /* Naranja para advertencia */
+    color: white;
+}
+
+.flashes .danger, .flashes .error {
+    background-color: #f44336; /* Rojo para error */
+    color: white;
+} 

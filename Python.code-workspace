@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../Aprendizaje/Python"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Proyecto Final"
+	}
+}
