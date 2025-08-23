@@ -15,9 +15,9 @@
       <span>{{ materia.name }}</span>
       <div class="header-info">
           {% if current_user.is_authenticated %}
-              <span>Hola, {{ current_user.name }}</span> | <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+              <span>Hola, {{ current_user.name }}</span> | <a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
           {% else %}
-              <a href="{{ url_for('login') }}">Iniciar Sesión</a> | <a href="{{ url_for('register') }}">Registrarse</a>
+              <a href="{{ url_for('auth.login') }}">Iniciar Sesión</a> | <a href="{{ url_for('auth.register') }}">Registrarse</a>
           {% endif %}
       </div>
       <div class="header-clock">

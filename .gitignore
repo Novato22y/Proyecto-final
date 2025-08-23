@@ -1,0 +1,72 @@
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 🏗️ Entornos Virtuales
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# 🔧 IDEs y Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 📊 Base de Datos
+*.db
+*.sqlite
+*.sqlite3
+
+# 📝 Logs
+*.log
+logs/
+
+# 🔐 Archivos de Configuración Sensibles
+.env
+.env.local
+.env.production
+config_local.py
+
+# 🧪 Archivos de Prueba
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.nox/
+
+# 📦 Archivos Temporales
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# 🚀 Archivos de Despliegue
+*.pyc
+*.pyo
+*.pyd

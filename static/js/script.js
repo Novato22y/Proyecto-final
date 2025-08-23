@@ -86,7 +86,7 @@ window.addMateria = function(event) {
     if (materiaNameInput) {
         const materiaName = materiaNameInput.value;
 
-        fetch('/add_materia', { // Necesitaremos crear esta ruta en app.py
+        fetch('/add_materia', { // Ruta para agregar materia
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

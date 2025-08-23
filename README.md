@@ -1,118 +1,252 @@
-# School Planner
+# 📚 Planeador Escolar - Proyecto Final
 
-Este proyecto es un planeador escolar simple desarrollado con Flask (Python) para el backend y HTML, CSS y JavaScript para el frontend. Permite a los usuarios gestionar su horario semanal, materias, tareas, exámenes y notas, con datos separados por cuenta de usuario.
+## 🎯 **Descripción del Proyecto**
 
-## Características Principales
+Planeador Escolar es una aplicación web desarrollada en **Flask** que permite a los estudiantes organizar su horario semanal, gestionar materias, tareas, exámenes y notas de manera eficiente.
 
-*   **Horario Semanal:** Visualización y gestión interactiva del horario.
-*   **Gestión de Materias:** Añade, visualiza y elimina materias. Cada materia tiene su propia página de detalle.
-*   **Detalles de Materia:** En la página de detalle de cada materia, los usuarios pueden gestionar Tareas, Exámenes y Notas asociadas a esa materia específica.
-*   **Sistema de Autenticación:
-    *   **Registro:** Los nuevos usuarios pueden crear una cuenta (con rol 'cliente' por defecto).
-    *   **Inicio/Cierre de Sesión:** Usuarios registrados pueden iniciar y cerrar sesión para acceder a sus datos.
-*   **Gestión Básica de Usuarios:** El sistema soporta roles (administrador, trabajador, cliente). Se crea una cuenta de administrador por defecto al inicializar la base de datos.
-*   **Separación de Datos por Usuario:** Todos los datos (horario, materias, tareas, exámenes, notas) están asociados a la cuenta del usuario que los crea, asegurando la privacidad y organización individual.
-*   **Persistencia de Datos:** Los datos se guardan en una base de datos PostgreSQL.
+## 🏗️ **Arquitectura del Proyecto**
 
-## Configuración del Entorno
+Este proyecto ha sido reorganizado siguiendo las **mejores prácticas de Flask** para hacerlo más modular, mantenible y escalable.
 
-1.  **Clonar el repositorio** o tener los archivos del proyecto.
-
-2.  **Instalar Python** y **pip** si no los tienes.
-
-3.  **Crear un entorno virtual** (recomendado):
-    ```bash
-    python -m venv venv
-    ```
-
-4.  **Activar el entorno virtual**:
-    *   En Windows:
-        ```bash
-        .\venv\Scripts\activate
-        ```
-    *   En macOS y Linux:
-        ```bash
-        source venv/bin/activate
-        ```
-
-5.  **Instalar las dependencias de Python**:
-    Crea o verifica que tienes un archivo `requirements.txt` con el siguiente contenido:
-    ```
-    Flask==2.3.3
-    psycopg2-binary==2.9.9
-    Flask-Login==0.6.3 # Añadido
-    Werkzeug==2.3.8 # Añadido (necesario para generate_password_hash)
-    ```
-    Luego instala las dependencias:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-6.  **Configurar la Base de Datos PostgreSQL**:
-    *   Asegúrate de tener un servidor PostgreSQL instalado y ejecutándose.
-    *   Crea una nueva base de datos (ej: `planeador_escolar`).
-    *   Crea un usuario de base de datos y asigna una contraseña.
-    *   **Actualiza la configuración de la base de datos en `app.py`** (busca la sección de `DB_HOST`, `DB_NAME`, etc.) con los detalles de tu configuración local.
-
-## Ejecutar la Aplicación
-
-1.  Asegúrate de que tu entorno virtual esté activado.
-2.  Asegúrate de que tu servidor PostgreSQL esté ejecutándose.
-3.  **Importante: Inicialización de la Base de Datos**
-    *   Si es la primera vez que ejecutas la aplicación o si has tenido problemas con la estructura de las tablas, **elimina las tablas existentes** en tu base de datos usando un cliente de PostgreSQL (pgAdmin, psql, etc.). Puedes usar los siguientes comandos:
-        ```sql
-        DROP TABLE schedule CASCADE;
-        DROP TABLE materias CASCADE;
-        DROP TABLE tasks CASCADE;
-        DROP TABLE exams CASCADE;
-        DROP TABLE notes CASCADE;
-        DROP TABLE users CASCADE;
-        ```
-    *   Luego, ejecuta la aplicación.
-4.  Desde la raíz del proyecto, ejecuta el archivo `app.py`:
-    ```bash
-    python app.py
-    ```
-5.  Abre tu navegador y navega a `http://127.0.0.1:5000/` para acceder a la aplicación.
-
-    *La primera vez que se ejecuta `app.py` con las tablas eliminadas, la función `create_table` se ejecutará para crear la estructura de la base de datos y se creará una cuenta de administrador por defecto.* Revisa la consola de Flask para las credenciales del administrador.
-
-## Funcionalidad de Autenticación y Usuarios
-
-*   **Página de Registro (`/register`):** Permite a los nuevos usuarios crear una cuenta proporcionando nombre, correo electrónico y contraseña.
-*   **Página de Inicio de Sesión (`/login`):** Permite a los usuarios registrados acceder a sus cuentas.
-*   **Página de Cierre de Sesión (`/logout`):** Cierra la sesión del usuario actual.
-*   **Separación de Datos:** Al iniciar sesión, la aplicación carga y muestra solo los datos (horario, materias, etc.) asociados al usuario logeado. Al guardar o eliminar datos, estos se asocian o se filtran por el usuario actual.
-*   **Cuenta de Administrador:** Una cuenta de administrador con credenciales por defecto se crea automáticamente la primera vez que las tablas se generan. Esta cuenta tiene rol 'administrador'.
-
-## Estructura del Proyecto
+### 📁 **Estructura de Directorios**
 
 ```
-./
-├── app.py          # Backend de Flask, lógica de base de datos y rutas.
-├── requirements.txt  # Dependencias de Python (Flask, psycopg2, Flask-Login, Werkzeug).
-├── static/
+Proyecto-final/
+├── app/                          # 🎯 Paquete principal de la aplicación
+│   ├── __init__.py              # 🏭 Factory de la aplicación Flask
+│   ├── models.py                # 👤 Modelos de datos (User, etc.)
+│   ├── database.py              # 🗄️ Operaciones de base de datos
+│   └── routes.py                # 🛣️ Rutas y vistas (organizadas en blueprints)
+├── static/                       # 🎨 Archivos estáticos (CSS, JS, imágenes)
 │   ├── css/
-│   │   ├── base.css # Estilos generales
-│   │   ├── styles.css # Estilos principales (incluye index y subject_detail)
-│   │   └── auth.css # Estilos para registro y login
-│   ├── images/     # Imágenes utilizadas en el frontend.
-│   └── js/
-│       └── script.js # Lógica de frontend con JavaScript (manejo del DOM, peticiones AJAX).
-└── templates/
-    ├── index.html      # Página principal (horario, lista de materias).
-    ├── subject_detail.html # Página de detalles de la materia (tareas, exámenes, notas).
-    ├── register.html   # Página de registro de usuario.
-    └── login.html      # Página de inicio de sesión.
+│   │   ├── styles.css           # 🎨 Estilos principales
+│   │   ├── auth.css             # 🔐 Estilos de autenticación
+│   │   └── base.css             # 🏗️ Estilos base
+│   ├── js/
+│   │   └── script.js            # ⚡ Funcionalidades JavaScript
+│   └── images/                  # 🖼️ Imágenes de la aplicación
+├── templates/                    # 📄 Plantillas HTML
+│   ├── index.html               # 🏠 Página principal
+│   ├── login.html               # 🔑 Página de inicio de sesión
+│   ├── register.html            # 📝 Página de registro
+│   └── subject_detail.html      # 📚 Detalle de materia
+├── config.py                    # ⚙️ Configuración de la aplicación
+├── run.py                       # 🚀 Punto de entrada principal
+├── requirements.txt             # 📦 Dependencias del proyecto
+└── README.md                    # 📖 Este archivo
 ```
 
-## Posibles Problemas y Soluciones
+## 🚀 **Características Principales**
 
-*   **Errores de base de datos ("relation does not exist", etc.):** Si encuentras errores relacionados con tablas inexistentes o columnas faltantes después de realizar cambios en `create_table` en `app.py`, necesitarás **eliminar las tablas existentes** en tu base de datos manualmente (usando los comandos `DROP TABLE ... CASCADE;`) y luego reiniciar la aplicación. La aplicación recreará las tablas con la estructura actualizada al ejecutarse.
-*   **Error `ValueError: year is out of range` al cargar detalles de materia:** Esto indica un dato de fecha inválido almacenado en la tabla `exams`. Debes identificar y eliminar/corregir el dato corrupto directamente en la base de datos usando SQL. Ejecuta una consulta `SELECT` en la tabla `exams` filtrando por `user_id` y `materia_id` para encontrar el dato problemático.
-*   **Errores del linter en archivos HTML:** Las advertencias en los archivos HTML relacionadas con la sintaxis en atributos `onclick`/`onsubmit` que mezclan Jinja2 y JavaScript suelen ser "falsos positivos" visuales del linter y no afectan la funcionalidad si el código JavaScript está bien escrito.
-*   **Problemas con la actualización visual del horario después de agregar:** Asegúrate de haber realizado la corrección manual en `static/js/script.js` dentro de la función `addSubjectToDOM` para usar variables JavaScript (`${variable}`) en lugar de sintaxis Jinja (`{{ variable }}`) al construir el HTML del nuevo elemento de lista.
+### 🔐 **Sistema de Autenticación**
+- **Registro de usuarios** con nombre, email y contraseña
+- **Inicio de sesión** seguro con Flask-Login
+- **Gestión de sesiones** persistentes
 
-## Autor
+### 📅 **Gestión del Horario**
+- **Horario semanal** (Lunes a Viernes)
+- **Agregar/eliminar materias** por día y hora
+- **Ordenamiento automático** por hora
+- **Edición en tiempo real** de materias
 
-[Mateo Muñoz]
+### 📚 **Gestión de Materias**
+- **Crear materias** personalizadas
+- **Eliminar materias** con confirmación
+- **Vista detallada** de cada materia
+
+### ✅ **Sistema de Tareas**
+- **Crear tareas** con descripción y fecha límite
+- **Marcar como completadas** ✅
+- **Eliminar tareas** existentes
+
+### 📝 **Sistema de Exámenes**
+- **Registrar exámenes** con tema y fecha
+- **Agregar notas** después del examen
+- **Historial completo** de evaluaciones
+
+### 📖 **Sistema de Notas**
+- **Crear notas** de estudio
+- **Fecha de creación** automática
+- **Edición y eliminación** de notas
+
+## 🛠️ **Tecnologías Utilizadas**
+
+- **Backend**: Python 3.x + Flask 3.1.1
+- **Base de Datos**: PostgreSQL + psycopg2
+- **Autenticación**: Flask-Login
+- **Frontend**: HTML5 + CSS3 + JavaScript ES6+
+- **Templates**: Jinja2
+- **Seguridad**: Werkzeug (hashing de contraseñas)
+
+## 📋 **Requisitos del Sistema**
+
+- **Python**: 3.8 o superior
+- **PostgreSQL**: 12 o superior
+- **Navegador**: Chrome, Firefox, Safari, Edge (moderno)
+
+## 🚀 **Instalación y Configuración**
+
+### **1. Clonar el Repositorio**
+```bash
+git clone <url-del-repositorio>
+cd Proyecto-final
+```
+
+### **2. Crear Entorno Virtual**
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate.bat
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### **3. Instalar Dependencias**
+```bash
+pip install -r requirements.txt
+```
+
+### **4. Configurar Base de Datos**
+1. Crear base de datos PostgreSQL: `planeador_escolar`
+2. Actualizar credenciales en `config.py`
+3. Ejecutar la aplicación para crear tablas automáticamente
+
+### **5. Ejecutar la Aplicación**
+```bash
+python run.py
+```
+
+La aplicación estará disponible en: **http://127.0.0.1:5000**
+
+## 🔧 **Configuración de la Base de Datos**
+
+Edita `config.py` con tus credenciales:
+
+```python
+class Config:
+    DB_HOST = "localhost"
+    DB_NAME = "planeador_escolar"
+    DB_USER = "tu_usuario"
+    DB_PASSWORD = "tu_contraseña"
+    DB_PORT = "5432"
+```
+
+## 📱 **Uso de la Aplicación**
+
+### **1. Registro e Inicio de Sesión**
+- Crear cuenta nueva o iniciar sesión existente
+- Acceso seguro con email y contraseña
+
+### **2. Gestión del Horario**
+- Ver horario semanal organizado
+- Agregar materias con botón "+"
+- Editar materias haciendo clic en ellas
+- Eliminar materias con botón 🗑️
+
+### **3. Gestión de Materias**
+- Crear materias desde la barra lateral
+- Acceder al detalle de cada materia
+- Gestionar tareas, exámenes y notas
+
+### **4. Funcionalidades Avanzadas**
+- **Reloj en tiempo real** en todas las páginas
+- **Formularios dinámicos** que aparecen/desaparecen
+- **Confirmaciones** antes de eliminar elementos
+- **Validación** de formularios en tiempo real
+
+## 🎨 **Personalización**
+
+### **Estilos CSS**
+- Modificar `static/css/styles.css` para cambios generales
+- `static/css/auth.css` para páginas de autenticación
+- `static/css/base.css` para estilos base
+
+### **Funcionalidades JavaScript**
+- Editar `static/js/script.js` para nuevas funcionalidades
+- Funciones modulares organizadas por sección
+
+### **Plantillas HTML**
+- Modificar archivos en `templates/` para cambios de diseño
+- Sistema de herencia de Jinja2 para consistencia
+
+## 🔒 **Seguridad**
+
+- **Hashing de contraseñas** con Werkzeug
+- **Protección CSRF** automática
+- **Validación de entrada** en todos los formularios
+- **Sesiones seguras** con Flask-Login
+- **Verificación de propiedad** de recursos
+
+## 🧪 **Pruebas**
+
+### **Probar Funcionalidades Básicas**
+1. ✅ Registro de usuario nuevo
+2. ✅ Inicio de sesión
+3. ✅ Crear materia
+4. ✅ Agregar horario
+5. ✅ Crear tarea
+6. ✅ Agregar examen
+7. ✅ Crear nota
+
+### **Verificar Base de Datos**
+- Las tablas se crean automáticamente
+- Usuario administrador se crea en primer uso
+- Relaciones entre tablas funcionan correctamente
+
+## 🐛 **Solución de Problemas**
+
+### **Error de Conexión a Base de Datos**
+- Verificar que PostgreSQL esté ejecutándose
+- Confirmar credenciales en `config.py`
+- Verificar que la base de datos exista
+
+### **Error de Plantillas**
+- Verificar que las plantillas estén en `templates/`
+- Confirmar rutas en `url_for()` usen blueprints
+- Verificar sintaxis Jinja2
+
+### **Error de Archivos Estáticos**
+- Verificar que archivos estén en `static/`
+- Confirmar rutas en HTML usen `/static/`
+- Verificar permisos de archivos
+
+## 📈 **Mejoras Futuras**
+
+- [ ] **Sistema de notificaciones** para tareas próximas
+- [ ] **Calendario visual** mensual/anual
+- [ ] **Exportar horario** a PDF/Excel
+- [ ] **Sincronización** con calendarios externos
+- [ ] **Temas visuales** personalizables
+- [ ] **API REST** para integración móvil
+- [ ] **Sistema de respaldo** automático
+- [ ] **Estadísticas** de progreso académico
+
+## 👥 **Contribución**
+
+1. Fork del proyecto
+2. Crear rama para nueva funcionalidad
+3. Commit de cambios
+4. Push a la rama
+5. Crear Pull Request
+
+## 📄 **Licencia**
+
+Este proyecto está bajo la Licencia MIT. Ver archivo `LICENSE` para más detalles.
+
+## 📞 **Contacto**
+
+- **Desarrollador**: [Tu Nombre]
+- **Email**: [tu-email@ejemplo.com]
+- **Proyecto**: Planeador Escolar v2.0
+
+## 🙏 **Agradecimientos**
+
+- **Flask** por el framework web
+- **PostgreSQL** por la base de datos robusta
+- **Comunidad Python** por el soporte continuo
+
+---
+
+**✨ ¡Disfruta organizando tu vida académica con el Planeador Escolar! ✨**
