@@ -70,3 +70,9 @@ htmlcov/
 *.pyc
 *.pyo
 *.pyd
+
+# 🖼️ Imágenes - Excluir archivos temporales de imágenes
+static/images/*.tmp
+static/images/*.temp
+static/images/thumbnails/
+static/images/cache/
