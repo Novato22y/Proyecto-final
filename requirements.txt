@@ -27,3 +27,7 @@ pip>=24.0
 # pytest>=7.0.0
 # black>=23.0.0
 # flake8>=6.0.0
+
+# 🚀 COMANDO DE INSTALACIÓN
+# Copia y pega este comando para instalar todas las dependencias:
+# pip install -r requirements.txt
