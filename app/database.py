@@ -116,6 +116,59 @@ def create_tables():
             if conn:
                 conn.close()
 
+def user_exists(email):
+    """Verifica si un usuario ya existe por su email."""
+    conn = get_db_connection()
+    if conn:
+        cur = conn.cursor()
+        try:
+            cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+            result = cur.fetchone()
+            return result is not None
+        except psycopg2.Error as e:
+            print(f"Error al verificar si el usuario existe: {e}")
+            return False
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+    return False
+
+def create_user(name, email, password, role='cliente'):
+    """Crea un nuevo usuario en la base de datos."""
+    from werkzeug.security import generate_password_hash
+    
+    conn = get_db_connection()
+    if conn:
+        cur = conn.cursor()
+        try:
+            # Verificar si el usuario ya existe
+            if user_exists(email):
+                return None, "El correo electrónico ya está registrado."
+            
+            # Hashear la contraseña
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            
+            # Insertar el nuevo usuario
+            cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s) RETURNING id;",
+                        (name, email, hashed_password, role))
+            user_id = cur.fetchone()[0]
+            conn.commit()
+            
+            print(f"Usuario creado exitosamente: {name} ({email}) con ID {user_id}")
+            return user_id, None
+        except psycopg2.Error as e:
+            conn.rollback()
+            print(f"Error al crear usuario: {e}")
+            return None, f"Error al crear el usuario: {e}"
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+    return None, "Error de conexión a la base de datos"
+
 def create_admin_user():
     """Crea el usuario administrador por defecto."""
     from werkzeug.security import generate_password_hash

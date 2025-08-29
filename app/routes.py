@@ -6,7 +6,8 @@ from app.database import (
     create_tables, create_admin_user, load_schedule, load_materias, save_schedule, 
     delete_schedule, add_materia, delete_materia, get_materia_details,
     add_task, delete_task, save_task, add_exam, delete_exam, save_exam,
-    add_note, delete_note, save_note, is_materia_owned_by_user
+    add_note, delete_note, save_note, is_materia_owned_by_user,
+    user_exists, create_user
 )
 from app.models import User
 
@@ -26,41 +27,25 @@ def register():
         name = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
-        role = 'cliente'  # Por defecto, solo se registran clientes
 
+        # Validaciones básicas
         if not name or not email or not password:
             flash('Por favor, completa todos los campos.', 'warning')
             return render_template('register.html')
 
-        from app.database import get_db_connection
-        conn = get_db_connection()
-        if conn:
-            cur = conn.cursor()
-            try:
-                # Verificar si el correo ya existe
-                cur.execute("SELECT id FROM users WHERE email = %s", (email,))
-                existing_user = cur.fetchone()
-                if existing_user:
-                    flash('El correo electrónico ya está registrado.', 'danger')
-                    return render_template('register.html')
+        if len(password) < 6:
+            flash('La contraseña debe tener al menos 6 caracteres.', 'warning')
+            return render_template('register.html')
 
-                # Hashear la contraseña antes de guardarla
-                hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-
-                # Insertar nuevo usuario
-                cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)", (name, email, hashed_password, role))
-                conn.commit()
-                flash('Registro exitoso. Ahora puedes iniciar sesión.', 'success')
-                return redirect(url_for('auth.login'))
-            except Exception as e:
-                conn.rollback()
-                print(f"Error al registrar usuario: {e}")
-                flash('Ocurrió un error durante el registro.', 'danger')
-            finally:
-                if cur:
-                    cur.close()
-                if conn:
-                    conn.close()
+        # Crear el usuario usando la nueva función
+        user_id, error_message = create_user(name, email, password)
+        
+        if user_id:
+            flash('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success')
+            return redirect(url_for('auth.login'))
+        else:
+            flash(error_message, 'danger')
+            return render_template('register.html')
 
     return render_template('register.html')
 
