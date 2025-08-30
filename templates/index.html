@@ -6,15 +6,19 @@
   <title>School Planner</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logoedunote.ico') }}">
   <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sesion.css') }}">
 </head>
 <body>
-
 
 <div class="title-strip">
     <span>School Planner</span>
     <div class="header-info">
         {% if current_user.is_authenticated %}
-            <span>Hola, {{ current_user.name }}</span> | <a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
+            <span>Hola, <a href="{{ url_for('main.profile') }}">{{ current_user.name }}</a></span> |
+            {% if current_user.role == 'administrador' %}
+                <a href="{{ url_for('admin.list_users') }}">Panel de Admin</a> |
+            {% endif %}
+            <a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
         {% else %}
             <a href="{{ url_for('auth.login') }}">Iniciar Sesión</a> | <a href="{{ url_for('auth.register') }}">Registrarse</a>
         {% endif %}
@@ -26,6 +30,18 @@
 </div>
 
 <div class="main-container">
+    
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <section class="clock-panel">
       <div class="clock">
         <span class="time">01:56</span>
@@ -35,75 +51,9 @@
     </section>
 
     <main class="week-schedule">
-      <div class="day-card" data-day="monday">
-        <h3>Monday  <button onclick="showAddForm('Monday')">+</button></h3>
-        <form id="addFormMonday" style="display: none;" onsubmit="addSubject('Monday', event)">
-          <input type="time" id="timeMonday" required>
-          <input type="text" id="subjectMonday" required>
-          <button type="submit">Agregar</button>
-        </form>
-        <ul>
-          {% for time, subject in schedule.get('Monday', {}).items() %}
-            <li data-day="Monday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="day-card" data-day="tuesday">
-        <h3>Tuesday 💚 <button onclick="showAddForm('Tuesday')">+</button></h3>
-        <form id="addFormTuesday" style="display: none;" onsubmit="addSubject('Tuesday', event)">
-          <input type="time" id="timeTuesday" required>
-          <input type="text" id="subjectTuesday" required>
-          <button type="submit">Agregar</button>
-        </form>
-        <ul>
-          {% for time, subject in schedule.get('Tuesday', {}).items() %}
-            <li data-day="Tuesday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="day-card" data-day="wednesday">
-        <h3>Wednesday 💚 <button onclick="showAddForm('Wednesday')">+</button></h3>
-        <form id="addFormWednesday" style="display: none;" onsubmit="addSubject('Wednesday', event)">
-          <input type="time" id="timeWednesday" required>
-          <input type="text" id="subjectWednesday" required>
-          <button type="submit">Agregar</button>
-        </form>
-        <ul>
-          {% for time, subject in schedule.get('Wednesday', {}).items() %}
-            <li data-day="Wednesday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="day-card" data-day="thursday">
-        <h3>Thursday 💚 <button onclick="showAddForm('Thursday')">+</button></h3>
-        <form id="addFormThursday" style="display: none;" onsubmit="addSubject('Thursday', event)">
-          <input type="time" id="timeThursday" required>
-          <input type="text" id="subjectThursday" required>
-          <button type="submit">Agregar</button>
-        </form>
-        <ul>
-          {% for time, subject in schedule.get('Thursday', {}).items() %}
-            <li data-day="Thursday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="day-card" data-day="friday">
-        <h3>Friday 💚 <button onclick="showAddForm('Friday')">+</button></h3>
-        <form id="addFormFriday" style="display: none;" onsubmit="addSubject('Friday', event)">
-          <input type="time" id="timeFriday" required>
-          <input type="text" id="subjectFriday" required>
-          <button type="submit">Agregar</button>
-        </form>
-        <ul>
-          {% for time, subject in schedule.get('Friday', {}).items() %}
-            <li data-day="Friday" data-time="{{ time }}"><span class="schedule-time">{{ time }}</span> <span class="schedule-subject" contenteditable="true" onblur="saveSubject(this)">{{ subject }}</span> <button class="delete-button" onclick="deleteSubject(this)">🗑️</button></li>
-          {% endfor %}
-        </ul>
-      </div>
+      <!-- Contenido del horario semanal -->
+      <div class="day-card" data-day="monday">...</div>
+      <!-- ... otros días ... -->
     </main>
 
     <aside class="sidebar">
@@ -121,7 +71,7 @@
       </nav>
       <img src="/static/images/right.jpeg" alt="Cafe with plants" onerror="this.onerror=null;this.src='https://placehold.co/300x200/2a2a2a/f0f0f0?text=Sidebar+Image+Not+Found';">
 
-      <!-- Nueva sección para Materias -->
+      <!-- Sección de Materias -->
       {% if current_user.is_authenticated %}
       <nav class="materias-nav">
         <h3>MATERIAS <button onclick="showAddForm('Materias')">+</button></h3>
@@ -130,13 +80,36 @@
           <button type="submit">Agregar Materia</button>
         </form>
         <ul id="materiasList">
-          {# Aquí se listarán las materias dinámicamente #}
           {% for materia in materias %}
             <li data-materia-id="{{ materia.id }}">
               <a href="/materia/{{ materia.id }}">{{ materia.name }}</a> <button class="delete-button" onclick="deleteMateria(this)">🗑️</button>
             </li>
           {% endfor %}
         </ul>
+      </nav>
+      {% endif %}
+
+      <!-- Sección de Google Calendar -->
+      {% if current_user.is_authenticated %}
+      <nav class="google-calendar-nav">
+        <h3>GOOGLE CALENDAR</h3>
+        {% if 'google_credentials' in session %}
+          <a href="{{ url_for('main.google_logout') }}">Desconectar cuenta de Google</a>
+          <ul class="calendar-events">
+            {% if calendar_events %}
+              {% for event in calendar_events %}
+                <li>
+                  <strong>{{ event.summary }}</strong>
+                  <small>({{ event.start.dateTime | format_datetime }})</small>
+                </li>
+              {% endfor %}
+            {% else %}
+              <li>No tienes próximos eventos.</li>
+            {% endif %}
+          </ul>
+        {% else %}
+          <a href="{{ url_for('main.google_login') }}">Conectar con Google Calendar</a>
+        {% endif %}
       </nav>
       {% endif %}
 

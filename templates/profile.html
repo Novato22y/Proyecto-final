@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - School Planner</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logoedunote.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sesion.css') }}">
+    <style>
+        .profile-card {
+            background-color: #fff;
+            padding: 2rem 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        .profile-card h1 {
+            margin-bottom: 2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .profile-info p {
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            color: #555;
+            text-align: left;
+        }
+        .profile-info strong {
+            color: #333;
+            margin-right: 10px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="profile-card">
+            <h1>Mi Perfil</h1>
+            <div class="profile-info">
+                <p><strong>Nombre:</strong> {{ user.name }}</p>
+                <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+                <p><strong>Rol:</strong> {{ user.role | capitalize }}</p>
+            </div>
+            <a href="{{ url_for('main.principal') }}" class="back-link">Volver a la página principal</a>
+        </div>
+    </div>
+</body>
+</html>

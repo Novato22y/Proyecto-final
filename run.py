@@ -1,5 +1,10 @@
 
 # run.py - Punto de entrada principal de la aplicación
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
+
 from app import create_app
 
 # Crear la instancia de la aplicación
