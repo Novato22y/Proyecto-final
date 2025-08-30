@@ -9,7 +9,7 @@ class Config:
     DB_HOST = "localhost"
     DB_NAME = "planeador_escolar"
     DB_USER = "postgres"
-    DB_PASSWORD = "MmateomunozV1.0"
+    DB_PASSWORD = "123456"
     DB_PORT = "5432"
     
     # Configuración de la aplicación
