@@ -26,7 +26,6 @@ def create_tables():
         cur = conn.cursor()
         try:
             # Crear tabla de usuarios
-            print("Intentando crear tabla 'users'...")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     id SERIAL PRIMARY KEY,
@@ -36,10 +35,8 @@ def create_tables():
                     role VARCHAR(50) NOT NULL DEFAULT 'cliente'
                 )
             """)
-            print("Tabla 'users' verificada/creada.")
 
             # Crear tabla de horario
-            print("Intentando crear tabla 'schedule'...")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS schedule (
                     id SERIAL PRIMARY KEY,
@@ -50,10 +47,8 @@ def create_tables():
                     UNIQUE(day, time, user_id)
                 )
             """)
-            print("Tabla 'schedule' verificada/creada.")
 
             # Crear tabla de materias
-            print("Intentando crear tabla 'materias'...")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS materias (
                     id SERIAL PRIMARY KEY,
@@ -62,10 +57,8 @@ def create_tables():
                     UNIQUE(name, user_id)
                 )
             """)
-            print("Tabla 'materias' verificada/creada.")
 
             # Crear tabla de tareas
-            print("Intentando crear tabla 'tasks'...")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS tasks (
                     id SERIAL PRIMARY KEY,
@@ -76,10 +69,8 @@ def create_tables():
                     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
                 )
             """)
-            print("Tabla 'tasks' verificada/creada.")
 
             # Crear tabla de exámenes
-            print("Intentando crear tabla 'exams'...")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS exams (
                     id SERIAL PRIMARY KEY,
@@ -90,10 +81,8 @@ def create_tables():
                     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
                 )
             """)
-            print("Tabla 'exams' verificada/creada.")
 
             # Crear tabla de notas
-            print("Intentando crear tabla 'notes'...")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS notes (
                     id SERIAL PRIMARY KEY,
@@ -103,7 +92,6 @@ def create_tables():
                     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
                 )
             """)
-            print("Tabla 'notes' verificada/creada.")
 
             conn.commit()
             print("Todas las tablas verificadas o creadas correctamente.")
@@ -143,14 +131,11 @@ def create_user(name, email, password, role='cliente'):
     if conn:
         cur = conn.cursor()
         try:
-            # Verificar si el usuario ya existe
             if user_exists(email):
                 return None, "El correo electrónico ya está registrado."
             
-            # Hashear la contraseña
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             
-            # Insertar el nuevo usuario
             cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s) RETURNING id;",
                         (name, email, hashed_password, role))
             user_id = cur.fetchone()[0]
@@ -177,7 +162,6 @@ def create_admin_user():
     if conn:
         cur = conn.cursor()
         try:
-            # Verificar si el administrador ya existe
             admin_email = 'admin@planeador.com'
             cur.execute("SELECT id FROM users WHERE email = %s", (admin_email,))
             existing_admin = cur.fetchone()
@@ -186,26 +170,22 @@ def create_admin_user():
                 print("El usuario administrador ya existe.")
                 return
 
-            # Crear contraseña hasheada para el administrador
-            admin_password_raw = 'admin_password_segura_123'  # ¡CAMBIA ESTO!
+            admin_password_raw = 'contraseñá'
             hashed_admin_password = generate_password_hash(admin_password_raw, method='pbkdf2:sha256')
 
-            # Insertar el usuario administrador
             cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s) RETURNING id;",
                         ('Administrador', admin_email, hashed_admin_password, 'administrador'))
             admin_id = cur.fetchone()[0]
             conn.commit()
             
-            print("\n")
-            print("----------------------------------------------------")
+            print("\n" + "="*50)
             print("¡Usuario administrador creado exitosamente!")
             print(f"ID: {admin_id}")
             print(f"Nombre: Administrador")
             print(f"Correo: {admin_email}")
-            print(f"Contraseña (plano, ¡CÁMBIALA INMEDIATAMENTE!): {admin_password_raw}")
+            print(f"Contraseña: {admin_password_raw}")
             print(f"Rol: administrador")
-            print("----------------------------------------------------")
-            print("\n")
+            print("="*50 + "\n")
         except psycopg2.Error as e:
             conn.rollback()
             print(f"Error al crear el usuario administrador: {e}")
@@ -215,7 +195,10 @@ def create_admin_user():
             if conn:
                 conn.close()
 
-# Funciones para operaciones con el horario
+# =============================================================================
+# FUNCIONES DEL HORARIO
+# =============================================================================
+
 def load_schedule(user_id):
     """Carga el horario para un usuario específico desde la base de datos."""
     conn = get_db_connection()
@@ -248,10 +231,8 @@ def save_schedule(day, time, subject, user_id):
     if conn:
         cur = conn.cursor()
         try:
-            # Intenta actualizar si ya existe para este usuario
             cur.execute("UPDATE schedule SET subject = %s WHERE day = %s AND time = %s AND user_id = %s", (subject, day, time, user_id))
             if cur.rowcount == 0:
-                # Si no existe para este usuario, inserta
                 cur.execute("INSERT INTO schedule (day, time, subject, user_id) VALUES (%s, %s, %s, %s)", (day, time, subject, user_id))
             conn.commit()
             print(f"Horario guardado/actualizado para {day} a las {time} para usuario {user_id}: {subject}")
@@ -278,7 +259,10 @@ def delete_schedule(day, time, user_id):
             cur.close()
             conn.close()
 
-# Funciones para operaciones con materias
+# =============================================================================
+# FUNCIONES DE MATERIAS
+# =============================================================================
+
 def load_materias(user_id):
     """Carga las materias para un usuario específico desde la base de datos."""
     conn = get_db_connection()
@@ -320,6 +304,7 @@ def add_materia(name, user_id):
         finally:
             cur.close()
             conn.close()
+    return None
 
 def delete_materia(materia_id, user_id):
     """Elimina una materia por su ID, verificando que pertenezca al usuario."""
@@ -342,6 +327,7 @@ def delete_materia(materia_id, user_id):
         finally:
             cur.close()
             conn.close()
+    return False
 
 def get_materia_details(materia_id, user_id):
     """Carga los detalles de una materia por su ID, incluyendo tareas, exámenes y notas."""
@@ -350,7 +336,6 @@ def get_materia_details(materia_id, user_id):
     if conn:
         cur = conn.cursor()
         try:
-            # Obtener el nombre de la materia
             cur.execute("SELECT id, name FROM materias WHERE id = %s AND user_id = %s", (materia_id, user_id))
             materia_row = cur.fetchone()
             if materia_row:
@@ -362,19 +347,16 @@ def get_materia_details(materia_id, user_id):
                     'notes': []
                 }
 
-                # Obtener las tareas de la materia
                 cur.execute("SELECT id, description, due_date, completed FROM tasks WHERE materia_id = %s AND user_id = %s ORDER BY due_date", (materia_id, user_id))
                 tasks_rows = cur.fetchall()
                 for task in tasks_rows:
                     materia_details['tasks'].append({'id': task[0], 'description': task[1], 'due_date': task[2], 'completed': task[3]})
 
-                # Obtener los exámenes de la materia
                 cur.execute("SELECT id, topic, exam_date, grade FROM exams WHERE materia_id = %s AND user_id = %s ORDER BY exam_date", (materia_id, user_id))
                 exams_rows = cur.fetchall()
                 for exam in exams_rows:
                     materia_details['exams'].append({'id': exam[0], 'topic': exam[1], 'exam_date': exam[2], 'grade': exam[3]})
 
-                # Obtener las notas de la materia
                 cur.execute("SELECT id, content FROM notes WHERE materia_id = %s AND user_id = %s", (materia_id, user_id))
                 notes_rows = cur.fetchall()
                 for note in notes_rows:
@@ -405,8 +387,12 @@ def is_materia_owned_by_user(materia_id, user_id):
                 cur.close()
             if conn:
                 conn.close()
+    return False
 
-# Funciones para operaciones con tareas
+# =============================================================================
+# FUNCIONES DE TAREAS
+# =============================================================================
+
 def add_task(materia_id, description, due_date, user_id):
     """Agrega una nueva tarea para una materia."""
     conn = get_db_connection()
@@ -425,6 +411,7 @@ def add_task(materia_id, description, due_date, user_id):
         finally:
             cur.close()
             conn.close()
+    return None
 
 def delete_task(task_id, user_id):
     """Elimina una tarea por su ID, verificando que pertenezca al usuario."""
@@ -447,6 +434,7 @@ def delete_task(task_id, user_id):
         finally:
             cur.close()
             conn.close()
+    return False
 
 def save_task(task_id, description, user_id):
     """Actualiza una tarea existente."""
@@ -465,15 +453,18 @@ def save_task(task_id, description, user_id):
         finally:
             cur.close()
             conn.close()
+    return False
 
-# Funciones para operaciones con exámenes
+# =============================================================================
+# FUNCIONES DE EXÁMENES
+# =============================================================================
+
 def add_exam(materia_id, topic, exam_date, grade, user_id):
     """Agrega un nuevo examen para una materia."""
     conn = get_db_connection()
     if conn:
         cur = conn.cursor()
         try:
-            # Validar fecha si se proporciona
             if exam_date:
                 try:
                     exam_date = datetime.strptime(exam_date, '%Y-%m-%d').date()
@@ -492,6 +483,7 @@ def add_exam(materia_id, topic, exam_date, grade, user_id):
         finally:
             cur.close()
             conn.close()
+    return None
 
 def delete_exam(exam_id, user_id):
     """Elimina un examen por su ID, verificando que pertenezca al usuario."""
@@ -514,6 +506,7 @@ def delete_exam(exam_id, user_id):
         finally:
             cur.close()
             conn.close()
+    return False
 
 def save_exam(exam_id, topic, grade, exam_date, user_id):
     """Actualiza un examen existente."""
@@ -521,7 +514,6 @@ def save_exam(exam_id, topic, grade, exam_date, user_id):
     if conn:
         cur = conn.cursor()
         try:
-            # Validar fecha si se proporciona
             if exam_date is not None:
                 if exam_date == '':
                     exam_date = None
@@ -563,8 +555,12 @@ def save_exam(exam_id, topic, grade, exam_date, user_id):
         finally:
             cur.close()
             conn.close()
+    return False
 
-# Funciones para operaciones con notas
+# =============================================================================
+# FUNCIONES DE NOTAS
+# =============================================================================
+
 def add_note(materia_id, content, user_id):
     """Agrega una nueva nota para una materia."""
     conn = get_db_connection()
@@ -583,6 +579,7 @@ def add_note(materia_id, content, user_id):
         finally:
             cur.close()
             conn.close()
+    return None, None
 
 def delete_note(note_id, user_id):
     """Elimina una nota por su ID, verificando que pertenezca al usuario."""
@@ -607,6 +604,7 @@ def delete_note(note_id, user_id):
                 cur.close()
             if conn:
                 conn.close()
+    return False
 
 def save_note(note_id, content, user_id):
     """Actualiza una nota existente."""
@@ -625,3 +623,4 @@ def save_note(note_id, content, user_id):
         finally:
             cur.close()
             conn.close()
+    return False

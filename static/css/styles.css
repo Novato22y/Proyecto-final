@@ -1,4 +1,15 @@
-/* Estilos generales del body */
+/* styles.css - Estilos principales del Planeador Escolar */
+
+/* =============================================================================
+   ESTILOS BASE Y RESET
+   ============================================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -6,16 +17,18 @@ body {
     color: #f0f0f0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Cambiado a min-height para que el body crezca si es necesario */
+    min-height: 100vh;
 }
 
-/* Estilos del encabezado */
+/* =============================================================================
+   ENCABEZADO
+   ============================================================================= */
+
 header {
     height: 180px;
     background-color: #2a2a2a;
 }
 
-/* Estilos de la imagen del encabezado */
 header img {
     width: 100%;
     height: 100%;
@@ -23,7 +36,6 @@ header img {
     display: block;
 }
 
-/* Estilos de la franja del título */
 .title-strip {
     background-color: #000;
     padding: 0.75rem 1.5rem;
@@ -32,17 +44,62 @@ header img {
     font-weight: bold;
     color: #90ee90;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Estilos del contenedor principal del contenido */
+.title-strip .header-info {
+    font-size: 1rem;
+    color: #f0f0f0;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.title-strip .header-info a {
+    color: #90ee90;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.title-strip .header-info a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.header-clock {
+    display: flex;
+    align-items: baseline;
+    color: #90ee90;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.header-clock .time {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.header-clock .day {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* =============================================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================================= */
+
 .main-container {
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-/* Estilos para el panel del reloj y la barra lateral */
-.clock-panel, .sidebar {
+/* =============================================================================
+   PANEL DEL RELOJ
+   ============================================================================= */
+
+.clock-panel {
     width: 20%;
     padding: 1rem;
     background-color: #2a2a2a;
@@ -52,10 +109,8 @@ header img {
     align-items: center;
 }
 
-/* Estilos de la pantalla del reloj */
 .clock {
-    /* Estilos del contenedor del reloj eliminados */
-    width: auto; /* El ancho será determinado por el contenido */
+    width: auto;
     padding: 0;
     background-color: transparent;
     border-radius: 0;
@@ -63,7 +118,6 @@ header img {
     text-align: center;
 }
 
-/* Estilos para la parte de la hora del reloj */
 .clock .time {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 3rem;
@@ -72,7 +126,6 @@ header img {
     font-weight: 600;
 }
 
-/* Estilos para la parte del día del reloj */
 .clock .day {
     font-size: 1.125rem;
     color: white;
@@ -81,15 +134,17 @@ header img {
     font-weight: 500;
 }
 
-/* Estilos para las imágenes dentro del panel del reloj y la barra lateral */
-.clock-panel img, .sidebar img {
+.clock-panel img {
     width: 100%;
     border-radius: 10px;
     max-width: 250px;
     height: auto;
 }
 
-/* Estilos del área principal del horario semanal */
+/* =============================================================================
+   HORARIO SEMANAL
+   ============================================================================= */
+
 .week-schedule {
     width: 60%;
     display: grid;
@@ -100,7 +155,6 @@ header img {
     background-color: #1e1e1e;
 }
 
-/* Estilos individuales de las tarjetas de día */
 .day-card {
     background-color: #333;
     padding: 1rem;
@@ -108,7 +162,6 @@ header img {
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-/* Estilos del encabezado de la tarjeta de día */
 .day-card h3 {
     margin-top: 0;
     color: #90ee90;
@@ -117,14 +170,12 @@ header img {
     margin-bottom: 0.75rem;
 }
 
-/* Estilos de lista no ordenada dentro de las tarjetas de día */
 .day-card ul {
     list-style: none;
     padding-left: 0;
     margin: 0;
 }
 
-/* Estilos de los elementos de lista dentro de las tarjetas de día */
 .day-card li {
     background: #444;
     margin: 5px 0;
@@ -134,7 +185,27 @@ header img {
     font-size: 0.8rem;
 }
 
-/* Estilos de la lista de navegación de la barra lateral */
+/* =============================================================================
+   BARRA LATERAL
+   ============================================================================= */
+
+.sidebar {
+    width: 20%;
+    padding: 1rem;
+    background-color: #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.sidebar img {
+    width: 100%;
+    border-radius: 10px;
+    max-width: 250px;
+    height: auto;
+}
+
 .sidebar nav ul {
     list-style: none;
     padding-left: 0;
@@ -143,15 +214,12 @@ header img {
     text-align: center;
 }
 
-/* Encabezado de navegación de la barra lateral */
 .sidebar nav h3 {
     color: #90ee90;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
 }
 
-
-/* Estilos de los enlaces de navegación de la barra lateral */
 .sidebar nav a {
     color: #90ee90;
     text-decoration: none;
@@ -163,13 +231,11 @@ header img {
     transition: background-color 0.2s ease;
 }
 
-/* Efecto hover para los enlaces de navegación de la barra lateral */
 .sidebar nav a:hover {
     background-color: #444;
     color: #fff;
 }
 
-/* Estilos de la cita inspiradora */
 .inspiration {
     font-style: italic;
     color: #ccc;
@@ -180,198 +246,51 @@ header img {
     width: 100%;
 }
 
-/* Estilos para la sección de notas */
-.notes-section {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #e8f0fa;
-    border-radius: 8px;
-}
+/* =============================================================================
+   SECCIÓN DE MATERIAS
+   ============================================================================= */
 
-.notes-section h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.notes-section textarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    resize: vertical;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.notes-section textarea:focus {
-    outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-}
-
-/* Nuevos estilos para la tarjeta del reloj */
-.card {
-    width: 280px;
-    height: 150px;
-    background: rgb(17, 4, 134);
-    border-radius: 15px;
-    box-shadow: rgb(0,0,0,0.7) 5px 10px 50px ,rgb(0,0,0,0.7) -5px 0px 250px;
-    display: flex;
-    color: white;
-    justify-content: center;
-    position: relative;
-    flex-direction: column;
-    background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85));
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    overflow: hidden;
-}
-
-.card:hover {
-    box-shadow: rgb(0,0,0) 5px 10px 50px ,rgb(0,0,0) -5px 0px 250px;
-}
-
-.time-text {
-    font-size: 50px;
-    margin-top: 0px;
-    margin-left: 15px;
-    font-weight: 600;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.time-sub-text {
-    font-size: 15px;
-    margin-left: 5px;
-}
-
-.day-text {
-    font-size: 18px;
-    margin-top: 0px;
-    margin-left: 15px;
-    font-weight: 500;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.moon {
-    font-size: 20px;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    transition: all 0.3s ease-in-out;
-}
-
-.card:hover > .moon {
-    font-size: 23px;
-}
-
-
-/* Ajustes responsivos para pantallas más pequeñas */
-@media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-        overflow: auto;
-    }
-
-    .clock-panel, .week-schedule, .sidebar {
-        width: 100%;
-        height: auto;
-        box-sizing: border-box;
-    }
-
-    .week-schedule {
-        grid-template-columns: 1fr;
-        order: 2;
-    }
-
-    .clock-panel {
-        order: 1;
-        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
-        align-items: center;
-        justify-content: flex-start; /* Alinea al inicio en pantallas pequeñas */
-    }
-
-    .clock-panel img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .sidebar {
-        order: 3;
-    }
-
-    .clock {
-        width: auto;
-        padding: 0;
-        margin-bottom: 1rem;
-    }
-
-    .clock .time {
-        font-size: 2rem;
-    }
-
-    .clock .day {
-        font-size: 0.9rem;
-    }
-
-    header {
-        height: 120px;
-    }
-    .card {
-        width: 90%;
-        height: auto;
-    }
-    .time-text{
-        font-size: 3rem;
-    }
-    .day-text{
-        font-size: 1.125rem;
-    }
-}
-
-/* Estilos para la nueva sección de Materias */
 .materias-nav {
     margin-top: 20px;
     padding: 15px;
-    background-color: #2a2a2a; /* Color de fondo oscuro */
+    background-color: #2a2a2a;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .materias-nav h3 {
-    color: #90ee90; /* Color de acento verde */
+    color: #90ee90;
     margin-top: 0;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #444; /* Borde oscuro */
+    border-bottom: 1px solid #444;
     padding-bottom: 0.5rem;
 }
 
 .materias-nav form {
     margin-bottom: 15px;
-    display: flex; /* Para alinear input y botón */
+    display: flex;
 }
 
 .materias-nav input[type="text"] {
     padding: 8px;
     margin-right: 5px;
-    border: 1px solid #444; /* Borde oscuro */
+    border: 1px solid #444;
     border-radius: 4px;
-    background-color: #333; /* Fondo oscuro */
-    color: #f0f0f0; /* Texto claro */
-    flex-grow: 1; /* Permite que el input crezca */
+    background-color: #333;
+    color: #f0f0f0;
+    flex-grow: 1;
 }
 
 .materias-nav input[type="text"]::placeholder {
-    color: #bbb; /* Color para el placeholder */
+    color: #bbb;
 }
 
 .materias-nav button[type="submit"] {
     padding: 8px 15px;
-    background-color: #004d40; /* Verde oscuro */
+    background-color: #004d40;
     color: white;
     border: none;
     border-radius: 4px;
@@ -380,7 +299,7 @@ header img {
 }
 
 .materias-nav button[type="submit"]:hover {
-    background-color: #00251a; /* Verde más oscuro al pasar el ratón */
+    background-color: #00251a;
 }
 
 .materias-nav ul {
@@ -390,15 +309,15 @@ header img {
 }
 
 .materias-nav li {
-    background-color: #333; /* Fondo oscuro para los ítems de la lista */
+    background-color: #333;
     padding: 10px;
     margin-bottom: 8px;
     border-radius: 4px;
-    border: 1px solid #444; /* Borde oscuro */
+    border: 1px solid #444;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #f0f0f0; /* Texto claro para los ítems */
+    color: #f0f0f0;
 }
 
 .materias-nav li button {
@@ -407,44 +326,46 @@ header img {
     cursor: pointer;
     font-size: 1em;
     padding: 0 5px;
-    color: #90ee90; /* Color de acento para el botón de eliminar */
+    color: #90ee90;
 }
 
 .materias-nav li button:hover {
-    color: #fff; /* Color más claro al pasar el ratón */
+    color: #fff;
 }
 
 .materias-nav li:hover {
-    background-color: #444; /* Fondo un poco más claro al pasar el ratón */
+    background-color: #444;
 }
 
-/* Estilos para el contenedor principal de la página de detalle con 3 columnas */
+/* =============================================================================
+   PÁGINA DE DETALLE DE MATERIA
+   ============================================================================= */
+
 .main-container > .subject-details.three-columns {
-    flex: 1; /* Permite que el área principal ocupe el espacio restante */
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual ancho */
-    gap: 1rem; /* Espacio entre columnas */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
     padding: 1rem;
-    overflow-y: auto; /* Habilitar scroll si el contenido es largo */
-    background-color: #1e1e1e; /* Fondo oscuro */
+    overflow-y: auto;
+    background-color: #1e1e1e;
 }
 
-/* Estilos para las secciones dentro del diseño de 3 columnas */
 .subject-details.three-columns .tasks-section,
 .subject-details.three-columns .exams-section,
 .subject-details.three-columns .notes-section {
-    background-color: #2a2a2a; /* Fondo oscuro para las secciones */
+    background-color: #2a2a2a;
     padding: 1rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    display: flex; /* Usar flexbox para organizar contenido dentro de la sección */
+    display: flex;
     flex-direction: column;
 }
 
 .subject-details.three-columns h3 {
-    color: #90ee90; /* Color de acento para títulos de sección */
+    color: #90ee90;
     margin-top: 0;
-    border-bottom: 1px solid #444; /* Separador oscuro */
+    border-bottom: 1px solid #444;
     padding-bottom: 0.5rem;
     margin-bottom: 0.75rem;
     display: flex;
@@ -454,9 +375,9 @@ header img {
 
 .subject-details.three-columns form {
     margin-bottom: 1rem;
-    display: flex; /* Alinear elementos del formulario */
-    flex-wrap: wrap; /* Permite que los elementos del formulario se envuelvan */
-    gap: 0.5rem; /* Espacio entre elementos del formulario */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .subject-details.three-columns form input[type="text"],
@@ -468,7 +389,7 @@ header img {
     border-radius: 4px;
     background-color: #333;
     color: #f0f0f0;
-    flex-grow: 1; /* Permite que los inputs crezcan */
+    flex-grow: 1;
 }
 
 .subject-details.three-columns form input[type="text"]::placeholder,
@@ -507,7 +428,7 @@ header img {
     justify-content: space-between;
     align-items: center;
     color: #f0f0f0;
-    word-break: break-word; /* Romper palabras largas */
+    word-break: break-word;
 }
 
 .subject-details.three-columns li button {
@@ -517,7 +438,7 @@ header img {
     font-size: 1em;
     padding: 0 5px;
     color: #90ee90;
-    flex-shrink: 0; /* Evita que el botón se encoja */
+    flex-shrink: 0;
 }
 
 .subject-details.three-columns li button:hover {
@@ -527,64 +448,95 @@ header img {
 .subject-details.three-columns li small {
     color: #bbb;
     font-size: 0.8em;
-    margin-top: 5px; /* Espacio arriba de la fecha de creación de la nota */
-    display: block; /* Asegura que la fecha esté en su propia línea */
+    margin-top: 5px;
+    display: block;
 }
 
-/* Estilos para el reloj en el title-strip */
-.title-strip {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* Mantener otros estilos del title-strip */
+/* =============================================================================
+   BOTONES Y ELEMENTOS INTERACTIVOS
+   ============================================================================= */
+
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-family: inherit;
 }
 
-.header-clock {
-    display: flex;
-    align-items: baseline;
-    color: #90ee90; /* Color similar al título */
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0 5px;
+    color: #90ee90;
 }
 
-.header-clock .time {
-    font-size: 1.2rem; /* Tamaño de fuente ajustado para el title-strip */
-    font-weight: 600;
-    margin-right: 5px;
+.delete-button:hover {
+    color: #fff;
 }
 
-.header-clock .day {
-    font-size: 0.9rem; /* Tamaño de fuente ajustado */
-    font-weight: 500;
-}
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
 
-/* Ajustes responsivos para pantallas más pequeñas */
 @media (max-width: 768px) {
-    /* Mantener estilos responsivos existentes */
+    .main-container {
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .clock-panel, .week-schedule, .sidebar {
+        width: 100%;
+        height: auto;
+        box-sizing: border-box;
+    }
+
+    .week-schedule {
+        grid-template-columns: 1fr;
+        order: 2;
+    }
+
+    .clock-panel {
+        order: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .clock-panel img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .sidebar {
+        order: 3;
+    }
+
+    .clock {
+        width: auto;
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+
+    .clock .time {
+        font-size: 2rem;
+    }
+
+    .clock .day {
+        font-size: 0.9rem;
+    }
+
+    header {
+        height: 120px;
+    }
 
     .main-container > .subject-details.three-columns {
-        grid-template-columns: 1fr; /* Apilar columnas en pantallas pequeñas */
+        grid-template-columns: 1fr;
     }
 
     .subject-details.three-columns form {
-        flex-direction: column; /* Apilar elementos del formulario */
+        flex-direction: column;
         gap: 0.5rem;
     }
-}
-/* Estilos para el info de usuario/login en el header */
-.title-strip .header-info {
-    font-size: 1rem; /* Ajusta según necesites */
-    color: #f0f0f0; /* Color de texto para el info */
-    margin-left: auto; /* Empuja este div a la derecha */
-    margin-right: 20px; /* Espacio entre el info y el reloj */
-}
-
-.title-strip .header-info a {
-    color: #90ee90; /* Color de acento para los enlaces */
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.title-strip .header-info a:hover {
-    color: #fff; /* Color más claro al pasar el ratón */
-    text-decoration: underline;
 }

@@ -1,15 +1,15 @@
-# Configuración de la aplicación Flask
+# config.py - Configuración de la aplicación Flask
 import os
 
 class Config:
     # Configuración básica de Flask
-    SECRET_KEY = 'your_secret_key_here'  # ¡CAMBIA ESTO POR UNA CLAVE SEGURA!
+    SECRET_KEY = 'your_secret_key_here'
     
     # Configuración de la base de datos PostgreSQL
     DB_HOST = "localhost"
     DB_NAME = "planeador_escolar"
     DB_USER = "postgres"
-    DB_PASSWORD = "123456"
+    DB_PASSWORD = "MmateomunozV1.0"
     DB_PORT = "5432"
     
     # Configuración de la aplicación

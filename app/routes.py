@@ -15,7 +15,9 @@ from app.models import User
 main_bp = Blueprint('main', __name__)
 auth_bp = Blueprint('auth', __name__)
 
-# ===== RUTAS DE AUTENTICACIÓN =====
+# =============================================================================
+# RUTAS DE AUTENTICACIÓN
+# =============================================================================
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -28,7 +30,6 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        # Validaciones básicas
         if not name or not email or not password:
             flash('Por favor, completa todos los campos.', 'warning')
             return render_template('register.html')
@@ -37,7 +38,6 @@ def register():
             flash('La contraseña debe tener al menos 6 caracteres.', 'warning')
             return render_template('register.html')
 
-        # Crear el usuario usando la nueva función
         user_id, error_message = create_user(name, email, password)
         
         if user_id:
@@ -75,7 +75,6 @@ def login():
                     user = User(id=user_data[0], name=user_data[1], email=user_data[2], role=user_data[4])
                     login_user(user)
                     print(f"Usuario logeado: {user.name} ({user.email}) con rol {user.role}")
-                    # Redirigir a la página principal o a la página solicitada
                     next_page = request.args.get('next')
                     return redirect(next_page or url_for('main.principal'))
                 else:
@@ -99,25 +98,27 @@ def logout():
     flash('Has cerrado sesión exitosamente.', 'success')
     return redirect(url_for('main.principal'))
 
-# ===== RUTAS PRINCIPALES =====
+# =============================================================================
+# RUTAS PRINCIPALES
+# =============================================================================
 
 @main_bp.route('/')
 def principal():
     """Página principal de la aplicación"""
-    create_tables()  # Asegúrate de que las tablas existan
+    create_tables()
 
     schedule = {}
     materias = []
 
     if current_user.is_authenticated:
-        # Cargar datos solo para el usuario logeado
         schedule = load_schedule(current_user.id)
         materias = load_materias(current_user.id)
 
-    # Pasar current_user a la plantilla para mostrar el nombre o el enlace de login/registro
     return render_template("index.html", schedule=schedule, materias=materias, current_user=current_user)
 
-# ===== RUTAS DEL HORARIO =====
+# =============================================================================
+# RUTAS DEL HORARIO
+# =============================================================================
 
 @main_bp.route('/save_schedule', methods=['POST'])
 @login_required
@@ -163,7 +164,9 @@ def delete_schedule_route():
     else:
         return jsonify({'status': 'error', 'message': 'Datos incompletos'}), 400
 
-# ===== RUTAS DE MATERIAS =====
+# =============================================================================
+# RUTAS DE MATERIAS
+# =============================================================================
 
 @main_bp.route('/add_materia', methods=['POST'])
 @login_required
@@ -206,7 +209,9 @@ def materia_detalle(materia_id):
     else:
         return "Materia no encontrada", 404
 
-# ===== RUTAS DE TAREAS =====
+# =============================================================================
+# RUTAS DE TAREAS
+# =============================================================================
 
 @main_bp.route('/add_task', methods=['POST'])
 @login_required
@@ -260,7 +265,9 @@ def save_task_route():
     else:
         return jsonify({'status': 'error', 'message': 'Datos incompletos para actualizar tarea'}), 400
 
-# ===== RUTAS DE EXÁMENES =====
+# =============================================================================
+# RUTAS DE EXÁMENES
+# =============================================================================
 
 @main_bp.route('/add_exam', methods=['POST'])
 @login_required
@@ -317,7 +324,9 @@ def save_exam_route():
     else:
         return jsonify({'status': 'error', 'message': 'Error al actualizar examen'}), 500
 
-# ===== RUTAS DE NOTAS =====
+# =============================================================================
+# RUTAS DE NOTAS
+# =============================================================================
 
 @main_bp.route('/add_note', methods=['POST'])
 @login_required
@@ -370,7 +379,9 @@ def save_note_route():
     else:
         return jsonify({'status': 'error', 'message': 'Datos incompletos para actualizar nota'}), 400
 
-# ===== INICIALIZACIÓN DE LA BASE DE DATOS =====
+# =============================================================================
+# INICIALIZACIÓN DE LA BASE DE DATOS
+# =============================================================================
 
 def init_db():
     """Inicializa la base de datos creando las tablas y el usuario administrador"""

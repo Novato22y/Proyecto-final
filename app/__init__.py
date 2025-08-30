@@ -9,9 +9,7 @@ login_manager = LoginManager()
 
 def create_app(config_class=Config):
     """Application Factory Pattern para crear la instancia de Flask"""
-    # Obtener la ruta del directorio actual
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Subir un nivel para llegar al directorio del proyecto
     project_dir = os.path.dirname(current_dir)
     
     app = Flask(__name__, 
