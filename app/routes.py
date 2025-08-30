@@ -61,7 +61,7 @@ def login():
 
         if not email or not password:
             flash('Por favor, ingresa correo y contraseña.', 'warning')
-            return render_template('login.html')
+            return render_template('sesion.html')
 
         from app.database import get_db_connection
         conn = get_db_connection()
@@ -89,7 +89,7 @@ def login():
                 if conn:
                     conn.close()
 
-    return render_template('login.html')
+    return render_template('sesion.html')
 
 @auth_bp.route('/logout')
 @login_required
