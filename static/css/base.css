@@ -1,75 +1,149 @@
-/* Estilos generales compartidos */
-body {
+/* base.css - Estilos base para la aplicación */
+
+/* Reset básico */
+* {
     margin: 0;
-    font-family: Arial, sans-serif;
+    padding: 0; 
+    box-sizing: border-box;
+}
+
+/* Estilos base del HTML y body */
+html {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #1e1e1e;
     color: #f0f0f0;
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
 }
 
-header {
-    height: 180px;
-    background-color: #2a2a2a;
+/* Estilos base para enlaces */
+a {
+    color: #90ee90;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-header img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Estilos base para botones */
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-family: inherit;
+}
+
+/* Estilos base para inputs */
+input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* Estilos base para listas */
+ul, ol {
+    list-style: none;
+}
+
+/* Estilos base para imágenes */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Estilos base para contenedores */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Estilos base para texto */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Estilos base para formularios */
+form {
     display: block;
 }
 
-.title-strip {
-    background-color: #000;
-    padding: 0.75rem 1.5rem;
-    font-size: 1.5rem;
+/* Estilos base para tablas */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 8px;
     text-align: left;
-    font-weight: bold;
-    color: #90ee90;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-    display: flex; /* Añadido para el reloj en title-strip */
-    justify-content: space-between; /* Añadido para el reloj en title-strip */
-    align-items: center; /* Añadido para el reloj en title-strip */
+    border-bottom: 1px solid #444;
 }
 
-.main-container {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
+/* Estilos base para mensajes */
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
 }
 
-/* Estilos generales para listas sin viñetas */
-ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
+.message.success {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
-/* Estilos para botones de eliminar */
-.delete-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1em;
-    padding: 0 5px;
-    color: #90ee90; /* Color de acento para el botón */
-    transition: color 0.2s ease;
+.message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.delete-button:hover {
-    color: #fff; /* Color más claro al pasar el ratón */
+.message.warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
-/* Media Query general para ajustar el main-container */
+/* Estilos base para utilidades */
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+/* Estilos base para responsive */
 @media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-        overflow: auto;
+    .container {
+        padding: 0 15px;
     }
-    header {
-        height: 120px;
+    
+    body {
+        font-size: 14px;
     }
 }
- 

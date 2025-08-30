@@ -23,7 +23,7 @@ body, html {
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: var(--bg);
+    background: #1e1e1e;
     color: var(--text);
     display: grid;
     place-items: center;
@@ -33,11 +33,7 @@ body {
 .login-container {
     width: min(450px, 100%);
     min-height: 620px;
-    background: linear-gradient(90deg, var(--card) 0%, rgba(17, 21, 29, 0.9) 85%, var(--card) 100%),
-                url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1880&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-    filter: saturate(.9);
+    background: var(--card);
     border-radius: 26px;
     box-shadow: var(--shadow);
     position: relative;
@@ -146,6 +142,43 @@ h1 {
 
 .link-group a:hover {
     text-decoration: underline;
+}
+
+/* Estilos para mensajes flash */
+.flashes {
+    margin-bottom: 20px;
+}
+
+.flash-message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.flash-message.success {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.flash-message.danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.flash-message.warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.flash-message.info {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 @media (max-width: 980px) {

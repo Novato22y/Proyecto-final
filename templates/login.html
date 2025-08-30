@@ -1,43 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Planner - Iniciar Sesión</title>
+    <title>Iniciar Sesión - School Planner</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logoedunote.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}"> {# Este archivo CSS también servirá para el login #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login1.css') }}">
 </head>
 <body>
-    <header>
-        <img src="{{ url_for('static', filename='images/banner.jpeg') }}" alt="Indoor garden pixel art scene" onerror="this.onerror=null;this.src='https://placehold.co/1200x180/2a2a2a/f0f0f0?text=Header+Image+Not+Found';">
-    </header>
-
-    <div class="title-strip">School Planner - Iniciar Sesión</div>
-
-    <div class="auth-container">
-        <h2>Iniciar Sesión</h2>
-         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                    {% for category, message in messages %}
-                        <li class="{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" id="email" name="email" required>
+    <div class="login-container">
+        <div class="form-card">
+            <h1>Iniciar Sesión.</h1>
+            
+            <!-- Mensajes de error/éxito -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flashes">
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                <div class="input-group">
+                    <label for="email">Correo electrónico</label>
+                    <div class="input-field">
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-field">
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+                <button type="submit" class="login-button">Iniciar sesión</button>
+            </form>
+            <div class="link-group">
+                <p>¿No tienes una cuenta? <a href="{{ url_for('auth.register') }}">Registrarse</a></p>
+                <a href="#">¿Olvidaste tu contraseña?</a>
             </div>
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-        <p>¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate aquí</a>.</p>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
