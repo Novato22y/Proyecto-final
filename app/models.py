@@ -9,7 +9,7 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
-    password_hash = db.Column(db.String(128), nullable=True) # Nullable para usuarios de OAuth
+    password_hash = db.Column(db.Text, nullable=True) # Nullable para usuarios de OAuth y permite hashes largos
     name = db.Column(db.String(100), nullable=False)
     
     # Campo para el rol del usuario. True si es admin.

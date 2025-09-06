@@ -5,11 +5,10 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from flask_login import login_user, login_required, logout_user, current_user
 # Se elimina werkzeug.security porque los métodos ahora están en el modelo User
 from app.database import (
-    create_tables, create_admin_user, load_schedule, load_materias, save_schedule, 
+    load_schedule, load_materias, save_schedule, 
     delete_schedule, add_materia, delete_materia, get_materia_details,
     add_task, delete_task, save_task, add_exam, delete_exam, save_exam,
     add_note, delete_note, save_note, is_materia_owned_by_user
-    # Se eliminan user_exists y create_user
 )
 from app.models import User
 from . import db, oauth
@@ -232,8 +231,6 @@ def google_logout():
 @main_bp.route('/')
 def principal():
     """Página principal de la aplicación"""
-    create_tables()
-
     schedule = {}
     materias = []
     calendar_events = []
@@ -463,10 +460,3 @@ def save_note_route():
 # INICIALIZACIÓN DE LA BASE DE DATOS
 # =============================================================================
 
-def init_db():
-    """Inicializa la base de datos creando las tablas y el usuario administrador"""
-    create_tables()
-    create_admin_user()
-
-# Ejecutar la inicialización cuando se importe el módulo
-init_db()

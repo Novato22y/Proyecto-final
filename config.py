@@ -42,7 +42,9 @@ class Config:
     DB_PASSWORD = os.environ.get('DB_PASSWORD')
     DB_PORT = os.environ.get('DB_PORT', '5432')
 
-    # --- Configuración de Autenticación (Flask-Login) ---
+    # --- Configuración de SQLAlchemy ---
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # LOGIN_VIEW: La ruta a la que se redirigirá a los usuarios si intentan acceder
     # a una página protegida sin haber iniciado sesión. 'auth.login' se refiere

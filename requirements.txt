@@ -11,6 +11,9 @@ Authlib>=1.2.0 # Para OAuth 2.0 (Google Sign-In)
 # Conector de Base de Datos PostgreSQL
 psycopg2-binary==2.9.9
 
+# ORM para Flask
+Flask-SQLAlchemy==3.1.1
+
 # Utilidades de Seguridad
 Werkzeug==3.1.3
 
