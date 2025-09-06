@@ -116,3 +116,31 @@ La aplicación se ejecutará en `http://127.0.0.1:5000`.
 - [ ] Calendario visual mensual/anual
 - [ ] Exportar horario a PDF/Excel
 - [ ] Temas visuales personalizables
+
+---
+
+## 🛠️ Actualización: Integración de Google Sign-In y Refactorización a SQLAlchemy (En Progreso)
+
+Se está llevando a cabo una actualización importante para modernizar el backend y añadir la funcionalidad de "Inicio de Sesión con Google".
+
+### ✅ Cambios Realizados
+
+1.  **Dependencias (`requirements.txt`)**: Añadida la librería `Authlib` para OAuth 2.0.
+2.  **Configuración (`config.py`)**: Añadida la `GOOGLE_DISCOVERY_URL` para `Authlib`.
+3.  **Modelo de Datos (`app/models.py`)**: Refactorizada la clase `User` para que sea un modelo de SQLAlchemy, añadiendo el campo `google_id` y métodos de gestión de contraseñas.
+4.  **Fábrica de la App (`app/__init__.py`)**: Actualizada para inicializar SQLAlchemy y Authlib, y para que el `user_loader` de Flask-Login use el nuevo modelo.
+5.  **Rutas (`app/routes.py`)**: Añadidas las rutas para el flujo de Google Sign-In y refactorizadas las rutas de login/registro estándar para usar SQLAlchemy.
+
+### ⏳ Tareas Pendientes
+
+Para finalizar la implementación, quedan los siguientes pasos:
+
+*   **Backend:**
+    - [ ] **Limpiar `app/database.py`**: Eliminar las funciones de creación y gestión de usuarios (`create_tables` para users, `user_exists`, `create_user`, `create_admin_user`) que han quedado obsoletas.
+    - [ ] **Centralizar la Creación de la BD**: Modificar `run.py` para que se encargue de crear todas las tablas al iniciar la aplicación.
+    - [ ] **Limpiar `app/routes.py`**: Eliminar la llamada a `init_db()`.
+
+*   **Frontend y Puesta en Marcha:**
+    - [ ] **Añadir Botón de Google**: Insertar el código HTML del botón en `sesion.html` y `register.html`.
+    - [ ] **Instalar Dependencias**: Ejecutar `pip install -r requirements.txt`.
+    - [ ] **Reiniciar la Base de Datos**: Eliminar las tablas antiguas para que la aplicación cree las nuevas con la estructura correcta.

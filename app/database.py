@@ -258,6 +258,7 @@ def delete_schedule(day, time, user_id):
         finally:
             cur.close()
             conn.close()
+    return False
 
 # =============================================================================
 # FUNCIONES DE MATERIAS
@@ -621,6 +622,8 @@ def save_note(note_id, content, user_id):
             print(f"Error al actualizar nota {note_id}: {e}")
             return False
         finally:
-            cur.close()
-            conn.close()
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
     return False
