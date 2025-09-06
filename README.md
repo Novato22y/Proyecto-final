@@ -138,6 +138,37 @@ La aplicación se ejecutará en `http://127.0.0.1:5000`.
 
 ---
 
+
+## 🛡️ Proceso de verificación de Google OAuth (para acceso con cualquier Gmail)
+
+Si quieres que cualquier usuario pueda iniciar sesión con Google y vincular Google Calendar (no solo los testers), debes completar el proceso de verificación de Google OAuth. Google lo exige cuando solicitas permisos sensibles como acceso a Calendar.
+
+### Pasos para la verificación:
+
+1. Ve a la [Pantalla de consentimiento OAuth](https://console.cloud.google.com/apis/credentials/consent) en Google Cloud.
+2. Completa todos los campos obligatorios:
+    - Nombre de la app
+    - Logo de la app (JPG, PNG, BMP, cuadrado, 120x120 px)
+    - Correo de contacto del desarrollador
+    - Página principal de la aplicación (puedes usar tu repositorio de GitHub o una página informativa)
+    - [Política de privacidad](https://www.freeprivacypolicy.com/) (puedes generar una gratuita)
+    - [Condiciones de servicio](https://www.freeprivacypolicy.com/free-terms-and-conditions-generator/) (puedes generar una gratuita)
+3. Agrega los dominios autorizados si tienes una web pública.
+4. Inicia el proceso de verificación en la sección “Centro de verificación” o “Verification”.
+5. Google revisará tu app y, si todo está correcto, la aprobará para cualquier usuario.
+
+**Enlaces útiles:**
+
+**Ejemplo de enlaces para la verificación:**
+- Política de privacidad: [https://novato22y.github.io/Proyecto-final/politica_privacidad.html](https://novato22y.github.io/Proyecto-final/politica_privacidad.html)
+- Términos y condiciones: [https://novato22y.github.io/Proyecto-final/terminos_condiciones.html](https://novato22y.github.io/Proyecto-final/terminos_condiciones.html)
+
+Puedes crear estos archivos en tu repositorio y publicarlos con GitHub Pages, o incluirlos en la carpeta raíz del proyecto como `politica_privacidad.html` y `terminos_condiciones.html`.
+Si usas GitHub Pages, los enlaces serán accesibles públicamente y válidos para la verificación de Google.
+
+**Importante:**
+
+---
 ## 🛠️ Actualización: Integración de Google Sign-In y Refactorización a SQLAlchemy (En Progreso)
 
 Se está llevando a cabo una actualización importante para modernizar el backend y añadir la funcionalidad de "Inicio de Sesión con Google".

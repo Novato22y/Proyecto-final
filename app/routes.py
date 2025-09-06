@@ -108,7 +108,14 @@ def google_login_auth():
     Redirige al usuario a la página de consentimiento de Google para el Sign-In.
     """
     redirect_uri = url_for('auth.google_callback', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
+    scopes = [
+        'openid',
+        'email',
+        'profile',
+        'https://www.googleapis.com/auth/calendar.events.readonly'
+    ]
+    print("Redirect URI para Google OAuth:", redirect_uri)
+    return oauth.google.authorize_redirect(redirect_uri, scope=" ".join(scopes))
 
 
 @auth_bp.route('/google/callback')
