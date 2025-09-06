@@ -6,6 +6,7 @@ Flask==3.1.1
 
 # Sistema de Autenticación
 Flask-Login==0.6.3
+Authlib>=1.2.0 # Para OAuth 2.0 (Google Sign-In)
 
 # Conector de Base de Datos PostgreSQL
 psycopg2-binary==2.9.9

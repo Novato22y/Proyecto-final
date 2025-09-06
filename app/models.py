@@ -1,35 +1,30 @@
 # app/models.py - Modelos de datos de la aplicación
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from . import db # Importar la instancia de SQLAlchemy
 
-class User(UserMixin):
-    """Modelo de usuario para Flask-Login"""
+class User(UserMixin, db.Model):
+    """Modelo de usuario para la base de datos, compatible con SQLAlchemy y Flask-Login."""
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False, index=True)
+    password_hash = db.Column(db.String(128), nullable=True) # Nullable para usuarios de OAuth
+    name = db.Column(db.String(100), nullable=False)
     
-    def __init__(self, id, name, email, role):
-        self.id = id
-        self.name = name
-        self.email = email
-        self.role = role
+    # Campo para el rol del usuario. True si es admin.
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
-    @staticmethod
-    def load_user(user_id):
-        """Método estático para cargar un usuario por su ID (requerido por Flask-Login)"""
-        from app.database import get_db_connection
-        
-        conn = get_db_connection()
-        if conn:
-            cur = conn.cursor()
-            try:
-                cur.execute("SELECT id, name, email, role FROM users WHERE id = %s", (user_id,))
-                user_data = cur.fetchone()
-                if user_data:
-                    return User(id=user_data[0], name=user_data[1], email=user_data[2], role=user_data[3])
-                return None
-            except Exception as e:
-                print(f"Error loading user {user_id}: {e}")
-                return None
-            finally:
-                if cur:
-                    cur.close()
-                if conn:
-                    conn.close()
-        return None
+    # --- Nuevo campo para Google Sign-In ---
+    google_id = db.Column(db.String(120), unique=True, nullable=True, index=True)
+
+    def set_password(self, password):
+        """Crea un hash de la contraseña."""
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Verifica el hash de la contraseña."""
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return f'<User {self.email}>'

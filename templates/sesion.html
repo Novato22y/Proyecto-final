@@ -41,6 +41,16 @@
                 </div>
                 <button type="submit" class="login-button">Iniciar sesión</button>
             </form>
+            <!-- Fragmento para templates/sesion.html y templates/register.html -->
+
+<div class="text-center my-3">
+    <p class="font-weight-bold">O</p>
+</div>
+
+<a href="{{ url_for('auth.google_login_auth') }}" class="btn btn-outline-dark btn-block" role="button" style="text-decoration: none;">
+    <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" />
+    Continuar con Google
+</a>
             <div class="link-group">
                 <p>¿No tienes una cuenta? <a href="{{ url_for('auth.register') }}">Registrarse</a></p>
                 <a href="#">¿Olvidaste tu contraseña?</a>

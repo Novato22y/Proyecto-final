@@ -3,15 +3,16 @@ import os
 import datetime
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session, current_app
 from flask_login import login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+# Se elimina werkzeug.security porque los métodos ahora están en el modelo User
 from app.database import (
     create_tables, create_admin_user, load_schedule, load_materias, save_schedule, 
     delete_schedule, add_materia, delete_materia, get_materia_details,
     add_task, delete_task, save_task, add_exam, delete_exam, save_exam,
-    add_note, delete_note, save_note, is_materia_owned_by_user,
-    user_exists, create_user
+    add_note, delete_note, save_note, is_materia_owned_by_user
+    # Se eliminan user_exists y create_user
 )
 from app.models import User
+from . import db, oauth
 
 # Imports para Google Calendar
 from google_auth_oauthlib.flow import Flow
@@ -23,12 +24,12 @@ main_bp = Blueprint('main', __name__)
 auth_bp = Blueprint('auth', __name__)
 
 # =============================================================================
-# RUTAS DE AUTENTICACIÓN
+# RUTAS DE AUTENTICACIÓN (REFACTORIZADAS)
 # =============================================================================
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """Ruta para el registro de usuarios"""
+    """Ruta para el registro de usuarios usando SQLAlchemy."""
     if current_user.is_authenticated:
         return redirect(url_for('main.principal'))
 
@@ -45,20 +46,27 @@ def register():
             flash('La contraseña debe tener al menos 6 caracteres.', 'warning')
             return render_template('register.html')
 
-        user_id, error_message = create_user(name, email, password)
-        
-        if user_id:
-            flash('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success')
-            return redirect(url_for('auth.login'))
-        else:
-            flash(error_message, 'danger')
+        # Verificar si el usuario ya existe usando SQLAlchemy
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('El correo electrónico ya está registrado.', 'danger')
             return render_template('register.html')
+
+        # Crear nuevo usuario con el modelo SQLAlchemy
+        new_user = User(name=name, email=email)
+        new_user.set_password(password) # Hashear y guardar contraseña
+        
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success')
+        return redirect(url_for('auth.login'))
 
     return render_template('register.html')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """Ruta para el inicio de sesión"""
+    """Ruta para el inicio de sesión usando SQLAlchemy."""
     if current_user.is_authenticated:
         return redirect(url_for('main.principal'))
 
@@ -70,26 +78,16 @@ def login():
             flash('Por favor, ingresa correo y contraseña.', 'warning')
             return render_template('sesion.html')
 
-        from app.database import get_db_connection
-        conn = get_db_connection()
-        if conn:
-            cur = conn.cursor()
-            try:
-                cur.execute("SELECT id, name, email, password, role FROM users WHERE email = %s", (email,))
-                user_data = cur.fetchone()
+        # Buscar usuario con SQLAlchemy
+        user = User.query.filter_by(email=email).first()
 
-                if user_data and check_password_hash(user_data[3], password):
-                    user = User(id=user_data[0], name=user_data[1], email=user_data[2], role=user_data[4])
-                    login_user(user)
-                    next_page = request.args.get('next')
-                    return redirect(next_page or url_for('main.principal'))
-                else:
-                    flash('Correo electrónico o contraseña incorrectos.', 'danger')
-            except Exception as e:
-                flash(f'Ocurrió un error al intentar iniciar sesión: {e}', 'danger')
-            finally:
-                if cur: cur.close()
-                if conn: conn.close()
+        # Verificar usuario y contraseña con los métodos del modelo
+        if user and user.check_password(password):
+            login_user(user, remember=True) # remember=True es una buena práctica
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('main.principal'))
+        else:
+            flash('Correo electrónico o contraseña incorrectos.', 'danger')
 
     return render_template('sesion.html')
 
@@ -98,20 +96,71 @@ def login():
 def logout():
     """Ruta para cerrar sesión"""
     logout_user()
-    # Limpiar también la sesión de Google si existe
     if 'google_credentials' in session:
         session.pop('google_credentials')
     flash('Has cerrado sesión exitosamente.', 'success')
     return redirect(url_for('main.principal'))
 
+# --- Rutas para Google Sign-In ---
+
+@auth_bp.route('/google/login')
+def google_login_auth():
+    """
+    Redirige al usuario a la página de consentimiento de Google para el Sign-In.
+    """
+    redirect_uri = url_for('auth.google_callback', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@auth_bp.route('/google/callback')
+def google_callback():
+    """
+    Ruta de callback que Google invoca tras la autorización del usuario para el Sign-In.
+    """
+    try:
+        token = oauth.google.authorize_access_token()
+        user_info = oauth.google.userinfo()
+    except Exception as e:
+        flash('Ocurrió un error durante la autenticación con Google. Por favor, inténtalo de nuevo.', 'danger')
+        current_app.logger.error(f"Error en callback de Google Sign-In: {e}")
+        return redirect(url_for('auth.login'))
+
+    google_id = user_info.get('sub')
+    email = user_info.get('email')
+    name = user_info.get('name')
+
+    if not email:
+        flash('No se pudo obtener el email de tu cuenta de Google. Asegúrate de dar los permisos necesarios.', 'danger')
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        if not user.google_id:
+            user.google_id = google_id
+            db.session.commit()
+    else:
+        user = User(
+            google_id=google_id,
+            email=email,
+            name=name,
+        )
+        db.session.add(user)
+        db.session.commit()
+
+    login_user(user, remember=True)
+    flash(f'¡Bienvenido, {user.name}!', 'success')
+    
+    return redirect(url_for('main.principal'))
+
+
 # =============================================================================
-# RUTAS DE INTEGRACIÓN CON GOOGLE
+# RUTAS DE INTEGRACIÓN CON GOOGLE CALENDAR (EXISTENTES)
 # =============================================================================
 
 def get_google_flow():
-    """Helper para crear un objeto Flow de Google OAuth."""
+    """Helper para crear un objeto Flow de Google OAuth para Calendar."""
     redirect_uri = url_for('main.callback', _external=True)
-    # Asegurarse de que la URL sea HTTPS si no estamos en modo debug
     if not current_app.debug and redirect_uri.startswith('http://'):
         redirect_uri = redirect_uri.replace('http://', 'https://', 1)
 
@@ -133,12 +182,12 @@ def get_google_flow():
 @main_bp.route('/google-login')
 @login_required
 def google_login():
-    """Inicia el flujo de autenticación de Google OAuth 2.0."""
+    """Inicia el flujo de OAuth para conectar con Google Calendar."""
     flow = get_google_flow()
     authorization_url, state = flow.authorization_url(
         access_type='offline',
         include_granted_scopes='true',
-        prompt='consent' # Forzar que siempre pida consentimiento para obtener el refresh_token
+        prompt='consent'
     )
     session['state'] = state
     return redirect(authorization_url)
@@ -146,7 +195,7 @@ def google_login():
 @main_bp.route('/callback')
 @login_required
 def callback():
-    """Maneja el callback de OAuth 2.0 de Google."""
+    """Maneja el callback de OAuth 2.0 de Google para Calendar."""
     try:
         state = session.pop('state', None)
         flow = get_google_flow()
@@ -197,11 +246,9 @@ def principal():
             try:
                 creds = google.oauth2.credentials.Credentials(**session['google_credentials'])
                 
-                # Si el token ha expirado y hay un refresh token, se refresca
                 if creds.expired and creds.refresh_token:
                     from google.auth.transport.requests import Request
                     creds.refresh(Request())
-                    # Guardar las credenciales actualizadas en la sesión
                     session['google_credentials'] = {
                         'token': creds.token, 'refresh_token': creds.refresh_token,
                         'token_uri': creds.token_uri, 'client_id': creds.client_id,
