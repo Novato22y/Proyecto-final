@@ -91,26 +91,6 @@
 
       <!-- Sección de Google Calendar -->
       {% if current_user.is_authenticated %}
-      <nav class="google-calendar-nav">
-        <h3>GOOGLE CALENDAR</h3>
-        {% if 'google_credentials' in session %}
-          <a href="{{ url_for('main.google_logout') }}">Desconectar cuenta de Google</a>
-          <ul class="calendar-events">
-            {% if calendar_events %}
-              {% for event in calendar_events %}
-                <li>
-                  <strong>{{ event.summary }}</strong>
-                  <small>({{ event.start.dateTime | format_datetime }})</small>
-                </li>
-              {% endfor %}
-            {% else %}
-              <li>No tienes próximos eventos.</li>
-            {% endif %}
-          </ul>
-        {% else %}
-          <a href="{{ url_for('main.google_login') }}">Conectar con Google Calendar</a>
-        {% endif %}
-      </nav>
       {% endif %}
 
       <div class="inspiration">

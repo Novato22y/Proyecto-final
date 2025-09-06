@@ -51,17 +51,10 @@ class Config:
     # al blueprint 'auth' y la ruta 'login'.
     LOGIN_VIEW = 'auth.login'
 
-    # --- Credenciales de APIs Externas (Google OAuth: Calendar & Sign-In) ---
-    # Aquí se cargan las credenciales para las APIs de Google.
-    # NUNCA escribas el ID o el secreto del cliente directamente en este archivo.
-    # Deben estar en tu archivo .env.
-    # Ejemplo en .env:
+    # --- Credenciales de Google OAuth para Sign-In ---
+    # Se cargan desde el archivo .env:
     # GOOGLE_CLIENT_ID='tu-id-de-cliente-de-google.apps.googleusercontent.com'
     # GOOGLE_CLIENT_SECRET='tu-secreto-de-cliente-de-google'
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
-
-    # GOOGLE_DISCOVERY_URL: URL de descubrimiento de OpenID de Google.
-    # Authlib la usa para encontrar automáticamente las URLs de autorización,
-    # token y userinfo, simplificando la configuración.
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"

@@ -13,10 +13,6 @@ from app.database import (
 from app.models import User
 from . import db, oauth
 
-# Imports para Google Calendar
-from google_auth_oauthlib.flow import Flow
-from googleapiclient.discovery import build
-import google.oauth2.credentials
 
 # Crear blueprints para organizar las rutas
 main_bp = Blueprint('main', __name__)
@@ -111,8 +107,7 @@ def google_login_auth():
     scopes = [
         'openid',
         'email',
-        'profile',
-        'https://www.googleapis.com/auth/calendar.events.readonly'
+        'profile'
     ]
     print("Redirect URI para Google OAuth:", redirect_uri)
     return oauth.google.authorize_redirect(redirect_uri, scope=" ".join(scopes))
@@ -160,76 +155,6 @@ def google_callback():
     return redirect(url_for('main.principal'))
 
 
-# =============================================================================
-# RUTAS DE INTEGRACIÓN CON GOOGLE CALENDAR (EXISTENTES)
-# =============================================================================
-
-def get_google_flow():
-    """Helper para crear un objeto Flow de Google OAuth para Calendar."""
-    redirect_uri = url_for('main.callback', _external=True)
-    if not current_app.debug and redirect_uri.startswith('http://'):
-        redirect_uri = redirect_uri.replace('http://', 'https://', 1)
-
-    return Flow.from_client_config(
-        client_config={
-            "web": {
-                "client_id": current_app.config['GOOGLE_CLIENT_ID'],
-                "client_secret": current_app.config['GOOGLE_CLIENT_SECRET'],
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "redirect_uris": [redirect_uri],
-            }
-        },
-        scopes=['https://www.googleapis.com/auth/calendar.events.readonly'],
-        redirect_uri=redirect_uri
-    )
-
-@main_bp.route('/google-login')
-@login_required
-def google_login():
-    """Inicia el flujo de OAuth para conectar con Google Calendar."""
-    flow = get_google_flow()
-    authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true',
-        prompt='consent'
-    )
-    session['state'] = state
-    return redirect(authorization_url)
-
-@main_bp.route('/callback')
-@login_required
-def callback():
-    """Maneja el callback de OAuth 2.0 de Google para Calendar."""
-    try:
-        state = session.pop('state', None)
-        flow = get_google_flow()
-        flow.fetch_token(authorization_response=request.url)
-
-        credentials = flow.credentials
-        session['google_credentials'] = {
-            'token': credentials.token,
-            'refresh_token': credentials.refresh_token,
-            'token_uri': credentials.token_uri,
-            'client_id': credentials.client_id,
-            'client_secret': credentials.client_secret,
-            'scopes': credentials.scopes
-        }
-        flash('Tu cuenta de Google ha sido conectada exitosamente.', 'success')
-    except Exception as e:
-        flash(f"Error durante la autenticación con Google: {e}", "error")
-        
-    return redirect(url_for('main.principal'))
-
-@main_bp.route('/google-logout')
-@login_required
-def google_logout():
-    """Limpia las credenciales de Google de la sesión."""
-    if 'google_credentials' in session:
-        session.pop('google_credentials')
-        flash('Has desconectado tu cuenta de Google.', 'success')
-    return redirect(url_for('main.principal'))
 
 # =============================================================================
 # RUTAS PRINCIPALES
@@ -240,39 +165,14 @@ def principal():
     """Página principal de la aplicación"""
     schedule = {}
     materias = []
-    calendar_events = []
+    schedule = {}
+    materias = []
 
     if current_user.is_authenticated:
         schedule = load_schedule(current_user.id)
         materias = load_materias(current_user.id)
 
-        if 'google_credentials' in session:
-            try:
-                creds = google.oauth2.credentials.Credentials(**session['google_credentials'])
-                
-                if creds.expired and creds.refresh_token:
-                    from google.auth.transport.requests import Request
-                    creds.refresh(Request())
-                    session['google_credentials'] = {
-                        'token': creds.token, 'refresh_token': creds.refresh_token,
-                        'token_uri': creds.token_uri, 'client_id': creds.client_id,
-                        'client_secret': creds.client_secret, 'scopes': creds.scopes
-                    }
-
-                service = build('calendar', 'v3', credentials=creds)
-                now = datetime.datetime.utcnow().isoformat() + 'Z'
-                events_result = service.events().list(
-                    calendarId='primary', timeMin=now,
-                    maxResults=10, singleEvents=True,
-                    orderBy='startTime'
-                ).execute()
-                calendar_events = events_result.get('items', [])
-
-            except Exception as e:
-                flash(f"Error al obtener eventos de Google Calendar: {e}. Por favor, intenta reconectar tu cuenta.", "error")
-                session.pop('google_credentials', None)
-
-    return render_template("index.html", schedule=schedule, materias=materias, current_user=current_user, calendar_events=calendar_events)
+    return render_template("index.html", schedule=schedule, materias=materias, current_user=current_user)
 
 
 @main_bp.route('/profile')

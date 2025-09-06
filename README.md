@@ -2,7 +2,7 @@
 
 ## 🎯 Descripción
 
-Planeador Escolar es una aplicación web desarrollada con Flask que permite a los estudiantes organizar su vida académica. Ofrece gestión de horarios, materias, tareas, exámenes y notas. La versión actual incluye un panel de administración de usuarios y se integra con Google Calendar.
+Planeador Escolar es una aplicación web desarrollada con Flask que permite a los estudiantes organizar su vida académica. Ofrece gestión de horarios, materias, tareas, exámenes y notas. La versión actual incluye un panel de administración de usuarios y permite inicio de sesión con Google.
 
 ## 🏗️ Estructura del Proyecto
 
@@ -33,7 +33,7 @@ Proyecto-final/
 *   **Sistema de Autenticación:** Registro, inicio de sesión (Flask-Login) y página de perfil de usuario.
 *   **Panel de Administración:** Vista protegida para administradores (`/admin/users`) que permite ver, eliminar y cambiar el rol de todos los usuarios.
 *   **Gestión Académica:** Funcionalidad completa para crear, ver, editar y eliminar materias, tareas, exámenes y notas.
-*   **Integración con Google Calendar:** Conexión opcional a la cuenta de Google del usuario para visualizar sus próximos eventos en la página principal.
+
 
 ## 🛠️ Tecnologías
 
@@ -84,7 +84,8 @@ La aplicación utiliza variables de entorno para su configuración, lo que garan
         *   `DB_USER`: Usuario de tu base de datos.
         *   `DB_PASSWORD`: Contraseña de tu base de datos.
         *   `DB_PORT`: Puerto de tu base de datos (ej. `5432`).
-    *   **Google Calendar (Opcional):** Si deseas usar la integración con Google Calendar, obtén tus credenciales de la Consola de Desarrolladores de Google y añádelas aquí:
+
+    *   **Google Sign-In:** Si deseas usar el inicio de sesión con Google, obtén tus credenciales de la Consola de Desarrolladores de Google y añádelas aquí:
         **¿Dónde obtener las credenciales de Google?**
         - Ve a la [Consola de Desarrolladores de Google](https://console.developers.google.com/apis/credentials)
         - Crea un proyecto o selecciona uno existente.
@@ -93,7 +94,6 @@ La aplicación utiliza variables de entorno para su configuración, lo que garan
         - Agrega los siguientes URLs en "URIs de redireccionamiento autorizados":
             - `http://127.0.0.1:5000/auth/google/callback`
             - `http://localhost:5000/auth/google/callback`
-            - (y si usas Google Calendar) `http://127.0.0.1:5000/callback` y `http://localhost:5000/callback`
         - En "Orígenes autorizados de JavaScript":
             - `http://127.0.0.1:5000`
             - `http://localhost:5000`
@@ -130,7 +130,7 @@ La aplicación se ejecutará en `http://127.0.0.1:5000`.
 
 ## 📈 Mejoras Futuras
 
-- [x] Integración con Google Calendar
+
 - [ ] Sistema de notificaciones para tareas próximas
 - [ ] Calendario visual mensual/anual
 - [ ] Exportar horario a PDF/Excel
@@ -141,56 +141,8 @@ La aplicación se ejecutará en `http://127.0.0.1:5000`.
 
 ## 🛡️ Proceso de verificación de Google OAuth (para acceso con cualquier Gmail)
 
-Si quieres que cualquier usuario pueda iniciar sesión con Google y vincular Google Calendar (no solo los testers), debes completar el proceso de verificación de Google OAuth. Google lo exige cuando solicitas permisos sensibles como acceso a Calendar.
 
-### Pasos para la verificación:
 
-1. Ve a la [Pantalla de consentimiento OAuth](https://console.cloud.google.com/apis/credentials/consent) en Google Cloud.
-2. Completa todos los campos obligatorios:
-    - Nombre de la app
-    - Logo de la app (JPG, PNG, BMP, cuadrado, 120x120 px)
-    - Correo de contacto del desarrollador
-    - Página principal de la aplicación (puedes usar tu repositorio de GitHub o una página informativa)
-    - [Política de privacidad](https://www.freeprivacypolicy.com/) (puedes generar una gratuita)
-    - [Condiciones de servicio](https://www.freeprivacypolicy.com/free-terms-and-conditions-generator/) (puedes generar una gratuita)
-3. Agrega los dominios autorizados si tienes una web pública.
-4. Inicia el proceso de verificación en la sección “Centro de verificación” o “Verification”.
-5. Google revisará tu app y, si todo está correcto, la aprobará para cualquier usuario.
 
-**Enlaces útiles:**
-
-**Ejemplo de enlaces para la verificación:**
-- Política de privacidad: [https://novato22y.github.io/Proyecto-final/politica_privacidad.html](https://novato22y.github.io/Proyecto-final/politica_privacidad.html)
-- Términos y condiciones: [https://novato22y.github.io/Proyecto-final/terminos_condiciones.html](https://novato22y.github.io/Proyecto-final/terminos_condiciones.html)
-
-Puedes crear estos archivos en tu repositorio y publicarlos con GitHub Pages, o incluirlos en la carpeta raíz del proyecto como `politica_privacidad.html` y `terminos_condiciones.html`.
-Si usas GitHub Pages, los enlaces serán accesibles públicamente y válidos para la verificación de Google.
-
-**Importante:**
 
 ---
-## 🛠️ Actualización: Integración de Google Sign-In y Refactorización a SQLAlchemy (En Progreso)
-
-Se está llevando a cabo una actualización importante para modernizar el backend y añadir la funcionalidad de "Inicio de Sesión con Google".
-
-### ✅ Cambios Realizados
-
-1.  **Dependencias (`requirements.txt`)**: Añadida la librería `Authlib` para OAuth 2.0.
-2.  **Configuración (`config.py`)**: Añadida la `GOOGLE_DISCOVERY_URL` para `Authlib`.
-3.  **Modelo de Datos (`app/models.py`)**: Refactorizada la clase `User` para que sea un modelo de SQLAlchemy, añadiendo el campo `google_id` y métodos de gestión de contraseñas.
-4.  **Fábrica de la App (`app/__init__.py`)**: Actualizada para inicializar SQLAlchemy y Authlib, y para que el `user_loader` de Flask-Login use el nuevo modelo.
-5.  **Rutas (`app/routes.py`)**: Añadidas las rutas para el flujo de Google Sign-In y refactorizadas las rutas de login/registro estándar para usar SQLAlchemy.
-
-### ⏳ Tareas Pendientes
-
-Para finalizar la implementación, quedan los siguientes pasos:
-
-*   **Backend:**
-    - [ ] **Limpiar `app/database.py`**: Eliminar las funciones de creación y gestión de usuarios (`create_tables` para users, `user_exists`, `create_user`, `create_admin_user`) que han quedado obsoletas.
-    - [ ] **Centralizar la Creación de la BD**: Modificar `run.py` para que se encargue de crear todas las tablas al iniciar la aplicación.
-    - [ ] **Limpiar `app/routes.py`**: Eliminar la llamada a `init_db()`.
-
-*   **Frontend y Puesta en Marcha:**
-    - [ ] **Añadir Botón de Google**: Insertar el código HTML del botón en `sesion.html` y `register.html`.
-    - [ ] **Instalar Dependencias**: Ejecutar `pip install -r requirements.txt`.
-    - [ ] **Reiniciar la Base de Datos**: Eliminar las tablas antiguas para que la aplicación cree las nuevas con la estructura correcta.
