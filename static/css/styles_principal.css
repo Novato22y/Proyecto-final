@@ -1,0 +1,351 @@
+/* Estilos generales del cuerpo */
+body {
+    background-color: #e2e8f0; /* Color gris de fondo para toda la página */
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex; /* Esto pone los 3 contenedores uno al lado del otro */
+    gap: 20px; /* Para el espacio entre los 3 contenedores */
+    padding: 20px; /* Para el espacio alrededor de los contenedores */
+    height: 100vh; /* Se asegura de que el cuerpo ocupe el 100% de la altura de la ventana */
+    box-sizing: border-box;
+    overflow: hidden; /* Evita que la página tenga scroll principal */
+    align-items: stretch; /* Alinea todas las secciones con la barra lateral */
+}
+
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+/* Estilos para la Barra Lateral (Sidebar) */
+.barra-lateral {
+    width: 65px;
+    background-color: #ffffff; /* Fondo blanco para este contenedor */
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px;
+    height: calc(100% - 40px); /* Para que no toque el borde inferior */
+}
+        
+.iconos-superior,
+.iconos-inferior {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+        
+.enlace-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: #a0aec0;
+    transition: background-color 0.3s, color 0.3s;
+}
+        
+.enlace-icono:hover {
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+        
+.enlace-icono.icono-activo {
+    background-color: #4c4cff;
+    color: #ffffff;
+}
+        
+.tamano-icono {
+    width: 24px;
+    height: 24px;
+}
+
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+/* Estilos para el Contenedor Izquierdo (Planner y Reloj) */
+.seccion-izquierda {
+    flex: 1; /* Ahora ocupa la misma cantidad de espacio que la sección derecha */
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #ffffff; /* Fondo blanco para este contenedor */
+    padding: 20px;
+    border-radius: 12px;
+    min-width: 300px;
+    height: calc(100% - 40px); /* No toca el borde inferior */
+}
+        
+.lista-planificador {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1; /* Permite que la lista crezca y ocupe el espacio disponible */
+    overflow-y: auto; /* Permite hacer scroll solo dentro de esta lista si es necesario */
+}
+        
+.item-planificador {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+        
+.item-planificador:hover {
+    transform: translateY(-2px);
+}
+        
+.grupo-icono-texto {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+        
+.grupo-texto-numero {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #718096;
+}
+        
+.icono-gris {
+    color: #a0aec0;
+    width: 20px;
+    height: 20px;
+}
+        
+.icono-pequeno {
+    width: 16px;
+    height: 16px;
+    color: #a0aec0;
+}
+        
+/* Estilos para el reloj y el calendario */
+.tarjeta-reloj {
+    background-color: #4c4cff;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+        
+.hora-texto {
+    font-size: 3rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1;
+}
+        
+.sub-texto-hora {
+    font-size: 1.5rem;
+    font-weight: 400;
+    vertical-align: super;
+}
+        
+.dia-texto {
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+        
+.icono-luna {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+}
+        
+.tarjeta-calendario {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+        
+.encabezado-calendario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+        
+.texto-mes {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+        
+.controles-navegacion {
+    display: flex;
+    gap: 10px;
+}
+        
+.icono-navegacion {
+    width: 20px;
+    height: 20px;
+    color: #a0aec0;
+    cursor: pointer;
+}
+        
+.dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 5px;
+}
+        
+.dia-nombre {
+    font-weight: 500;
+    color: #718096;
+    font-size: 0.8rem;
+}
+        
+.fecha-dia {
+    padding: 10px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+        
+.fecha-dia:hover {
+    background-color: #e2e8f0;
+}
+        
+.fecha-activa {
+    background-color: #4c4cff;
+    color: #ffffff;
+    font-weight: 600;
+}
+        
+.fecha-inactiva {
+    color: #a0aec0;
+}
+        
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+/* Estilos para el Contenedor de la Derecha (Tareas) */
+.seccion-derecha {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    height: calc(100% - 40px); /* No toca el borde inferior */
+}
+        
+.titulo-seccion {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+        
+.encabezado-todo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+        
+.texto-azul {
+    color: #4c4cff;
+    font-weight: 600;
+}
+        
+.boton-mas {
+    background-color: transparent;
+    border: 1px solid #a0aec0;
+    color: #a0aec0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+        
+.boton-mas:hover {
+    border-color: #4c4cff;
+    color: #4c4cff;
+}
+        
+.tamano-icono-pequeno {
+    width: 18px;
+    height: 18px;
+}
+        
+.texto-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #a0aec0;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+}
+        
+.lista-tareas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+        
+.subtitulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #718096;
+}
+        
+.item-tarea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+        
+.texto-etiqueta {
+    background-color: #e2e8f0;
+    color: #4c4cff;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+        
+.seccion-estadisticas {
+    margin-top: auto;
+}
+        
+.item-estadistica {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+}
+        
+.icono-pequeno-gris {
+    width: 16px;
+    height: 16px;
+    color: #a0aec0;
+}
+        
+.contador {
+    font-weight: 600;
+    color: #4c4cff;
+}

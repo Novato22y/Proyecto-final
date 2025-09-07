@@ -156,12 +156,70 @@ def principal():
     """Página principal de la aplicación"""
     return render_template("index.html", current_user=current_user)
 
+@main_bp.route('/nueva-principal')
+def nueva_principal():
+    """Página principal temporal para pruebas"""
+    return render_template('principal.html')
 
 @main_bp.route('/profile')
 @login_required
 def profile():
     """Muestra la página de perfil del usuario."""
     return render_template('profile.html', user=current_user)
+
+@main_bp.route('/upload_profile_photo', methods=['POST'])
+@login_required
+def upload_profile_photo():
+    import uuid
+    from werkzeug.utils import secure_filename
+    foto = request.files.get('foto')
+    if not foto:
+        flash('No se seleccionó ninguna imagen.', 'warning')
+        return redirect(url_for('main.profile'))
+    ext = foto.filename.rsplit('.', 1)[-1].lower()
+    if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+        flash('Formato de imagen no permitido.', 'danger')
+        return redirect(url_for('main.profile'))
+    filename = f"{current_user.id}_{uuid.uuid4().hex}.{ext}"
+    path = os.path.join(current_app.static_folder, 'images', 'profiles')
+    os.makedirs(path, exist_ok=True)
+    file_path = os.path.join(path, filename)
+    foto.save(file_path)
+    # Actualizar usuario (requiere campo en modelo)
+    current_user.profile_image = f"images/profiles/{filename}"
+    db.session.commit()
+    flash('Foto de perfil actualizada.', 'success')
+    return redirect(url_for('main.profile'))
+@main_bp.route('/update_password', methods=['POST'])
+@login_required
+def update_password():
+    nueva_contrasena = request.form.get('nueva_contrasena')
+    confirmar_contrasena = request.form.get('confirmar_contrasena')
+    if not nueva_contrasena or not confirmar_contrasena:
+        flash('Debes completar ambos campos de contraseña.', 'warning')
+        return redirect(url_for('main.profile'))
+    if nueva_contrasena != confirmar_contrasena:
+        flash('Las contraseñas no coinciden.', 'danger')
+        return redirect(url_for('main.profile'))
+    if len(nueva_contrasena) < 6:
+        flash('La contraseña debe tener al menos 6 caracteres.', 'warning')
+        return redirect(url_for('main.profile'))
+    current_user.set_password(nueva_contrasena)
+    db.session.commit()
+    flash('Contraseña actualizada correctamente.', 'success')
+    return redirect(url_for('main.profile'))
+
+@main_bp.route('/update_name', methods=['POST'])
+@login_required
+def update_name():
+    nuevo_nombre = request.form.get('nuevo_nombre')
+    if not nuevo_nombre or len(nuevo_nombre) < 2:
+        flash('El nombre debe tener al menos 2 caracteres.', 'warning')
+        return redirect(url_for('main.profile'))
+    current_user.name = nuevo_nombre
+    db.session.commit()
+    flash('Nombre actualizado correctamente.', 'success')
+    return redirect(url_for('main.profile'))
 
 
 

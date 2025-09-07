@@ -2,10 +2,12 @@
 import datetime
 import os
 from flask import Flask
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from authlib.integrations.flask_client import OAuth
 from config import Config
+from app.database import create_database_if_not_exists
 
 # Inicializar extensiones globalmente para que sean importables en otros módulos
 db = SQLAlchemy()
@@ -26,22 +28,26 @@ def format_datetime_filter(value, format='%d de %b, %H:%M'):
     except (ValueError, TypeError):
         return value
 
+
 def create_app(config_class=Config):
     """Application Factory Pattern para crear la instancia de Flask"""
+    # Crear la base de datos si no existe antes de inicializar SQLAlchemy
+    create_database_if_not_exists()
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_dir = os.path.dirname(current_dir)
-    
+
     app = Flask(__name__, 
                 template_folder=os.path.join(project_dir, 'templates'),
                 static_folder=os.path.join(project_dir, 'static'))
-    
+
     app.config.from_object(config_class)
-    
+
     # --- Inicializar extensiones con la app ---
     db.init_app(app)
     login_manager.init_app(app)
     oauth.init_app(app)
-    
+
     login_manager.login_view = 'auth.login'
 
     # --- Registrar cliente OAuth de Google para Sign-In ---
