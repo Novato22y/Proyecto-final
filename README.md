@@ -1,107 +1,77 @@
+git clone <url-del-repositorio>
+
 # 📚 Planeador Escolar - Proyecto Final
 
 ## 🎯 Descripción
 
-Planeador Escolar es una aplicación web desarrollada con Flask que permite a los estudiantes organizar su vida académica. Ofrece gestión de horarios, materias, tareas, exámenes y notas. La versión actual incluye un panel de administración de usuarios y permite inicio de sesión con Google.
+Planeador Escolar es una aplicación web desarrollada con Flask que permite a los estudiantes organizar su vida académica. Actualmente, la versión principal incluye:
 
-## 🏗️ Estructura del Proyecto
+- Sistema de autenticación (registro, login tradicional y con Google)
+- Panel de administración de usuarios
+- Estructura modular y lista para escalar nuevas funcionalidades
+
+> **Nota:** Las funcionalidades de materias, tareas, exámenes, notas y horarios han sido eliminadas para una futura reconstrucción desde cero.
+
+---
+
+## 🏗️ Estructura del Proyecto (2025)
 
 ```
 Proyecto-final/
-├── app/                          # Paquete principal de la aplicación
+├── app/
 │   ├── __init__.py              # Factory de la aplicación Flask
 │   ├── models.py                # Modelo de datos (User)
-│   ├── database.py              # Operaciones de base de datos
-│   ├── routes.py                # Rutas y vistas principales
+│   ├── database.py              # Conexión a la base de datos
+│   ├── routes.py                # Rutas principales (login, registro, perfil)
 │   └── admin_routes.py          # Rutas para el panel de administración
-├── static/                       # Archivos estáticos (CSS, JS, imágenes)
-├── templates/                    # Plantillas HTML
+├── static/
+│   ├── css/                     # Estilos CSS
+│   ├── images/                  # Imágenes
+│   ├── js/
+│   │   ├── core/                # Módulos JS reutilizables (ej. reloj)
+│   │   ├── main.js              # Punto de entrada JS principal (ES Modules)
+│   │   └── ...                  # Futuras carpetas para nuevas funcionalidades
+├── templates/
 │   ├── index.html               # Página principal
-│   ├── sesion.html              # Página de inicio de sesión
-│   ├── register.html            # Página de registro
-│   ├── profile.html             # Página de perfil de usuario
-│   ├── subject_detail.html      # Detalle de materia
-│   └── admin_dashboard.html     # Panel de gestión de usuarios
-├── config.py                    # Configuración de la aplicación
+│   ├── sesion.html              # Login
+│   ├── register.html            # Registro
+│   ├── profile.html             # Perfil de usuario
+│   ├── admin_dashboard.html     # Panel de administración de usuarios
+│   └── subject_detail.html      # (Plantilla limpia para futuras materias)
+├── config.py                    # Configuración Flask
 ├── run.py                       # Punto de entrada principal
-├── requirements.txt             # Dependencias del proyecto
+├── requirements.txt             # Dependencias
 └── README.md                    # Este archivo
 ```
 
-## 🚀 Características
-
-*   **Sistema de Autenticación:** Registro, inicio de sesión (Flask-Login) y página de perfil de usuario.
-*   **Panel de Administración:** Vista protegida para administradores (`/admin/users`) que permite ver, eliminar y cambiar el rol de todos los usuarios.
-*   **Gestión Académica:** Funcionalidad completa para crear, ver, editar y eliminar materias, tareas, exámenes y notas.
-
-
-## 🛠️ Tecnologías
-
-*   **Backend**: Python, Flask
-*   **Base de Datos**: PostgreSQL
-*   **Autenticación**: Flask-Login, Google OAuth 2.0
-*   **Frontend**: HTML, CSS, JavaScript
+---
 
 ## 🚀 Instalación y Ejecución
 
-**1. Clonar y Preparar el Entorno**
+1. **Clona el repositorio y prepara el entorno**
 
-```bash
-# Clonar el repositorio
-git clone <url-del-repositorio>
-cd Proyecto-final
-
-# Crear y activar un entorno virtual
-python -m venv venv
-# Windows: venv\Scripts\activate | Linux/Mac: source venv/bin/activate
-
-**2. Instalar dependencias**
-
-Instala todas las dependencias necesarias para el proyecto ejecutando:
-```bash
-pip install -r requirements.txt
-```
-```
-**2. Configurar la Aplicación y el archivo `.env`**
-**2. Configurar la Aplicación**
-El archivo `.env` es fundamental para el funcionamiento del login tradicional y el login con Google.
-La aplicación utiliza variables de entorno para su configuración, lo que garantiza la seguridad de tus credenciales.
-1.  **Crea tu archivo `.env`:**
-1.  **Crea tu archivo `.env`:**
-    Copia el archivo `.env.example` a un nuevo archivo llamado `.env` en la raíz de tu proyecto:
     ```bash
-    cp .env.example .env
+    git clone <url-del-repositorio>
+    cd Proyecto-final
+    python -m venv venv
+    # Windows: venv\Scripts\activate | Linux/Mac: source venv/bin/activate
     ```
-    (En Windows, puedes usar `copy .env.example .env`)
-2.  **Edita el archivo `.env`:**
-2.  **Edita el archivo `.env`:**
-    Abre el archivo `.env` que acabas de crear y rellena las siguientes variables:
 
-    *   **`SECRET_KEY`**: Una clave secreta única y segura para tu aplicación Flask.
-    *   **Configuración de la Base de Datos:**
-        *   `DB_HOST`: Host de tu base de datos PostgreSQL (ej. `localhost`).
-        *   `DB_NAME`: Nombre de tu base de datos (ej. `planeador_escolar`).
-        *   `DB_USER`: Usuario de tu base de datos.
-        *   `DB_PASSWORD`: Contraseña de tu base de datos.
-        *   `DB_PORT`: Puerto de tu base de datos (ej. `5432`).
+2. **Instala las dependencias**
 
-    *   **Google Sign-In:** Si deseas usar el inicio de sesión con Google, obtén tus credenciales de la Consola de Desarrolladores de Google y añádelas aquí:
-        **¿Dónde obtener las credenciales de Google?**
-        - Ve a la [Consola de Desarrolladores de Google](https://console.developers.google.com/apis/credentials)
-        - Crea un proyecto o selecciona uno existente.
-        - Configura la pantalla de consentimiento OAuth.
-        - Crea credenciales OAuth 2.0 tipo "Aplicación web".
-        - Agrega los siguientes URLs en "URIs de redireccionamiento autorizados":
-            - `http://127.0.0.1:5000/auth/google/callback`
-            - `http://localhost:5000/auth/google/callback`
-        - En "Orígenes autorizados de JavaScript":
-            - `http://127.0.0.1:5000`
-            - `http://localhost:5000`
-        - Copia el `GOOGLE_CLIENT_ID` y el `GOOGLE_CLIENT_SECRET` y pégalos en tu `.env`.
-        *   `GOOGLE_CLIENT_ID`: Tu ID de cliente de Google.
-        *   `GOOGLE_CLIENT_SECRET`: Tu secreto de cliente de Google.
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-    Ejemplo de cómo debería verse tu archivo `.env`:
+3. **Configura el archivo `.env`**
+
+    Copia `.env.example` a `.env` y completa las variables:
+
+    - `SECRET_KEY`: Clave secreta Flask
+    - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_PORT`: Datos de conexión PostgreSQL
+    - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: Credenciales de Google OAuth
+
+    Ejemplo:
     ```
     SECRET_KEY='tu_clave_secreta_aqui'
     DB_HOST='localhost'
@@ -111,38 +81,64 @@ La aplicación utiliza variables de entorno para su configuración, lo que garan
     DB_PORT='5432'
     GOOGLE_CLIENT_ID='tu-id-de-cliente-de-google.apps.googleusercontent.com'
     GOOGLE_CLIENT_SECRET='tu-secreto-de-cliente-de-google'
-**3. Funcionamiento actual y ejecución**
-    El archivo `config.py` leerá automáticamente estos valores.
-La aplicación se ejecutará en `http://127.0.0.1:5000`.
-**3. Ejecutar la Aplicación**
+    ```
 
-```bash
-python run.py
-```
-La aplicación se ejecutará en `http://127.0.0.1:5000`.
+4. **Ejecuta la aplicación**
 
-**Usuario Administrador por Defecto:**
-- **Email**: `admin@planeador.com`
-- **Contraseña**: `contraseña`
-**Usuario Administrador por Defecto:**
-*   **Email**: `admin@planeador.com`
-*   **Contraseña**: `contraseña`
-
-## 📈 Mejoras Futuras
-
-
-- [ ] Sistema de notificaciones para tareas próximas
-- [ ] Calendario visual mensual/anual
-- [ ] Exportar horario a PDF/Excel
-- [ ] Temas visuales personalizables
+    ```bash
+    python run.py
+    ```
+    Accede en [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ---
 
+## 👤 Usuario Administrador por Defecto
 
-## 🛡️ Proceso de verificación de Google OAuth (para acceso con cualquier Gmail)
+- **Email:** `admin@planeador.com`
+- **Contraseña:** `contraseña`
 
+---
 
+## 🛠️ Tecnologías
 
+- **Backend:** Python, Flask
+- **Base de Datos:** PostgreSQL
+- **Autenticación:** Flask-Login, Google OAuth 2.0
+- **Frontend:** HTML, CSS, JavaScript (ES Modules)
 
+---
 
+## 🧩 Estructura JavaScript Modular
+
+- Todos los scripts JS están organizados por módulos en `static/js/`.
+- El punto de entrada es `main.js`, que importa módulos como el reloj desde `core/clock.js`.
+- Puedes agregar nuevas carpetas para futuras funcionalidades y usar `import/export`.
+
+---
+
+## 🛡️ Mantenimiento y Escalabilidad
+
+- Documenta y comenta tu código.
+- Elimina archivos y dependencias no usados.
+- Usa Blueprints y módulos para nuevas funcionalidades.
+- Implementa pruebas automáticas.
+- Mantén actualizado el archivo `requirements.txt`.
+- Considera migraciones con Flask-Migrate para cambios en la base de datos.
+- Revisa y actualiza dependencias de seguridad.
+
+---
+
+## 📈 Mejoras Futuras
+
+- [ ] Sistema de notificaciones
+- [ ] Calendario visual
+- [ ] Exportar datos a PDF/Excel
+- [ ] Temas visuales personalizables
+- [ ] Reconstrucción de gestión académica (materias, tareas, exámenes, notas)
+
+---
+
+## � Contacto y Contribución
+
+¿Quieres contribuir? Abre un issue o un pull request. ¡Toda ayuda es bienvenida!
 ---

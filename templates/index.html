@@ -71,23 +71,7 @@
       </nav>
       <img src="/static/images/right.jpeg" alt="Cafe with plants" onerror="this.onerror=null;this.src='https://placehold.co/300x200/2a2a2a/f0f0f0?text=Sidebar+Image+Not+Found';">
 
-      <!-- Sección de Materias -->
-      {% if current_user.is_authenticated %}
-      <nav class="materias-nav">
-        <h3>MATERIAS <button onclick="showAddForm('Materias')">+</button></h3>
-        <form id="addFormMaterias" style="display: none;" onsubmit="addMateria(event)">
-          <input type="text" id="materiaName" placeholder="Nombre de la materia" required>
-          <button type="submit">Agregar Materia</button>
-        </form>
-        <ul id="materiasList">
-          {% for materia in materias %}
-            <li data-materia-id="{{ materia.id }}">
-              <a href="/materia/{{ materia.id }}">{{ materia.name }}</a> <button class="delete-button" onclick="deleteMateria(this)">🗑️</button>
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-      {% endif %}
+
 
       <!-- Sección de Google Calendar -->
       {% if current_user.is_authenticated %}
@@ -99,6 +83,6 @@
     </aside>
   </div>
 
-  <script src="/static/js/script.js" defer></script>
+  <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
