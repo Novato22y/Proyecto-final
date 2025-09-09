@@ -18,12 +18,17 @@ class User(UserMixin, db.Model):
     # --- Nuevo campo para Google Sign-In ---
     google_id = db.Column(db.String(120), unique=True, nullable=True, index=True)
 
+    # Foto de perfil personalizada
+    profile_image = db.Column(db.String(255), nullable=True)
+
     def set_password(self, password):
         """Crea un hash de la contraseña."""
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         """Verifica el hash de la contraseña."""
+        if not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):

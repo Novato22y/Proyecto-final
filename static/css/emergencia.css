@@ -1,0 +1,542 @@
+/* styles.css - Estilos principales del Planeador Escolar */
+
+/* =============================================================================
+   ESTILOS BASE Y RESET
+   ============================================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =============================================================================
+   ENCABEZADO
+   ============================================================================= */
+
+header {
+    height: 180px;
+    background-color: #2a2a2a;
+}
+
+header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.title-strip {
+    background-color: #000;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.5rem;
+    text-align: left;
+    font-weight: bold;
+    color: #90ee90;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-strip .header-info {
+    font-size: 1rem;
+    color: #f0f0f0;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.title-strip .header-info a {
+    color: #90ee90;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.title-strip .header-info a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.header-clock {
+    display: flex;
+    align-items: baseline;
+    color: #90ee90;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.header-clock .time {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.header-clock .day {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* =============================================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================================= */
+
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* =============================================================================
+   PANEL DEL RELOJ
+   ============================================================================= */
+
+.clock-panel {
+    width: 20%;
+    padding: 1rem;
+    background-color: #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.clock {
+    width: auto;
+    padding: 0;
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: center;
+}
+
+.clock .time {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 3rem;
+    color: white;
+    text-shadow: none;
+    font-weight: 600;
+}
+
+.clock .day {
+    font-size: 1.125rem;
+    color: white;
+    margin-top: 0.25rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 500;
+}
+
+.clock-panel img {
+    width: 100%;
+    border-radius: 10px;
+    max-width: 250px;
+    height: auto;
+}
+
+/* =============================================================================
+   HORARIO SEMANAL
+   ============================================================================= */
+
+.week-schedule {
+    width: 60%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: #1e1e1e;
+}
+
+.day-card {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.day-card h3 {
+    margin-top: 0;
+    color: #90ee90;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.day-card ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.day-card li {
+    background: #444;
+    margin: 5px 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: text;
+    font-size: 0.8rem;
+}
+
+/* =============================================================================
+   BARRA LATERAL
+   ============================================================================= */
+
+.sidebar {
+    width: 20%;
+    padding: 1rem;
+    background-color: #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.sidebar img {
+    width: 100%;
+    border-radius: 10px;
+    max-width: 250px;
+    height: auto;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar nav h3 {
+    color: #90ee90;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.sidebar nav a {
+    color: #90ee90;
+    text-decoration: none;
+    display: block;
+    padding: 8px 0;
+    background-color: #333;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar nav a:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+.inspiration {
+    font-style: italic;
+    color: #ccc;
+    padding-top: 1rem;
+    text-align: center;
+    margin-top: auto;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+/* =============================================================================
+   SECCIÓN DE MATERIAS
+   ============================================================================= */
+
+.materias-nav {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.materias-nav h3 {
+    color: #90ee90;
+    margin-top: 0;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+}
+
+.materias-nav form {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.materias-nav input[type="text"] {
+    padding: 8px;
+    margin-right: 5px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: #f0f0f0;
+    flex-grow: 1;
+}
+
+.materias-nav input[type="text"]::placeholder {
+    color: #bbb;
+}
+
+.materias-nav button[type="submit"] {
+    padding: 8px 15px;
+    background-color: #004d40;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.materias-nav button[type="submit"]:hover {
+    background-color: #00251a;
+}
+
+.materias-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.materias-nav li {
+    background-color: #333;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #f0f0f0;
+}
+
+.materias-nav li button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0 5px;
+    color: #90ee90;
+}
+
+.materias-nav li button:hover {
+    color: #fff;
+}
+
+.materias-nav li:hover {
+    background-color: #444;
+}
+
+/* =============================================================================
+   PÁGINA DE DETALLE DE MATERIA
+   ============================================================================= */
+
+.main-container > .subject-details.three-columns {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: #1e1e1e;
+}
+
+.subject-details.three-columns .tasks-section,
+.subject-details.three-columns .exams-section,
+.subject-details.three-columns .notes-section {
+    background-color: #2a2a2a;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.subject-details.three-columns h3 {
+    color: #90ee90;
+    margin-top: 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subject-details.three-columns form {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.subject-details.three-columns form input[type="text"],
+.subject-details.three-columns form input[type="date"],
+.subject-details.three-columns form input[type="number"],
+.subject-details.three-columns form textarea {
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: #f0f0f0;
+    flex-grow: 1;
+}
+
+.subject-details.three-columns form input[type="text"]::placeholder,
+.subject-details.three-columns form input[type="number"]::placeholder,
+.subject-details.three-columns form textarea::placeholder {
+    color: #bbb;
+}
+
+.subject-details.three-columns form button[type="submit"] {
+    padding: 8px 15px;
+    background-color: #004d40;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.subject-details.three-columns form button[type="submit"]:hover {
+    background-color: #00251a;
+}
+
+.subject-details.three-columns ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.subject-details.three-columns li {
+    background-color: #333;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #f0f0f0;
+    word-break: break-word;
+}
+
+.subject-details.three-columns li button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0 5px;
+    color: #90ee90;
+    flex-shrink: 0;
+}
+
+.subject-details.three-columns li button:hover {
+    color: #fff;
+}
+
+.subject-details.three-columns li small {
+    color: #bbb;
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: block;
+}
+
+/* =============================================================================
+   BOTONES Y ELEMENTOS INTERACTIVOS
+   ============================================================================= */
+
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-family: inherit;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0 5px;
+    color: #90ee90;
+}
+
+.delete-button:hover {
+    color: #fff;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .clock-panel, .week-schedule, .sidebar {
+        width: 100%;
+        height: auto;
+        box-sizing: border-box;
+    }
+
+    .week-schedule {
+        grid-template-columns: 1fr;
+        order: 2;
+    }
+
+    .clock-panel {
+        order: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .clock-panel img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .sidebar {
+        order: 3;
+    }
+
+    .clock {
+        width: auto;
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+
+    .clock .time {
+        font-size: 2rem;
+    }
+
+    .clock .day {
+        font-size: 0.9rem;
+    }
+
+    header {
+        height: 120px;
+    }
+
+    .main-container > .subject-details.three-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .subject-details.three-columns form {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

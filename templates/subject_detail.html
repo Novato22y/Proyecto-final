@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>School Planner - {{ materia.name }}</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/emergencia.css">
 </head>
 <body>
   <header>
@@ -37,62 +37,7 @@
     </section>
 
     <main class="subject-details three-columns">
-
-
-      <!-- Sección de Tareas (Izquierda) -->
-      <section class="tasks-section">
-        <h3>Tareas <button onclick="showAddForm('Task')">+</button></h3>
-        <form id="addFormTask" style="display: none;" onsubmit="addTask(event, {{ materia.id }})">
-          <input type="text" id="taskDescription" placeholder="Descripción de la tarea" required>
-          <input type="date" id="taskDueDate">
-          <button type="submit">Agregar Tarea</button>
-        </form>
-        <ul id="tasksList">
-          {% for task in materia.tasks %}
-            <li data-task-id="{{ task.id }}">
-              <span class="task-description" contenteditable="true" onblur="saveTask(this)">{{ task.description }}</span> (Fecha límite: {{ task.due_date }}) {% if task.completed %}✅{% endif %}
-              <button class="delete-button" onclick="deleteTask(this)">🗑️</button>
-            </li>
-          {% endfor %}
-        </ul>
-      </section>
-
-      <!-- Sección de Exámenes (Centro) -->
-      <section class="exams-section">
-        <h3>Exámenes <button onclick="showAddForm('Exam')">+</button></h3>
-        <form id="addFormExam" style="display: none;" onsubmit="addExam(event, {{ materia.id }})">
-          <input type="text" id="examTopic" placeholder="Tema del examen" required>
-          <input type="date" id="examDate">
-          <input type="number" id="examGrade" placeholder="Nota" step="0.01" style="display: none;">
-          <button type="submit">Agregar Examen</button>
-        </form>
-        <ul id="examsList">
-          {% for exam in materia.exams %}
-            <li data-exam-id="{{ exam.id }}">
-              <span class="exam-topic" contenteditable="true" onblur="saveExam(this)">{{ exam.topic }}</span> (Fecha: {{ exam.exam_date }}) Nota: <span class="exam-grade" contenteditable="true" onblur="saveExam(this)">{{ exam.grade if exam.grade is not none else 'N/A' }}</span>
-              <button class="delete-button" onclick="deleteExam(this)">🗑️</button>
-            </li>
-          {% endfor %}
-        </ul>
-      </section>
-
-      <!-- Sección de Notas (Derecha) -->
-      <section class="notes-section">
-        <h3>Notas <button onclick="showAddForm('Note')">+</button></h3>
-        <form id="addFormNote" style="display: none;" onsubmit="addNote(event, {{ materia.id }})">
-          <textarea id="noteContent" placeholder="Escribe tus notas aquí" required></textarea>
-          <button type="submit">Agregar Nota</button>
-        </form>
-        <ul id="notesList">
-          {% for note in materia.notes %}
-            <li data-note-id="{{ note.id }}">
-              <span class="note-content" contenteditable="true" onblur="saveNote(this)">{{ note.content }}</span><br><small>Creado: {{ note.created_at }}</small>
-              <button class="delete-button" onclick="deleteNote(this)">🗑️</button>
-            </li>
-          {% endfor %}
-        </ul>
-      </section>
-
+      <!-- Vista limpia. Puedes reconstruir aquí la vista de detalle de materia en el futuro. -->
     </main>
 
     <aside class="sidebar" style="display: none;">

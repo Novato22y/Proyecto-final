@@ -1,20 +1,11 @@
 # app/routes.py - Rutas y vistas de la aplicación
 import os
-import datetime
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from flask_login import login_user, login_required, logout_user, current_user
-# Se elimina werkzeug.security porque los métodos ahora están en el modelo User
-from app.database import (
-    load_schedule, load_materias, save_schedule, 
-    delete_schedule, add_materia, delete_materia, get_materia_details,
-    add_task, delete_task, save_task, add_exam, delete_exam, save_exam,
-    add_note, delete_note, save_note, is_materia_owned_by_user
-)
 from app.models import User
 from . import db, oauth
 
 
-# Crear blueprints para organizar las rutas
 main_bp = Blueprint('main', __name__)
 auth_bp = Blueprint('auth', __name__)
 
@@ -163,17 +154,12 @@ def google_callback():
 @main_bp.route('/')
 def principal():
     """Página principal de la aplicación"""
-    schedule = {}
-    materias = []
-    schedule = {}
-    materias = []
+    return render_template("index.html", current_user=current_user)
 
-    if current_user.is_authenticated:
-        schedule = load_schedule(current_user.id)
-        materias = load_materias(current_user.id)
-
-    return render_template("index.html", schedule=schedule, materias=materias, current_user=current_user)
-
+@main_bp.route('/nueva-principal')
+def nueva_principal():
+    """Página principal temporal para pruebas"""
+    return render_template('principal.html')
 
 @main_bp.route('/profile')
 @login_required
@@ -181,189 +167,60 @@ def profile():
     """Muestra la página de perfil del usuario."""
     return render_template('profile.html', user=current_user)
 
-
-# ... (resto de las rutas sin cambios) ...
-# =============================================================================
-# RUTAS DEL HORARIO
-# =============================================================================
-
-@main_bp.route('/save_schedule', methods=['POST'])
+@main_bp.route('/upload_profile_photo', methods=['POST'])
 @login_required
-def save_schedule_route():
-    """Ruta para guardar el horario"""
-    data = request.get_json()
-    day = data.get('day')
-    time = data.get('time')
-    subject = data.get('subject')
-    if day and time and subject is not None:
-        save_schedule(day, time, subject, current_user.id)
-        return jsonify({'status': 'success'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Datos incompletos'}), 400
-
-@main_bp.route('/add_schedule', methods=['POST'])
+def upload_profile_photo():
+    import uuid
+    from werkzeug.utils import secure_filename
+    foto = request.files.get('foto')
+    if not foto:
+        flash('No se seleccionó ninguna imagen.', 'warning')
+        return redirect(url_for('main.profile'))
+    ext = foto.filename.rsplit('.', 1)[-1].lower()
+    if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+        flash('Formato de imagen no permitido.', 'danger')
+        return redirect(url_for('main.profile'))
+    filename = f"{current_user.id}_{uuid.uuid4().hex}.{ext}"
+    path = os.path.join(current_app.static_folder, 'images', 'profiles')
+    os.makedirs(path, exist_ok=True)
+    file_path = os.path.join(path, filename)
+    foto.save(file_path)
+    # Actualizar usuario (requiere campo en modelo)
+    current_user.profile_image = f"images/profiles/{filename}"
+    db.session.commit()
+    flash('Foto de perfil actualizada.', 'success')
+    return redirect(url_for('main.profile'))
+@main_bp.route('/update_password', methods=['POST'])
 @login_required
-def add_schedule_route():
-    """Ruta para agregar una materia al horario"""
-    data = request.get_json()
-    day = data.get('day')
-    time = data.get('time')
-    subject = data.get('subject')
+def update_password():
+    nueva_contrasena = request.form.get('nueva_contrasena')
+    confirmar_contrasena = request.form.get('confirmar_contrasena')
+    if not nueva_contrasena or not confirmar_contrasena:
+        flash('Debes completar ambos campos de contraseña.', 'warning')
+        return redirect(url_for('main.profile'))
+    if nueva_contrasena != confirmar_contrasena:
+        flash('Las contraseñas no coinciden.', 'danger')
+        return redirect(url_for('main.profile'))
+    if len(nueva_contrasena) < 6:
+        flash('La contraseña debe tener al menos 6 caracteres.', 'warning')
+        return redirect(url_for('main.profile'))
+    current_user.set_password(nueva_contrasena)
+    db.session.commit()
+    flash('Contraseña actualizada correctamente.', 'success')
+    return redirect(url_for('main.profile'))
 
-    if day and time and subject and current_user.is_authenticated:
-        save_schedule(day, time, subject, current_user.id)
-        return jsonify({'status': 'success'})
-    else:
-        return jsonify({'status': 'error', 'message': 'Datos incompletos o usuario no autenticado'}), 400
-
-@main_bp.route('/delete_schedule', methods=['POST'])
+@main_bp.route('/update_name', methods=['POST'])
 @login_required
-def delete_schedule_route():
-    """Ruta para eliminar una materia del horario"""
-    data = request.get_json()
-    day = data.get('day')
-    time = data.get('time')
-    if day and time:
-        if delete_schedule(day, time, current_user.id):
-            return jsonify({'status': 'success'})
-        else:
-            return jsonify({'status': 'error', 'message': 'Error al eliminar la materia'}), 500
-    else:
-        return jsonify({'status': 'error', 'message': 'Datos incompletos'}), 400
+def update_name():
+    nuevo_nombre = request.form.get('nuevo_nombre')
+    if not nuevo_nombre or len(nuevo_nombre) < 2:
+        flash('El nombre debe tener al menos 2 caracteres.', 'warning')
+        return redirect(url_for('main.profile'))
+    current_user.name = nuevo_nombre
+    db.session.commit()
+    flash('Nombre actualizado correctamente.', 'success')
+    return redirect(url_for('main.profile'))
 
-# =============================================================================
-# RUTAS DE MATERIAS
-# =============================================================================
 
-@main_bp.route('/add_materia', methods=['POST'])
-@login_required
-def add_materia_route():
-    """Ruta para agregar una nueva materia"""
-    data = request.get_json()
-    materia_name = data.get('name')
 
-    if materia_name and current_user.is_authenticated:
-        materia_id = add_materia(materia_name, current_user.id)
-        if materia_id:
-            return jsonify({'status': 'success', 'materia_id': materia_id})
-        else:
-            return jsonify({'status': 'error', 'message': 'La materia ya existe.'}), 400
-    else:
-        return jsonify({'status': 'error', 'message': 'Nombre de materia no proporcionado'}), 400
-
-@main_bp.route('/delete_materia', methods=['POST'])
-@login_required
-def delete_materia_route():
-    """Ruta para eliminar una materia"""
-    data = request.get_json()
-    materia_id = data.get('materia_id')
-
-    if materia_id is not None:
-        if delete_materia(materia_id, current_user.id):
-            return jsonify({'status': 'success'})
-        else:
-            return jsonify({'status': 'error', 'message': 'Materia no encontrada'}), 404
-    else:
-        return jsonify({'status': 'error', 'message': 'ID de materia no proporcionado'}), 400
-
-@main_bp.route('/materia/<int:materia_id>')
-@login_required
-def materia_detalle(materia_id):
-    """Ruta para mostrar los detalles de una materia"""
-    materia_details = get_materia_details(materia_id, current_user.id)
-    if materia_details:
-        return render_template('subject_detail.html', materia=materia_details)
-    else:
-        return "Materia no encontrada", 404
-
-# =============================================================================
-# RUTAS DE TAREAS, EXÁMENES Y NOTAS (sin cambios)
-# =============================================================================
-@main_bp.route('/add_task', methods=['POST'])
-@login_required
-def add_task_route():
-    data = request.get_json()
-    materia_id = data.get('materia_id')
-    description = data.get('description')
-    due_date = data.get('due_date')
-    if not is_materia_owned_by_user(materia_id, current_user.id):
-        return jsonify({'status': 'error', 'message': 'Forbidden'}), 403
-    task_id = add_task(materia_id, description, due_date, current_user.id)
-    return jsonify({'status': 'success', 'task_id': task_id}) if task_id else jsonify({'status': 'error'}), 500
-
-@main_bp.route('/delete_task', methods=['POST'])
-@login_required
-def delete_task_route():
-    task_id = request.get_json().get('task_id')
-    if delete_task(task_id, current_user.id):
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error'}), 404
-
-@main_bp.route('/save_task', methods=['POST'])
-@login_required
-def save_task_route():
-    data = request.get_json()
-    task_id = data.get('task_id')
-    description = data.get('description')
-    if save_task(task_id, description, current_user.id):
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error'}), 500
-
-@main_bp.route('/add_exam', methods=['POST'])
-@login_required
-def add_exam_route():
-    data = request.get_json()
-    materia_id = data.get('materia_id')
-    if not is_materia_owned_by_user(materia_id, current_user.id):
-        return jsonify({'status': 'error', 'message': 'Forbidden'}), 403
-    exam_id = add_exam(materia_id, data.get('topic'), data.get('exam_date'), data.get('grade'), current_user.id)
-    return jsonify({'status': 'success', 'exam_id': exam_id}) if exam_id else jsonify({'status': 'error'}), 500
-
-@main_bp.route('/delete_exam', methods=['POST'])
-@login_required
-def delete_exam_route():
-    exam_id = request.get_json().get('exam_id')
-    if delete_exam(exam_id, current_user.id):
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error'}), 404
-
-@main_bp.route('/save_exam', methods=['POST'])
-@login_required
-def save_exam_route():
-    data = request.get_json()
-    exam_id = data.get('exam_id')
-    if save_exam(exam_id, data.get('topic'), data.get('grade'), data.get('exam_date'), current_user.id):
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error'}), 500
-
-@main_bp.route('/add_note', methods=['POST'])
-@login_required
-def add_note_route():
-    data = request.get_json()
-    materia_id = data.get('materia_id')
-    if not is_materia_owned_by_user(materia_id, current_user.id):
-        return jsonify({'status': 'error', 'message': 'Forbidden'}), 403
-    note_id, created_at = add_note(materia_id, data.get('content'), current_user.id)
-    return jsonify({'status': 'success', 'note_id': note_id, 'created_at': created_at}) if note_id else jsonify({'status': 'error'}), 500
-
-@main_bp.route('/delete_note', methods=['POST'])
-@login_required
-def delete_note_route():
-    note_id = request.get_json().get('note_id')
-    if delete_note(note_id, current_user.id):
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error'}), 404
-
-@main_bp.route('/save_note', methods=['POST'])
-@login_required
-def save_note_route():
-    data = request.get_json()
-    note_id = data.get('note_id')
-    if save_note(note_id, data.get('content'), current_user.id):
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error'}), 500
-
-# =============================================================================
-# INICIALIZACIÓN DE LA BASE DE DATOS
-# =============================================================================
 

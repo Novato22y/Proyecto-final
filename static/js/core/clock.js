@@ -1,11 +1,5 @@
-// script.js - Funcionalidades JavaScript del Planeador Escolar
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar reloj en todas las páginas
-    initializeClock();
-});
-
-function initializeClock() {
+// core/clock.js
+export function initializeClock() {
     const timeElements = document.querySelectorAll('.clock .time, .header-clock .time');
     const dayElements = document.querySelectorAll('.clock .day, .header-clock .day');
     if (timeElements.length === 0) return;
