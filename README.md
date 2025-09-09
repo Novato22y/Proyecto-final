@@ -61,7 +61,7 @@ Instala todas las dependencias necesarias para el proyecto ejecutando:
 ```bash
 pip install -r requirements.txt
 ```
-```
+
 **2. Configurar la Aplicación y el archivo `.env`**
 **2. Configurar la Aplicación**
 El archivo `.env` es fundamental para el funcionamiento del login tradicional y el login con Google.
