@@ -10,17 +10,27 @@
 
     <aside class="barra-lateral">
         <div class="iconos-superior">
+            <!-- Ícono de tuerca (configuración) -->
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <a href="{{ url_for('admin.list_users') }}" class="enlace-icono" title="Panel de Admin">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0-6v2m0 16v2m8-8h2M4 12H2m15.36-6.36l1.42 1.42M6.34 17.66l-1.42 1.42m12.02 0l1.42-1.42M6.34 6.34L4.92 4.92" />
+                        </svg>
+                    </a>
+                {% endif %}
             <!-- Ícono para ir a la principal -->
-            <a href="http://127.0.0.1:5000/index" class="enlace-icono icono-activo" title="Ir a Principal">
+            <a href="{{ url_for('main.principal') }}" class="enlace-icono icono-activo" title="Ir a Principal">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h6m-6 0H9m6 0v-6m0 0l2 2m-2-2V3" />
                 </svg>
             </a>
-            <a href="#" class="enlace-icono">
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <a href="{{ url_for('admin.list_users') }}" class="enlace-icono" title="Panel de Admin">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m-1 0a2 2 0 11-4 0m4 0a2 2 0 104 0m-4 0a2 2 0 11-4 0m4 0a2 2 0 104 0m-4 0a2 2 0 11-4 0m4 0a2 2 0 104 0" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
             </a>
+            {% endif %}
             <a href="#" class="enlace-icono">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 7v4a1 1 0 001 1h5.88l1.44-2.88a1 1 0 011.83.5l-1.44 2.88m-6 0v4m0 0a1 1 0 001 1h5.88l1.44-2.88a1 1 0 011.83.5L16 16m-6 0a2 2 0 11-4 0 2 2 0 014 0zm0 0a2 2 0 10-4 0 2 2 0 004 0z" />

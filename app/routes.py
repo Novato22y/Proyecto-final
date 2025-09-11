@@ -154,7 +154,9 @@ def google_callback():
 @main_bp.route('/index')
 def principal():
     """Página principal de la aplicación"""
-    return render_template("index.html", current_user=current_user)
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth.register'))
+    return render_template("principal.html", current_user=current_user)
 
 @main_bp.route('/nueva-principal')
 def nueva_principal():
