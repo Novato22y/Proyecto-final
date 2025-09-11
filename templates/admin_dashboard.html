@@ -122,7 +122,7 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
+                    <td>{% if user.is_admin %}Administrador{% else %}Usuario{% endif %}</td>
                     <td class="action-buttons">
                         <form action="{{ url_for('admin.update_role', user_id=user.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres cambiar el rol de este usuario?');">
                             <button type="submit" class="update-button">Cambiar Rol</button>

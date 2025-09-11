@@ -15,9 +15,9 @@
     <div class="header-info">
         {% if current_user.is_authenticated %}
             <span>Hola, <a href="{{ url_for('main.profile') }}">{{ current_user.name }}</a></span> |
-            {% if current_user.role == 'administrador' %}
-                <a href="{{ url_for('admin.list_users') }}">Panel de Admin</a> |
-            {% endif %}
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.list_users') }}">Panel de Admin</a> |
+      {% endif %}
             <a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
         {% else %}
             <a href="{{ url_for('auth.login') }}">Iniciar Sesión</a> | <a href="{{ url_for('auth.register') }}">Registrarse</a>

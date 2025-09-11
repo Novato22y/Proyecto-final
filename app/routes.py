@@ -150,8 +150,8 @@ def google_callback():
 # =============================================================================
 # RUTAS PRINCIPALES
 # =============================================================================
-
 @main_bp.route('/')
+@main_bp.route('/index')
 def principal():
     """Página principal de la aplicación"""
     return render_template("index.html", current_user=current_user)

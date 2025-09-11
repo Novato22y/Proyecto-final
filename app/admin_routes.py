@@ -8,7 +8,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @login_required
 def check_admin():
     """Protege todas las rutas de este blueprint para que solo sean accesibles por administradores."""
-    if current_user.role != 'administrador':
+    if not current_user.is_admin:
         abort(403)
 
 @admin_bp.route('/users')
@@ -19,10 +19,10 @@ def list_users():
     if conn:
         cur = conn.cursor()
         try:
-            cur.execute("SELECT id, name, email, role FROM users ORDER BY id")
+            cur.execute("SELECT id, name, email, is_admin FROM users ORDER BY id")
             users_data = cur.fetchall()
             for row in users_data:
-                users.append({'id': row[0], 'name': row[1], 'email': row[2], 'role': row[3]})
+                users.append({'id': row[0], 'name': row[1], 'email': row[2], 'is_admin': row[3]})
         except Exception as e:
             flash(f"Error al consultar usuarios: {e}", "error")
         finally:
@@ -58,20 +58,26 @@ def delete_user(user_id):
 @admin_bp.route('/update_role/<int:user_id>', methods=['POST'])
 def update_role(user_id):
     """Actualiza el rol de un usuario a administrador o usuario normal."""
+    # Evitar que el admin cambie su propio rol
+    if user_id == current_user.id:
+        flash("No puedes cambiar tu propio rol de administrador.", "error")
+        return redirect(url_for('admin.list_users'))
+
     conn = get_db_connection()
     if conn:
         cur = conn.cursor()
         try:
-            # Primero, obtener el rol actual del usuario
-            cur.execute("SELECT role FROM users WHERE id = %s", (user_id,))
+            # Obtener el estado actual de is_admin
+            cur.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
             user_data = cur.fetchone()
-            if user_data:
-                current_role = user_data[0]
-                # Alternar el rol
-                new_role = 'administrador' if current_role != 'administrador' else 'usuario'
-                cur.execute("UPDATE users SET role = %s WHERE id = %s", (new_role, user_id))
+            if user_data is not None:
+                current_is_admin = user_data[0]
+                # Alternar el estado de is_admin
+                new_is_admin = not current_is_admin
+                cur.execute("UPDATE users SET is_admin = %s WHERE id = %s", (new_is_admin, user_id))
                 conn.commit()
-                flash(f"Rol del usuario actualizado a {new_role}.", "success")
+                rol_txt = "Administrador" if new_is_admin else "Usuario"
+                flash(f"Rol del usuario actualizado a {rol_txt}.", "success")
             else:
                 flash("Usuario no encontrado.", "error")
         except Exception as e:
