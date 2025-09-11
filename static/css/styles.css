@@ -1,3 +1,14 @@
+/* Centrar la tarjeta de perfil en la página de perfil */
+.profile-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.profile-container {
+    position: relative;
+    height: 100vh;
+}
 /* Estilos generales del cuerpo */
 body {
     background-color: #e2e8f0; /* Color gris de fondo para toda la página */
