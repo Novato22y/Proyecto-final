@@ -1,3 +1,13 @@
+/* Contenedor blanco a la derecha de la barra lateral */
+.contenedor-blanco {
+    background: #fff;
+    border-radius: 24px;
+    margin: 0px 0px 60px 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 30px;
+    height: calc(100% - 40px); /* No toca el borde inferior */
+    overflow-y: hidden; /* Evita que este contenedor tenga scroll */
+}
 /* Centrar la tarjeta de perfil en la página de perfil */
 .profile-card {
     position: absolute;

@@ -1,3 +1,4 @@
+
 # app/routes.py - Rutas y vistas de la aplicación
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
@@ -150,18 +151,15 @@ def google_callback():
 # =============================================================================
 # RUTAS PRINCIPALES
 # =============================================================================
+@main_bp.route('/base')
+def ver_base():
+    return render_template('base.html')
 @main_bp.route('/')
-@main_bp.route('/index')
 def principal():
     """Página principal de la aplicación"""
     if not current_user.is_authenticated:
         return redirect(url_for('auth.register'))
     return render_template("principal.html", current_user=current_user)
-
-@main_bp.route('/nueva-principal')
-def nueva_principal():
-    """Página principal temporal para pruebas"""
-    return render_template('principal.html')
 
 @main_bp.route('/profile')
 @login_required
