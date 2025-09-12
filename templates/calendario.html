@@ -73,8 +73,54 @@
         </div>
     </aside>
 
-   <div class="seccion-derecha contenedor-blanco"></div>
+   <div class="seccion-derecha contenedor-blanco">
+        <div class="calendar-app">
+            <div class="header-calendario">
+                <button id="prev-btn">&lt;</button>
+                <h2 id="mes-anio"></h2>
+                <button id="next-btn">&gt;</button>
+            </div>
+            <div class="dias-semana">
+                <div>Dom</div>
+                <div>Lun</div>
+                <div>Mar</div>
+                <div>Mié</div>
+                <div>Jue</div>
+                <div>Vie</div>
+                <div>Sáb</div>
+            </div>
+            <div class="grid-dias" id="grid-dias"></div>
+        </div>
+        <!-- Modal para agregar y ver recordatorios -->
+        <div id="modal-form" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>Agregar Recordatorio</h3>
+                <p>Día seleccionado: <span id="dia-seleccionado"></span></p>
+                <form id="recordatorio-form">
+                    <label for="titulo">Título:</label>
+                    <input type="text" id="titulo" required>
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion"></textarea>
+                    <label>Importancia:</label>
+                    <div class="botones-importancia">
+                        <button type="button" class="boton-importancia alta" data-importance="alta">Alta</button>
+                        <button type="button" class="boton-importancia media" data-importance="media">Media</button>
+                        <button type="button" class="boton-importancia baja seleccionada" data-importance="baja">Baja</button>
+                    </div>
+                    <input type="hidden" id="importancia" name="importancia" value="baja">
+                    <button type="submit">Guardar</button>
+                </form>
+                <div id="recordatorios-lista">
+                    <h4>Recordatorios existentes:</h4>
+                    <div id="recordatorios-existentes"></div>
+                </div>
+            </div>
+        </div>
+        <div id="info-usuario"></div>
+    </div>
 
     <script type="module" src="{{ url_for('static', filename='js/principal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/calendario.js') }}"></script>
 </body>
 </html>

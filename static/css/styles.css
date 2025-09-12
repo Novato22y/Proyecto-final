@@ -1,3 +1,27 @@
+/* Selector de importancia para recordatorios */
+.botones-importancia {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+.boton-importancia {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.boton-importancia:hover {
+    transform: scale(1.1);
+}
+.boton-importancia.alta { background-color: #e53e3e; }
+.boton-importancia.media { background-color: #f6ad55; }
+.boton-importancia.baja { background-color: #38a169; }
+.boton-importancia.seleccionada {
+    border-color: #4a5568;
+    box-shadow: 0 0 0 2px #4a5568;
+}
 /* Contenedor blanco a la derecha de la barra lateral */
 .contenedor-blanco {
     background: #fff;
@@ -370,3 +394,304 @@ body {
     font-weight: 600;
     color: #4c4cff;
 }
+
+/* Importa la fuente 'Inter' desde Google Fonts para un diseño más moderno */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Estilos generales del cuerpo de la página */
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    min-height: 100vh; /* Altura mínima de toda la pantalla */
+    background-color: #f0f4f8; /* Color de fondo suave */
+    padding: 20px;
+}
+
+/* Contenedor principal de la aplicación */
+.calendar-app {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Cabecera del calendario (mes, año y botones de navegación) */
+.header-calendario {
+    display: flex;
+    justify-content: space-between; /* Espacio entre los elementos */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.header-calendario h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    text-transform: capitalize; /* Primera letra en mayúscula */
+    margin: 0;
+    user-select: none; /* Evita que el texto se pueda seleccionar */
+}
+
+.header-calendario button {
+    background-color: #e2e8f0;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s; /* Transiciones suaves */
+}
+
+.header-calendario button:hover {
+    background-color: #cbd5e1;
+    transform: scale(1.05); /* Efecto de zoom al pasar el cursor */
+}
+
+/* Fila con los nombres de los días de la semana */
+.dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas de igual tamaño */
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    color: #718096;
+    margin-bottom: 10px;
+}
+
+.dias-semana div {
+    padding: 10px 0;
+}
+
+/* Cuadrícula para los días del mes */
+.grid-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px; /* Espacio entre los días */
+    width: 100%;
+}
+
+/* Estilo individual de cada día en la cuadrícula */
+.dia {
+    position: relative;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    padding: 20px 5px 5px 5px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 2px solid transparent;
+}
+
+.dia:hover {
+    background-color: #edf2f7;
+    border-color: #a0aec0;
+}
+
+/* Estilo para los espacios vacíos al inicio del mes */
+.dia.vacio {
+    background-color: transparent;
+    cursor: default;
+    border-color: transparent;
+}
+
+/* Número del día, posicionado en la esquina superior derecha */
+.numero-dia {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4a5568;
+}
+
+/* Estilo especial para resaltar el día actual */
+.dia.hoy {
+    background-color: #f6ad55;
+    border-color: #c05621;
+    color: white;
+}
+
+.dia.hoy .numero-dia {
+    color: white;
+}
+
+/* Estilo para los indicadores de recordatorios dentro de cada día */
+.dia .recordatorio-item {
+    color: white;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+}
+.dia .recordatorio-item.alta {
+    background-color: #e53e3e;
+}
+.dia .recordatorio-item.media {
+    background-color: #f6ad55;
+    color: #333;
+}
+.dia .recordatorio-item.baja {
+    background-color: #38a169;
+}
+}
+
+.dia .recordatorio-item:hover {
+    background-color: #4299e1;
+}
+
+/* --- Estilos del Modal --- */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Posición fija sobre toda la página */
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #555;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Estilos para el formulario dentro del modal */
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.modal-content input, .modal-content textarea {
+    width: calc(100% - 20px); /* Ajuste para el padding */
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+}
+
+.modal-content button {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-content button:hover {
+    background-color: #3182ce;
+}
+
+/* Estilos para la lista de recordatorios existentes en el modal */
+#recordatorios-lista {
+    margin-top: 20px;
+}
+
+.recordatorio-detalle {
+    background-color: #e2e8f0;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recordatorio-detalle h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2d3748;
+}
+
+.recordatorio-detalle p {
+    margin: 5px 0 0;
+    color: #4a5568;
+}
+
+.recordatorio-detalle .eliminar-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #e53e3e;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: 0;
+    transition: background 0.2s;
+    position: relative;
+}
+.recordatorio-detalle .eliminar-btn:hover {
+    background: #fde8e8;
+}
+
+.importancia-label {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #fff;
+}
+.importancia-label.alta { background-color: #e53e3e; }
+.importancia-label.media { background-color: #f6ad55; color: #333; }
+.importancia-label.baja { background-color: #38a169; }

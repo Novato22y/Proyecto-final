@@ -33,3 +33,12 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.email}>'
+
+# Modelo de recordatorio fuera de la clase User
+class Recordatorio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # Si usas usuarios
+    fecha = db.Column(db.String(10), nullable=False)  # Formato 'YYYY-MM-DD'
+    titulo = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.Text)
+    importancia = db.Column(db.String(10), nullable=False, default='baja')

@@ -9,6 +9,64 @@ from . import db, oauth
 
 main_bp = Blueprint('main', __name__)
 auth_bp = Blueprint('auth', __name__)
+# =============================
+# API de Recordatorios (Calendario)
+@main_bp.route('/api/recordatorios/<int:id>', methods=['PUT'])
+@login_required
+def actualizar_recordatorio(id):
+    recordatorio = Recordatorio.query.filter_by(id=id, usuario_id=current_user.id).first()
+    if not recordatorio:
+        return jsonify({'error': 'No encontrado'}), 404
+    data = request.get_json()
+    recordatorio.fecha = data.get('fecha', recordatorio.fecha)
+    recordatorio.titulo = data.get('titulo', recordatorio.titulo)
+    recordatorio.descripcion = data.get('descripcion', recordatorio.descripcion)
+    recordatorio.importancia = data.get('importancia', recordatorio.importancia)
+    db.session.commit()
+    return jsonify({'success': True})
+# =============================
+from flask import jsonify
+from app.models import Recordatorio
+
+@main_bp.route('/api/recordatorios/<fecha>', methods=['GET'])
+@login_required
+def get_recordatorios(fecha):
+    recordatorios = Recordatorio.query.filter_by(fecha=fecha, usuario_id=current_user.id).all()
+    resultado = [
+        {
+            'id': r.id,
+            'fecha': r.fecha,
+            'titulo': r.titulo,
+            'descripcion': r.descripcion,
+            'importancia': r.importancia
+        } for r in recordatorios
+    ]
+    return jsonify(resultado)
+
+@main_bp.route('/api/recordatorios', methods=['POST'])
+@login_required
+def crear_recordatorio():
+    data = request.get_json()
+    nuevo = Recordatorio(
+        usuario_id=current_user.id,
+        fecha=data.get('fecha'),
+        titulo=data.get('titulo'),
+        descripcion=data.get('descripcion'),
+        importancia=data.get('importancia', 'baja')
+    )
+    db.session.add(nuevo)
+    db.session.commit()
+    return jsonify({'success': True, 'id': nuevo.id}), 201
+
+@main_bp.route('/api/recordatorios/<int:id>', methods=['DELETE'])
+@login_required
+def eliminar_recordatorio(id):
+    recordatorio = Recordatorio.query.filter_by(id=id, usuario_id=current_user.id).first()
+    if not recordatorio:
+        return jsonify({'error': 'No encontrado'}), 404
+    db.session.delete(recordatorio)
+    db.session.commit()
+    return jsonify({'success': True})
 
 # =============================================================================
 # RUTAS DE AUTENTICACIÓN (REFACTORIZADAS)
