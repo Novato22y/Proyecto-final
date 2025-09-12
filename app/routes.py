@@ -167,6 +167,13 @@ def profile():
     """Muestra la página de perfil del usuario."""
     return render_template('profile.html', user=current_user)
 
+@main_bp.route('/prueba')
+def ver_prueba():
+    return render_template('prueba.html')
+@main_bp.route('/calendario')
+def ver_calendario():
+    return render_template('calendario.html')
+
 @main_bp.route('/upload_profile_photo', methods=['POST'])
 @login_required
 def upload_profile_photo():
