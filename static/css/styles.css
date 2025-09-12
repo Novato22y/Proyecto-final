@@ -1,131 +1,134 @@
-/* Selector de importancia para recordatorios */
-.botones-importancia {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 15px;
-}
-.boton-importancia {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
-}
-.boton-importancia:hover {
-    transform: scale(1.1);
-}
-.boton-importancia.alta { background-color: #e53e3e; }
-.boton-importancia.media { background-color: #f6ad55; }
-.boton-importancia.baja { background-color: #38a169; }
-.boton-importancia.seleccionada {
-    border-color: #4a5568;
-    box-shadow: 0 0 0 2px #4a5568;
-}
-/* Contenedor blanco a la derecha de la barra lateral */
-.contenedor-blanco {
-    background: #fff;
-    border-radius: 24px;
-    margin: 0px 0px 60px 0;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    padding: 30px;
-    height: calc(100% - 40px); /* No toca el borde inferior */
-    overflow-y: hidden; /* Evita que este contenedor tenga scroll */
-}
-/* Centrar la tarjeta de perfil en la página de perfil */
-.profile-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.profile-container {
-    position: relative;
-    height: 100vh;
-}
-/* Estilos generales del cuerpo */
+
+/*
+  ESTRUCTURA DEL ARCHIVO CSS:
+  1.  IMPORTACIONES Y ESTILOS GLOBALES
+      - Importación de fuentes
+      - Estilos para <body> y estilos generales.
+  2.  ESTRUCTURA PRINCIPAL (LAYOUT)
+      - Barra Lateral (Sidebar)
+      - Sección Izquierda
+      - Sección Derecha
+  3.  COMPONENTES ESPECÍFICOS
+      - Planificador (Planner)
+      - Reloj y Calendario (Widgets en la sección izquierda)
+      - Lista de Tareas (To-Do list en la sección derecha)
+      - Tarjeta de Perfil (Estilo de posicionamiento)
+      - Aplicación de Calendario Completa (Standalone)
+  4.  MODAL (Ventana emergente)
+      - Estilos para el contenedor del modal.
+      - Formulario y lista de recordatorios dentro del modal.
+  5.  ELEMENTOS DE UI REUTILIZABLES
+      - Botones (Importancia, navegación, etc.)
+      - Iconos
+      - Etiquetas y otros elementos visuales.
+*/
+
+/* -------------------------------------------------------------------------- */
+/*                 1. IMPORTACIONES Y ESTILOS GLOBALES                        */
+/* -------------------------------------------------------------------------- */
+
+/* Importa la fuente 'Inter' desde Google Fonts para un diseño moderno y limpio. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Estilos generales del cuerpo de la página. */
 body {
-    background-color: #e2e8f0; /* Color gris de fondo para toda la página */
+    /* Define la fuente principal para toda la aplicación. */
     font-family: 'Inter', sans-serif;
-    margin: 0;
-    display: flex; /* Esto pone los 3 contenedores uno al lado del otro */
-    gap: 20px; /* Para el espacio entre los 3 contenedores */
-    padding: 20px; /* Para el espacio alrededor de los contenedores */
-    height: 100vh; /* Se asegura de que el cuerpo ocupe el 100% de la altura de la ventana */
+    /* Establece un color de fondo gris suave. */
+    background-color: #e2e8f0;
+    /* Utiliza Flexbox para organizar los contenedores principales. */
+    display: flex;
+    /* Alinea los contenedores hijos para que tengan la misma altura. */
+    align-items: stretch;
+    /* Añade un espacio de 20px entre los contenedores principales. */
+    gap: 20px;
+    /* Añade un espacio de 20px alrededor de toda la página. */
+    padding: 20px;
+    /* Asegura que el cuerpo ocupe el 100% de la altura de la ventana del navegador. */
+    height: 100vh;
+    /* Evita que aparezca una barra de scroll en la página principal. */
+    overflow: hidden;
+    /* Asegura que el padding y el borde se incluyan en el cálculo total del tamaño. */
     box-sizing: border-box;
-    overflow: hidden; /* Evita que la página tenga scroll principal */
-    align-items: stretch; /* Alinea todas las secciones con la barra lateral */
+    /* Elimina el margen por defecto del navegador. */
+    margin: 0;
 }
 
-/* ----------------------------------------------------------------------------------------------------------------------------------- */
-/* Estilos para la Barra Lateral (Sidebar) */
+/* -------------------------------------------------------------------------- */
+/*                     2. ESTRUCTURA PRINCIPAL (LAYOUT)                       */
+/* -------------------------------------------------------------------------- */
+
+/* --- Barra Lateral (Sidebar) --- */
 .barra-lateral {
     width: 65px;
-    background-color: #ffffff; /* Fondo blanco para este contenedor */
+    background-color: #ffffff;
     padding: 20px 0;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Apila los iconos verticalmente. */
+    justify-content: space-between; /* Espacia los iconos superiores e inferiores. */
+    align-items: center; /* Centra los iconos horizontalmente. */
     border-radius: 12px;
-    height: calc(100% - 40px); /* Para que no toque el borde inferior */
+    /* La altura se ajusta para no tocar los bordes superior/inferior de la página. */
+    height: calc(100% - 40px);
 }
-        
+
 .iconos-superior,
 .iconos-inferior {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-        
-.enlace-icono {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    color: #a0aec0;
-    transition: background-color 0.3s, color 0.3s;
-}
-        
-.enlace-icono:hover {
-    background-color: #e2e8f0;
-    color: #4a5568;
-}
-        
-.enlace-icono.icono-activo {
-    background-color: #4c4cff;
-    color: #ffffff;
-}
-        
-.tamano-icono {
-    width: 24px;
-    height: 24px;
-}
 
-/* ----------------------------------------------------------------------------------------------------------------------------------- */
-/* Estilos para el Contenedor Izquierdo (Planner y Reloj) */
+/* --- Sección Izquierda (Contiene Planner y Widgets) --- */
 .seccion-izquierda {
-    flex: 1; /* Ahora ocupa la misma cantidad de espacio que la sección derecha */
+    flex: 1; /* Permite que la sección ocupe el espacio disponible. */
     display: flex;
     flex-direction: column;
     gap: 30px;
-    background-color: #ffffff; /* Fondo blanco para este contenedor */
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 12px;
-    min-width: 300px;
-    height: calc(100% - 40px); /* No toca el borde inferior */
+    min-width: 300px; /* Ancho mínimo para mantener la legibilidad. */
+    height: calc(100% - 40px);
 }
-        
+
+/* --- Sección Derecha (Contiene Tareas y Estadísticas) --- */
+.seccion-derecha {
+    flex: 1; /* Ocupa el mismo espacio que la sección izquierda. */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    height: calc(100% - 40px);
+}
+
+/* Contenedor blanco genérico (usado en la sección derecha) */
+.contenedor-blanco {
+    background: #fff;
+    border-radius: 24px;
+    margin: 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 30px;
+    height: 100%;
+    overflow-y: hidden; /* Evita el scroll en este contenedor específico. */
+    box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                       3. COMPONENTES ESPECÍFICOS                           */
+/* -------------------------------------------------------------------------- */
+
+/* --- Planificador (Sección Izquierda) --- */
 .lista-planificador {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    flex: 1; /* Permite que la lista crezca y ocupe el espacio disponible */
-    overflow-y: auto; /* Permite hacer scroll solo dentro de esta lista si es necesario */
+    flex: 1; /* Permite que la lista crezca y ocupe el espacio. */
+    overflow-y: auto; /* Añade scroll si los elementos exceden la altura. */
 }
-        
+
 .item-planificador {
     display: flex;
     justify-content: space-between;
@@ -136,222 +139,89 @@ body {
     cursor: pointer;
     transition: transform 0.2s;
 }
-        
+
 .item-planificador:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* Efecto de elevación al pasar el ratón. */
 }
-        
-.grupo-icono-texto {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-        
-.grupo-texto-numero {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #718096;
-}
-        
-.icono-gris {
-    color: #a0aec0;
-    width: 20px;
-    height: 20px;
-}
-        
-.icono-pequeno {
-    width: 16px;
-    height: 16px;
-    color: #a0aec0;
-}
-        
-/* Estilos para el reloj y el calendario */
+
+/* --- Reloj y Calendario (Widgets en Sección Izquierda) --- */
 .tarjeta-reloj {
     background-color: #4c4cff;
     color: #ffffff;
     padding: 20px;
     border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
     position: relative;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
-        
+
 .hora-texto {
     font-size: 3rem;
     font-weight: 600;
     margin: 0;
     line-height: 1;
 }
-        
+
 .sub-texto-hora {
     font-size: 1.5rem;
     font-weight: 400;
-    vertical-align: super;
+    vertical-align: super; /* Alinea el texto AM/PM como superíndice. */
 }
-        
+
 .dia-texto {
     margin: 5px 0 0;
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.8);
 }
-        
-.icono-luna {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 2rem;
-}
-        
+
 .tarjeta-calendario {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
-        
+
 .encabezado-calendario {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-        
+
 .texto-mes {
     font-size: 1.25rem;
     font-weight: 600;
     color: #2d3748;
 }
-        
-.controles-navegacion {
+
+/* --- Lista de Tareas (Sección Derecha) --- */
+.encabezado-todo {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
 }
-        
-.icono-navegacion {
-    width: 20px;
-    height: 20px;
-    color: #a0aec0;
-    cursor: pointer;
-}
-        
-.dias-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    gap: 5px;
-}
-        
-.dia-nombre {
-    font-weight: 500;
-    color: #718096;
-    font-size: 0.8rem;
-}
-        
-.fecha-dia {
-    padding: 10px 0;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s, color 0.2s;
-}
-        
-.fecha-dia:hover {
-    background-color: #e2e8f0;
-}
-        
-.fecha-activa {
-    background-color: #4c4cff;
-    color: #ffffff;
-    font-weight: 600;
-}
-        
-.fecha-inactiva {
-    color: #a0aec0;
-}
-        
-/* ----------------------------------------------------------------------------------------------------------------------------------- */
-/* Estilos para el Contenedor de la Derecha (Tareas) */
-.seccion-derecha {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    height: calc(100% - 40px); /* No toca el borde inferior */
-}
-        
+
 .titulo-seccion {
     margin: 0;
     font-size: 2rem;
     font-weight: 700;
     color: #2d3748;
 }
-        
-.encabezado-todo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-        
-.texto-azul {
-    color: #4c4cff;
-    font-weight: 600;
-}
-        
-.boton-mas {
-    background-color: transparent;
-    border: 1px solid #a0aec0;
-    color: #a0aec0;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-}
-        
-.boton-mas:hover {
-    border-color: #4c4cff;
-    color: #4c4cff;
-}
-        
-.tamano-icono-pequeno {
-    width: 18px;
-    height: 18px;
-}
-        
-.texto-placeholder {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #a0aec0;
-    background-color: #ffffff;
-    padding: 15px 20px;
-    border-radius: 12px;
-}
-        
-.lista-tareas {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1;
-    overflow-y: auto;
-}
-        
+
 .subtitulo {
     font-size: 1rem;
     font-weight: 600;
     color: #718096;
 }
-        
+
+.lista-tareas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1; /* Ocupa el espacio disponible. */
+    overflow-y: auto; /* Añade scroll si es necesario. */
+}
+
 .item-tarea {
     display: flex;
     justify-content: space-between;
@@ -361,20 +231,22 @@ body {
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
-        
-.texto-etiqueta {
-    background-color: #e2e8f0;
-    color: #4c4cff;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 0.8rem;
+
+.texto-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #a0aec0;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
 }
-        
+
+/* Sección de estadísticas en la parte inferior derecha */
 .seccion-estadisticas {
-    margin-top: auto;
+    margin-top: auto; /* Empuja esta sección al final del contenedor flex. */
 }
-        
+
 .item-estadistica {
     display: flex;
     justify-content: space-between;
@@ -383,39 +255,30 @@ body {
     padding: 15px 20px;
     border-radius: 12px;
 }
-        
-.icono-pequeno-gris {
-    width: 16px;
-    height: 16px;
-    color: #a0aec0;
-}
-        
-.contador {
-    font-weight: 600;
-    color: #4c4cff;
+
+/* --- Tarjeta de Perfil (Estilo de posicionamiento) --- */
+/* Contenedor para la página de perfil, permite el centrado absoluto. */
+.profile-container {
+    position: relative;
+    height: 100vh;
 }
 
-/* Importa la fuente 'Inter' desde Google Fonts para un diseño más moderno */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-/* Estilos generales del cuerpo de la página */
-body {
-    font-family: 'Inter', sans-serif;
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    min-height: 100vh; /* Altura mínima de toda la pantalla */
-    background-color: #f0f4f8; /* Color de fondo suave */
-    padding: 20px;
+/* Centra la tarjeta de perfil perfectamente en su contenedor. */
+.profile-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-/* Contenedor principal de la aplicación */
+/* --- Aplicación de Calendario Completa (Standalone) --- */
+/* Contenedor principal para una vista de calendario de página completa. */
 .calendar-app {
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px;
+    max-width: 1400px;
     padding: 30px;
     display: flex;
     flex-direction: column;
@@ -425,7 +288,7 @@ body {
 /* Cabecera del calendario (mes, año y botones de navegación) */
 .header-calendario {
     display: flex;
-    justify-content: space-between; /* Espacio entre los elementos */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     margin-bottom: 20px;
@@ -435,9 +298,8 @@ body {
     font-size: 1.8rem;
     font-weight: 700;
     color: #333;
-    text-transform: capitalize; /* Primera letra en mayúscula */
-    margin: 0;
-    user-select: none; /* Evita que el texto se pueda seleccionar */
+    text-transform: capitalize;
+    user-select: none; /* Evita que el texto se pueda seleccionar. */
 }
 
 .header-calendario button {
@@ -449,26 +311,28 @@ body {
     font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s; /* Transiciones suaves */
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .header-calendario button:hover {
     background-color: #cbd5e1;
-    transform: scale(1.05); /* Efecto de zoom al pasar el cursor */
+    transform: scale(1.05);
 }
 
 /* Fila con los nombres de los días de la semana */
 .dias-semana {
     display: grid;
-    grid-template-columns: repeat(7, 1fr); /* 7 columnas de igual tamaño */
-    width: 100%;
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas de igual tamaño. */
     text-align: center;
-    font-weight: 600;
-    color: #718096;
+    gap: 5px;
+    width: 100%;
     margin-bottom: 10px;
 }
 
-.dias-semana div {
+.dia-nombre {
+    font-weight: 500;
+    color: #718096;
+    font-size: 0.8rem;
     padding: 10px 0;
 }
 
@@ -476,7 +340,7 @@ body {
 .grid-dias {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px; /* Espacio entre los días */
+    gap: 10px;
     width: 100%;
 }
 
@@ -490,7 +354,7 @@ body {
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, border-color 0.2s;
     border: 2px solid transparent;
 }
 
@@ -499,14 +363,12 @@ body {
     border-color: #a0aec0;
 }
 
-/* Estilo para los espacios vacíos al inicio del mes */
 .dia.vacio {
     background-color: transparent;
     cursor: default;
     border-color: transparent;
 }
 
-/* Número del día, posicionado en la esquina superior derecha */
 .numero-dia {
     position: absolute;
     top: 5px;
@@ -516,55 +378,99 @@ body {
     color: #4a5568;
 }
 
-/* Estilo especial para resaltar el día actual */
-.dia.hoy {
-    background-color: #f6ad55;
-    border-color: #c05621;
-    color: white;
+/* Estilos para el día actual */
+.dia.hoy, .fecha-activa {
+    background-color: #4c4cff; /* Azul para consistencia con otros elementos activos */
+    color: #ffffff;
+    font-weight: 600;
 }
 
 .dia.hoy .numero-dia {
     color: white;
 }
 
-/* Estilo para los indicadores de recordatorios dentro de cada día */
+/* Fecha inactiva (mes anterior/siguiente) */
+.fecha-inactiva {
+    color: #a0aec0;
+}
+
+/* Indicadores de recordatorios dentro de cada día */
 .dia .recordatorio-item {
     color: white;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 0.8rem;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; /* Corta el texto largo con "..." */
     white-space: nowrap;
     margin-top: 5px;
     transition: background-color 0.2s;
 }
-.dia .recordatorio-item.alta {
-    background-color: #e53e3e;
-}
-.dia .recordatorio-item.media {
-    background-color: #f6ad55;
-    color: #333;
-}
-.dia .recordatorio-item.baja {
-    background-color: #38a169;
-}
-}
 
 .dia .recordatorio-item:hover {
-    background-color: #4299e1;
+    filter: brightness(1.1); /* Aclara ligeramente el color al pasar el ratón. */
 }
 
-/* --- Estilos del Modal --- */
+/* Colores de recordatorios por importancia */
+.dia .recordatorio-item.alta { background-color: #e53e3e; }
+.dia .recordatorio-item.media { background-color: #f6ad55; color: #333; }
+.dia .recordatorio-item.baja { background-color: #38a169; }
+
+/* --- Layout para calendario y contenedor derecho --- */
+.calendario-contenedor {
+    display: flex;
+    gap: 32px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* --- Contenedor derecho junto al calendario --- */
+.contenedor-derecho {
+    flex: 1;
+    background: #f7f7ff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 24px;
+    min-width: 280px;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: fit-content;
+}
+
+.seccion-derecha.seccion-1 {
+    background: #e3e6ff;
+    border-radius: 10px;
+    padding: 16px;
+}
+.seccion-derecha.seccion-2 {
+    background: #f0f4ff;
+    border-radius: 10px;
+    padding: 16px;
+}
+.seccion-derecha.seccion-3 {
+    background: #e3ffe6;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                      4. MODAL (Ventana emergente)                          */
+/* -------------------------------------------------------------------------- */
+
 .modal {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Posición fija sobre toda la página */
+    display: none; /* Oculto por defecto, se muestra con JavaScript. */
+    position: fixed;
     z-index: 100;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente. */
     justify-content: center;
     align-items: center;
     padding: 20px;
@@ -580,28 +486,13 @@ body {
     position: relative;
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #aaa;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.close-btn:hover {
-    color: #555;
-}
-
 .modal-content h3 {
     margin-top: 0;
     font-size: 1.5rem;
     color: #333;
 }
 
-/* Estilos para el formulario dentro del modal */
+/* --- Formulario del Modal --- */
 .modal-content label {
     display: block;
     margin-top: 15px;
@@ -609,8 +500,9 @@ body {
     color: #4a5568;
 }
 
-.modal-content input, .modal-content textarea {
-    width: calc(100% - 20px); /* Ajuste para el padding */
+.modal-content input,
+.modal-content textarea {
+    width: calc(100% - 20px);
     padding: 10px;
     margin-top: 5px;
     border-radius: 8px;
@@ -636,7 +528,7 @@ body {
     background-color: #3182ce;
 }
 
-/* Estilos para la lista de recordatorios existentes en el modal */
+/* --- Lista de Recordatorios en el Modal --- */
 #recordatorios-lista {
     margin-top: 20px;
 }
@@ -662,7 +554,82 @@ body {
     color: #4a5568;
 }
 
-.recordatorio-detalle .eliminar-btn {
+/* -------------------------------------------------------------------------- */
+/*                  5. ELEMENTOS DE UI REUTILIZABLES                          */
+/* -------------------------------------------------------------------------- */
+
+/* --- Botones --- */
+
+/* Botones de selección de importancia (Alta, Media, Baja) */
+.botones-importancia {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.boton-importancia {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.boton-importancia:hover {
+    transform: scale(1.1);
+}
+
+.boton-importancia.alta { background-color: #e53e3e; }
+.boton-importancia.media { background-color: #f6ad55; }
+.boton-importancia.baja { background-color: #38a169; }
+
+/* Estilo para el botón de importancia seleccionado */
+.boton-importancia.seleccionada {
+    border-color: #4a5568;
+    box-shadow: 0 0 0 2px #4a5568;
+}
+
+/* Botón "+" para añadir tareas */
+.boton-mas {
+    background-color: transparent;
+    border: 1px solid #a0aec0;
+    color: #a0aec0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.boton-mas:hover {
+    border-color: #4c4cff;
+    color: #4c4cff;
+}
+
+/* Botón para cerrar el modal */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+}
+
+.close-btn:hover {
+    color: #555;
+}
+
+/* Botón para eliminar recordatorios */
+.eliminar-btn {
     background: none;
     border: none;
     font-size: 1.1rem;
@@ -674,15 +641,97 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    margin-left: auto;
-    margin-right: 0;
     transition: background 0.2s;
-    position: relative;
 }
-.recordatorio-detalle .eliminar-btn:hover {
+
+.eliminar-btn:hover {
     background: #fde8e8;
 }
 
+
+/* --- Iconos --- */
+.enlace-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: #a0aec0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.enlace-icono:hover {
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+/* Estilo para el icono de la página activa en la barra lateral */
+.enlace-icono.icono-activo {
+    background-color: #4c4cff;
+    color: #ffffff;
+}
+
+.icono-luna {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+}
+
+.icono-navegacion {
+    width: 20px;
+    height: 20px;
+    color: #a0aec0;
+    cursor: pointer;
+}
+
+/* Tamaños de iconos */
+.tamano-icono { width: 24px; height: 24px; }
+.tamano-icono-pequeno { width: 18px; height: 18px; }
+.icono-pequeno { width: 16px; height: 16px; color: #a0aec0; }
+.icono-pequeno-gris { width: 16px; height: 16px; color: #a0aec0; }
+.icono-gris { color: #a0aec0; width: 20px; height: 20px; }
+
+
+/* --- Otros Elementos UI --- */
+
+/* Grupos de elementos para alineación rápida con Flexbox */
+.grupo-icono-texto {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.grupo-texto-numero {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #718096;
+}
+
+/* Etiqueta de texto (Ej: "Design") */
+.texto-etiqueta {
+    background-color: #e2e8f0;
+    color: #4c4cff;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+
+/* Texto azul para resaltar */
+.texto-azul {
+    color: #4c4cff;
+    font-weight: 600;
+}
+
+.contador {
+    font-weight: 600;
+    color: #4c4cff;
+}
+
+/* Etiquetas de importancia para la lista de recordatorios */
 .importancia-label {
     display: inline-block;
     margin-left: 10px;

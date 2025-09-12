@@ -73,23 +73,41 @@
         </div>
     </aside>
 
-   <div class="seccion-derecha contenedor-blanco">
+ 
         <div class="calendar-app">
-            <div class="header-calendario">
-                <button id="prev-btn">&lt;</button>
-                <h2 id="mes-anio"></h2>
-                <button id="next-btn">&gt;</button>
+        <div class="calendario-contenedor" style="display: flex; gap: 32px; justify-content: flex-start; align-items: flex-start;">
+            <div class="calendar-app">
+                <div class="header-calendario">
+                    <button id="prev-btn">&lt;</button>
+                    <h2 id="mes-anio"></h2>
+                    <button id="next-btn">&gt;</button>
+                </div>
+                <div class="dias-semana">
+                    <div>Dom</div>
+                    <div>Lun</div>
+                    <div>Mar</div>
+                    <div>Mié</div>
+                    <div>Jue</div>
+                    <div>Vie</div>
+                    <div>Sáb</div>
+                </div>
+                <div class="grid-dias" id="grid-dias"></div>
             </div>
-            <div class="dias-semana">
-                <div>Dom</div>
-                <div>Lun</div>
-                <div>Mar</div>
-                <div>Mié</div>
-                <div>Jue</div>
-                <div>Vie</div>
-                <div>Sáb</div>
+            <!-- Contenedor derecho con tres secciones -->
+            <div class="contenedor-derecho">
+                <section class="seccion-derecha seccion-1">
+                    <h3>Sección 1</h3>
+                    <p>Contenido de la sección 1.</p>
+                </section>
+                <section class="seccion-derecha seccion-2">
+                    <h3>Sección 2</h3>
+                    <p>Contenido de la sección 2.</p>
+                </section>
+                <section class="seccion-derecha seccion-3">
+                    <h3>Sección 3</h3>
+                    <p>Contenido de la sección 3.</p>
+                </section>
             </div>
-            <div class="grid-dias" id="grid-dias"></div>
         </div>
         <!-- Modal para agregar y ver recordatorios -->
         <div id="modal-form" class="modal">
