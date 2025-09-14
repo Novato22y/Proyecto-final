@@ -1,3 +1,25 @@
+
+.signin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 1px solid #19242b;
+  background: #19242b;
+  font-weight: 600;
+  color: #c4d2dc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s;
+}
+
+.signin:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  background: #223040;
+  color: #fff;
+}
 /* register.css - Estilos para la página de registro */
 :root{
     --bg:#2b2e36;
@@ -151,3 +173,37 @@
       gap: 16px;
     }
   }
+/* From Uiverse.io by LightAndy1 */ 
+.signin {
+  float: right;
+  max-width: 320px;
+  display: flex;
+  padding: 0.5rem 1.4rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  vertical-align: middle;
+  align-items: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  gap: 0.75rem;
+  color: #c4d2dc;
+  background-color: #19242b;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0, 0.87, 0.12, 1);
+}
+
+.signin:hover {
+  transform: scale(1.025);
+}
+
+.signin:active {
+  transform: scale(0.975);
+}
+
+button svg {
+  height: 24px;
+  width: auto;
+}

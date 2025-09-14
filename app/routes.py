@@ -68,6 +68,12 @@ def eliminar_recordatorio(id):
     db.session.commit()
     return jsonify({'success': True})
 
+
+# =============================
+# API para Social Links por usuario
+# =============================
+ # (no hay endpoints socials en la versión restaurada)
+
 # =============================================================================
 # RUTAS DE AUTENTICACIÓN (REFACTORIZADAS)
 # =============================================================================

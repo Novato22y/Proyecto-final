@@ -253,3 +253,32 @@ function abrirFormulario(fecha) {
     }
     modal.style.display = 'flex';
 }
+
+// calendario.js o en un <script> al final del body
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Elementos del nuevo modal lateral
+    const socialModal = document.getElementById('social-modal');
+    const openSocialModalBtn = document.getElementById('open-social-modal');
+    const closeSocialModalBtn = document.querySelector('.close-lateral-modal');
+
+    // Abrir el modal
+    openSocialModalBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Evita que el enlace recargue la página
+        socialModal.classList.add('visible');
+    });
+
+    // Cerrar el modal con el botón X
+    closeSocialModalBtn.addEventListener('click', function() {
+        socialModal.classList.remove('visible');
+    });
+
+    // Cerrar el modal al hacer clic fuera del contenido
+    socialModal.addEventListener('click', function(e) {
+        if (e.target === socialModal) {
+            socialModal.classList.remove('visible');
+        }
+    });
+
+});

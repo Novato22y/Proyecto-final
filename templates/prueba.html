@@ -6,74 +6,99 @@
     <title>Calendario Interactivo</title>
     <!-- Enlace a la hoja de estilos externa -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
+    </head>
 <body>
+    <aside class="barra-lateral">
+        <div class="iconos-superior">
+            <!-- Ícono de tuerca (configuración) -->
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('admin.list_users') }}" class="enlace-icono" title="Panel de Admin">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0-6v2m0 16v2m8-8h2M4 12H2m15.36-6.36l1.42 1.42M6.34 17.66l-1.42 1.42m12.02 0l1.42-1.42M6.34 6.34L4.92 4.92" />
+                    </svg>
+                </a>
+            {% endif %}
+            <!-- Ícono para ir a la principal -->
+            <a href="{{ url_for('main.principal') }}" class="enlace-icono icono-activo" title="Ir a Principal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h6m-6 0H9m6 0v-6m0 0l2 2m-2-2V3" />
+                </svg>
+            </a>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('admin.list_users') }}" class="enlace-icono" title="Panel de Admin">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                </a>
+            {% endif %}
 
-    <!-- Indicador de carga (actualmente no se usa con localStorage, pero es útil para futuras implementaciones con servidor) -->
-    <div id="loading-indicator">Cargando...</div>
+            <span id="sidebar-social-icons"></span>
+            <a href="#" id="open-social-modal" class="enlace-icono" title="Más redes" style="display:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10z"/>
+                </svg>
+            </a>
+        </div>
+        <div class="iconos-inferior">
+            <div style="position:relative;display:inline-block;">
+                <a href="{{ url_for('main.profile') }}" class="enlace-icono">
+                    <img src="{{ url_for('static', filename=current_user.profile_image) if current_user.is_authenticated and current_user.profile_image else url_for('static', filename='images/user_default.png') }}" alt="Usuario" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />
+                </a>
+                {% if current_user.is_authenticated %}
+                    <span class="tooltip-nombre" style="position:absolute;left:50%;top:-32px;transform:translateX(-50%);background:#4c4cff;color:#fff;padding:3px 10px;border-radius:7px;font-size:0.80rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:10;">{{ current_user.name }}</span>
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var icono = document.querySelector('.iconos-inferior .enlace-icono img');
+                        var tooltip = document.querySelector('.iconos-inferior .tooltip-nombre');
+                        if(icono && tooltip) {
+                            icono.addEventListener('mouseenter', function() { tooltip.style.opacity = '1'; });
+                            icono.addEventListener('mouseleave', function() { tooltip.style.opacity = '0'; });
+                        }
+                    });
+                    </script>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
 
-    <!-- Contenedor principal de la aplicación de calendario -->
     <div class="calendar-app">
-        <!-- Cabecera del calendario con controles de navegación y título -->
         <div class="header-calendario">
             <button id="prev-btn">&lt;</button>
             <h2 id="mes-anio"></h2>
             <button id="next-btn">&gt;</button>
         </div>
-        
-        <!-- Contenedor para los nombres de los días de la semana -->
         <div class="dias-semana">
-            <div>Dom</div>
-            <div>Lun</div>
-            <div>Mar</div>
-            <div>Mié</div>
-            <div>Jue</div>
-            <div>Vie</div>
-            <div>Sáb</div>
+            <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
         </div>
-        
-        <!-- Cuadrícula donde se generarán los días del mes dinámicamente -->
-        <div class="grid-dias" id="grid-dias">
-            <!-- Los días se generan aquí con JavaScript -->
-        </div>
+        <div class="grid-dias" id="grid-dias"></div>
     </div>
 
-    <!-- Modal para agregar y ver recordatorios. Inicialmente oculto. -->
     <div id="modal-form" class="modal">
         <div class="modal-content">
-            <!-- Botón para cerrar el modal -->
             <span class="close-btn">&times;</span>
             <h3>Agregar Recordatorio</h3>
             <p>Día seleccionado: <span id="dia-seleccionado"></span></p>
-            
-            <!-- Formulario para crear un nuevo recordatorio -->
             <form id="recordatorio-form">
                 <label for="titulo">Título:</label>
                 <input type="text" id="titulo" required>
                 <label for="descripcion">Descripción:</label>
                 <textarea id="descripcion"></textarea>
-                <label>Importancia:</label>
-                <div class="botones-importancia">
-                    <button type="button" class="boton-importancia alta" data-importance="alta">Alta</button>
-                    <button type="button" class="boton-importancia media" data-importance="media">Media</button>
-                    <button type="button" class="boton-importancia baja seleccionada" data-importance="baja">Baja</button>
-                </div>
-                <input type="hidden" id="importancia" name="importancia" value="baja">
                 <button type="submit">Guardar</button>
             </form>
-            
-            <!-- Sección para mostrar los recordatorios ya existentes para el día seleccionado -->
-            <div id="recordatorios-lista">
-                <h4>Recordatorios existentes:</h4>
-                <div id="recordatorios-existentes"></div>
-            </div>
+            <div id="recordatorios-lista"><h4>Recordatorios existentes:</h4><div id="recordatorios-existentes"></div></div>
         </div>
     </div>
 
-    <!-- Información de usuario (actualmente oculta) -->
     <div id="info-usuario"></div>
-
-    <!-- Enlace al archivo de JavaScript. 'defer' asegura que se ejecute después de que el HTML se haya cargado. -->
     <script src="{{ url_for('static', filename='js/calendario.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebar-social.js') }}"></script>
+
+    <div id="social-modal" class="modal-lateral">
+        <div class="modal-lateral-content">
+            <span class="close-lateral-modal">&times;</span>
+            <h4>Conecta con nosotros</h4>
+            <div id="modal-social-icons" class="card"></div>
+        </div>
+    </div>
 </body>
 </html>

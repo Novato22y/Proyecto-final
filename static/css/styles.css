@@ -1,4 +1,3 @@
-
 /*
   ESTRUCTURA DEL ARCHIVO CSS:
   1.  IMPORTACIONES Y ESTILOS GLOBALES
@@ -744,3 +743,114 @@ body {
 .importancia-label.alta { background-color: #e53e3e; }
 .importancia-label.media { background-color: #f6ad55; color: #333; }
 .importancia-label.baja { background-color: #38a169; }
+/* styles.css */
+
+/* --- Modal que aparece desde la barra lateral --- */
+.modal-lateral {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease;
+}
+
+.modal-lateral-content {
+    background-color: #ffffff;
+    position: absolute;
+    top: 20px;
+    left: 85px; /* (ancho de la barra lateral + un poco de espacio) */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: auto;
+    transform: translateX(-20px);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Estado visible del modal */
+.modal-lateral.visible {
+    display: block;
+}
+
+.modal-lateral.visible .modal-lateral-content {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Botón para cerrar el modal lateral */
+.close-lateral-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-lateral-modal:hover,
+.close-lateral-modal:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* --- Estilos para los íconos de redes sociales --- */
+.card {
+  width: fit-content;
+  height: fit-content;
+  background-color: rgb(238, 238, 238);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px 25px;
+  gap: 20px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055);
+}
+
+.socialContainer {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgb(44, 44, 44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition-duration: .3s;
+}
+
+.containerOne:hover { background-color: #d62976; }
+.containerTwo:hover { background-color: #00acee; }
+.containerThree:hover { background-color: #0072b1; }
+.containerFour:hover { background-color: #128C7E; }
+.containerFive:hover { background-color: #4267B2; } /* Facebook */
+.containerSix:hover { background-color: #000000; }  /* TikTok */
+
+.socialContainer:active {
+  transform: scale(0.9);
+  transition-duration: .3s;
+}
+
+.socialSvg { width: 17px; display: block; }
+/* Make SVG icons inherit text color so hover backgrounds can change the icon color via color property */
+.socialSvg path { fill: currentColor; }
+
+.socialContainer:hover .socialSvg {
+    animation: slide-in-top 0.3s both;
+}
+
+/* Ensure containerOne..containerSix selectors exist (textual names) to match JS class names */
+.containerOne:hover { background-color: #d62976; color: white; }
+.containerTwo:hover { background-color: #00acee; color: white; }
+.containerThree:hover { background-color: #0072b1; color: white; }
+.containerFour:hover { background-color: #128C7E; color: white; }
+.containerFive:hover { background-color: #4267B2; color: white; } /* Facebook */
+.containerSix:hover { background-color: #000000; color: white; }  /* TikTok */
+
+@keyframes slide-in-top {
+  0% { transform: translateY(-50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}

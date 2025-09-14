@@ -42,3 +42,4 @@ class Recordatorio(db.Model):
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text)
     importancia = db.Column(db.String(10), nullable=False, default='baja')
+
