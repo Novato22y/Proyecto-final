@@ -126,17 +126,23 @@ document.addEventListener('DOMContentLoaded', function() {
   if (moreBtn && modalLateral) {
     moreBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      modalLateral.classList.add('visible');
+      // show modal: remove inline display none if present and add visible class
+      modalLateral.style.display = 'block';
+      // allow CSS transitions if any
+      setTimeout(()=> modalLateral.classList.add('visible'), 10);
     });
   }
   if (closeBtn && modalLateral) {
     closeBtn.addEventListener('click', function() {
       modalLateral.classList.remove('visible');
+      // hide after potential transition
+      setTimeout(()=> { modalLateral.style.display = 'none'; }, 200);
     });
   }
   window.addEventListener('click', function(e) {
     if (e.target === modalLateral) {
       modalLateral.classList.remove('visible');
+      setTimeout(()=> { modalLateral.style.display = 'none'; }, 200);
     }
   });
 });
@@ -145,18 +151,4 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const sidebar = document.querySelector('aside.barra-lateral');
   if (!sidebar) return;
-
-  // Doble click en la barra para colapsar/expandir (puedes cambiar a botón si prefieres)
-  sidebar.addEventListener('dblclick', function() {
-    sidebar.classList.toggle('collapsed');
-    document.body.classList.toggle('sidebar-collapsed');
-  });
-
-  // También permitir colapso vía tecla 'b' (accesibilidad rápida)
-  window.addEventListener('keydown', function(e) {
-    if (e.key === 'b' || e.key === 'B') {
-      sidebar.classList.toggle('collapsed');
-      document.body.classList.toggle('sidebar-collapsed');
-    }
-  });
 });

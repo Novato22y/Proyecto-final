@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (img && img.alt === 'Usuario') {
                 return;
             }
-            e.preventDefault();
+            // Sólo prevenir la acción por defecto si el enlace es un placeholder (ej. href="#")
+            const href = link.getAttribute('href');
+            const isPlaceholder = !href || href === '#' || href.trim() === '' || href.startsWith('javascript:');
+            if (isPlaceholder) e.preventDefault();
             // Eliminar la clase activa de todos los enlaces
             iconLinks.forEach(item => {
                 item.classList.remove('icono-activo');

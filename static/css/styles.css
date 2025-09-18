@@ -877,12 +877,19 @@ pal para una vista de calendario de página completa. */
 
 /* Estado visible del modal */
 .modal-lateral.visible {
-    display: block;
+    display: flex !important;
 }
 
 .modal-lateral.visible .modal-lateral-content {
     transform: translateX(0);
     opacity: 1;
+}
+
+/* Fallback: if some JS sets inline style `display: block` ensure modal shows as flex */
+.modal-lateral[style*="display: block"] {
+    display: flex !important;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 /* Botón para cerrar el modal lateral */

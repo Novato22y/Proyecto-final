@@ -397,7 +397,7 @@ def principal():
     """Página principal de la aplicación"""
     if not current_user.is_authenticated:
         return redirect(url_for('auth.register'))
-    return render_template("principal.html", current_user=current_user)
+    return render_template("prueba.html", current_user=current_user)
 
 @main_bp.route('/profile')
 @login_required

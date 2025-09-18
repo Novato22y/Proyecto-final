@@ -248,6 +248,7 @@
             else if(mode === 'short') card.style.background = colorShort.value || '#fff';
             else card.style.background = colorLong.value || '#fff';
         }
+            // Removed localStorage publication for pomodoro_status
     }
 
     function tick(){
