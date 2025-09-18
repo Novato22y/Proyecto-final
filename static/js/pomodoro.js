@@ -86,6 +86,18 @@
             throw new Error(err.error || 'Error creating preset');
         } catch(e){ throw e; }
     }
+    async function updatePresetOnServer(id, obj){
+        try {
+            const res = await fetch(`/api/pomodoro/presets/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(obj)
+            });
+            if(res.ok) return await res.json();
+            const err = await res.json();
+            throw new Error(err.error || 'Error updating preset');
+        } catch(e){ throw e; }
+    }
     async function deletePresetOnServer(id){
         try {
             const res = await fetch(`/api/pomodoro/presets/${id}`, { method: 'DELETE' });
@@ -111,7 +123,7 @@
 
     async function renderPresets(){
         const presets = await loadPresets();
-        presetsContainer.innerHTML = '';
+        if(presetsContainer) presetsContainer.innerHTML = '';
         presets.forEach((p, idx) => {
             const btn = document.createElement('button');
             btn.textContent = p.name || `Preset ${idx+1}`;
@@ -120,11 +132,11 @@
                 applyPreset(p);
                 currentPreset = p.id || idx;
             });
-            presetsContainer.appendChild(btn);
+            if(presetsContainer) presetsContainer.appendChild(btn);
         });
 
         // también render en modal
-        configPresetsList.innerHTML = '';
+        if(configPresetsList) configPresetsList.innerHTML = '';
         presets.forEach((p, idx)=>{
             const div = document.createElement('div');
             div.style.display = 'flex';
@@ -150,14 +162,14 @@
             div.appendChild(loadBtn);
             div.appendChild(editBtn);
             div.appendChild(delBtn);
-            configPresetsList.appendChild(div);
+            if(configPresetsList) configPresetsList.appendChild(div);
         });
     }
 
     function renderMusicLinks(){
         const list = loadMusic();
-        musicLinksEl.innerHTML = '';
-        configMusicLinks.innerHTML = '';
+        if(musicLinksEl) musicLinksEl.innerHTML = '';
+        if(configMusicLinks) configMusicLinks.innerHTML = '';
         list.forEach((u,i)=>{
             const tag = document.createElement('div');
             tag.className = 'tag';
@@ -165,11 +177,11 @@
             tag.style.gap = '6px';
             tag.innerHTML = `<a class=\"tag-link\" href=\"${u}\" target=\"_blank\">${u}</a><button class=\"remove-tag\">×</button>`;
             tag.querySelector('.remove-tag').addEventListener('click', ()=>{ removeMusic(i); });
-            musicLinksEl.appendChild(tag);
+            if(musicLinksEl) musicLinksEl.appendChild(tag);
 
             const tag2 = tag.cloneNode(true);
             tag2.querySelector('.remove-tag').addEventListener('click', ()=>{ removeMusic(i); });
-            configMusicLinks.appendChild(tag2);
+            if(configMusicLinks) configMusicLinks.appendChild(tag2);
         });
     }
 
@@ -197,6 +209,13 @@
         if(card){
             card.style.background = p.colors && p.colors.work ? p.colors.work : '#fff';
         }
+        // Si el preset incluye enlaces de música, guardarlos y renderizar
+        try {
+            if(p.music && Array.isArray(p.music)){
+                saveMusic(p.music);
+                renderMusicLinks();
+            }
+        } catch(e){ console.warn('No se pudo aplicar música del preset', e); }
     }
 
     function loadPresetToForm(p, idx){
@@ -208,6 +227,15 @@
         colorShort.value = (p.colors && p.colors.short) || '#f6ad55';
         colorLong.value = (p.colors && p.colors.long) || '#48bb78';
         currentPreset = idx;
+        // cargar música en formulario y mostrar modal para editar
+        try {
+            if(p.music && Array.isArray(p.music)){
+                // colocar en el área de configuración
+                saveMusic(p.music);
+                renderMusicLinks();
+            }
+        } catch(e){ /* ignore */ }
+        if(pomodoroModal) pomodoroModal.style.display = 'flex';
     }
 
     async function savePreset(){
@@ -219,11 +247,30 @@
             long: parseInt(presetLong.value,10) || 15,
             colors: { work: colorWork.value, short: colorShort.value, long: colorLong.value }
         };
+        // adjuntar la lista de música actualmente en configuración
+        try { obj.music = loadMusic(); } catch(e){ obj.music = []; }
         try {
-            const created = await createPresetOnServer(obj);
+            let created;
+            if(currentPreset){
+                // actualizar
+                // resolver id si currentPreset es un índice
+                let idToUse = currentPreset;
+                if(typeof currentPreset === 'number'){
+                    const p = (cachedPresets||[])[currentPreset];
+                    if(p && p.id) idToUse = p.id;
+                }
+                try {
+                    created = await updatePresetOnServer(idToUse, obj);
+                } catch(e){
+                    // si fallo con id, intentar crear nuevo
+                    created = await createPresetOnServer(obj);
+                }
+            } else {
+                created = await createPresetOnServer(obj);
+            }
             // refrescar lista
             await renderPresets();
-            currentPreset = created.id;
+            currentPreset = created.id || currentPreset;
             alert('Preset guardado');
         } catch(e){
             alert(e.message || 'Error al guardar preset');
@@ -232,7 +279,12 @@
 
     async function deletePreset(){
         if(!currentPreset) return;
-        const ok = await deletePresetOnServer(currentPreset);
+        let idToDelete = currentPreset;
+        if(typeof currentPreset === 'number'){
+            const p = (cachedPresets||[])[currentPreset];
+            if(p && p.id) idToDelete = p.id; else return;
+        }
+        const ok = await deletePresetOnServer(idToDelete);
         if(ok){
             currentPreset = null;
             await renderPresets();
@@ -385,7 +437,10 @@
     addMusicBtn.addEventListener('click', ()=>{ const v = musicInput.value.trim(); if(v){ addMusic(v); musicInput.value=''; } });
     musicInput.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); addMusic(musicInput.value.trim()); musicInput.value=''; } });
     openConfig.addEventListener('click', ()=>{ pomodoroModal.style.display='flex'; renderPresets(); renderMusicLinks(); });
-    document.getElementById('open-pomodoro-config').addEventListener('click', ()=>{ pomodoroModal.style.display='flex'; renderPresets(); renderMusicLinks(); });
+    const openPomConfigBtn = document.getElementById('open-pomodoro-config');
+    if (openPomConfigBtn) {
+        openPomConfigBtn.addEventListener('click', ()=>{ pomodoroModal.style.display='flex'; renderPresets(); renderMusicLinks(); });
+    }
     closePomModal.addEventListener('click', ()=>{ pomodoroModal.style.display='none'; });
     pomodoroModal.addEventListener('click', (e)=>{ if(e.target===pomodoroModal) pomodoroModal.style.display='none'; });
 

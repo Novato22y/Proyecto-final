@@ -1,5 +1,6 @@
 # app/models.py - Modelos de datos de la aplicación
 from flask_login import UserMixin
+import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db # Importar la instancia de SQLAlchemy
 
@@ -142,6 +143,8 @@ class PomodoroPreset(db.Model):
     color_work = db.Column(db.String(7), nullable=True)
     color_short = db.Column(db.String(7), nullable=True)
     color_long = db.Column(db.String(7), nullable=True)
+    # Guardar lista de enlaces/música como JSON en un campo de texto
+    music = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     user = db.relationship('User', backref='pomodoro_presets')
@@ -158,6 +161,7 @@ class PomodoroPreset(db.Model):
                 'short': self.color_short,
                 'long': self.color_long
             },
+            'music': json.loads(self.music) if self.music else [],
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 

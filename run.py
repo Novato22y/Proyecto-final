@@ -27,6 +27,21 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
         print("Usuario administrador creado.")
+    # Asegurarse de que la columna 'music' exista en la tabla pomodoro_presets (solo desarrollo)
+    try:
+        from sqlalchemy import text
+        inspector = db.inspect(db.engine)
+        cols = [c['name'] for c in inspector.get_columns('pomodoro_presets')]
+        if 'music' not in cols:
+            print("Columna 'music' no existe en 'pomodoro_presets'. Creando columna...")
+            dialect = db.engine.dialect.name
+            alter_sql = 'ALTER TABLE pomodoro_presets ADD COLUMN music TEXT'
+            # Ejecutar con conexión
+            with db.engine.begin() as conn:
+                conn.execute(text(alter_sql))
+            print("Columna 'music' añadida.")
+    except Exception as e:
+        print('No se pudo asegurar la columna music:', e)
 
 if __name__ == '__main__':
     print("🚀 Iniciando Planeador Escolar...")

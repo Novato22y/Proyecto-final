@@ -2,6 +2,7 @@
 # app/routes.py - Rutas y vistas de la aplicación
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
+import json
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models import User, Tarea, Enlace, Contacto, Recordatorio, PomodoroPreset
 from . import db, oauth
@@ -424,8 +425,29 @@ def ver_pomodoro():
 @main_bp.route('/api/pomodoro/presets', methods=['GET'])
 @login_required
 def list_pomodoro_presets():
-    presets = [p.to_dict() for p in current_user.pomodoro_presets]
-    return jsonify(presets)
+    try:
+        presets = []
+        for p in current_user.pomodoro_presets:
+            try:
+                presets.append(p.to_dict())
+            except Exception:
+                # Fallback: construir dict sin 'music' si el modelo/DB no lo soporta
+                presets.append({
+                    'id': getattr(p, 'id', None),
+                    'name': getattr(p, 'name', None),
+                    'work': getattr(p, 'work', None),
+                    'short': getattr(p, 'short', None),
+                    'long': getattr(p, 'long', None),
+                    'colors': {
+                        'work': getattr(p, 'color_work', None),
+                        'short': getattr(p, 'color_short', None),
+                        'long': getattr(p, 'color_long', None)
+                    },
+                    'music': []
+                })
+        return jsonify(presets)
+    except Exception as e:
+        return jsonify({'error': f'list_pomodoro_presets error: {str(e)}'}), 500
 
 
 @main_bp.route('/api/pomodoro/presets', methods=['POST'])
@@ -447,9 +469,67 @@ def create_pomodoro_preset():
         color_short=data.get('colors', {}).get('short'),
         color_long=data.get('colors', {}).get('long')
     )
-    db.session.add(preset)
-    db.session.commit()
-    return jsonify(preset.to_dict()), 201
+    # Intentar asignar music y guardar; si falla (por esquema DB) reintentar sin music
+    try:
+        if 'music' in data:
+            try:
+                preset.music = json.dumps(data.get('music') or [])
+            except Exception:
+                # ignore assignment if it fails
+                pass
+        db.session.add(preset)
+        db.session.commit()
+        return jsonify(preset.to_dict()), 201
+    except Exception as e:
+        db.session.rollback()
+        # Reintentar sin music (por si la columna no existe)
+        try:
+            p2 = PomodoroPreset(
+                user_id=current_user.id,
+                name=data.get('name', 'Preset'),
+                work=int(data.get('work', 25)),
+                short=int(data.get('short', 5)),
+                long=int(data.get('long', 15)),
+                color_work=data.get('colors', {}).get('work'),
+                color_short=data.get('colors', {}).get('short'),
+                color_long=data.get('colors', {}).get('long')
+            )
+            db.session.add(p2)
+            db.session.commit()
+            return jsonify(p2.to_dict()), 201
+        except Exception as e2:
+            db.session.rollback()
+            return jsonify({'error': f'create_pomodoro_preset error: {str(e)}; fallback error: {str(e2)}'}), 500
+
+
+@main_bp.route('/api/pomodoro/presets/<int:preset_id>', methods=['PUT'])
+@login_required
+def update_pomodoro_preset(preset_id):
+    preset = PomodoroPreset.query.filter_by(id=preset_id, user_id=current_user.id).first()
+    if not preset:
+        return jsonify({'error': 'Preset no encontrado'}), 404
+    data = request.get_json() or {}
+    # actualizar campos si vienen
+    if 'name' in data: preset.name = data.get('name')
+    if 'work' in data: preset.work = int(data.get('work', preset.work))
+    if 'short' in data: preset.short = int(data.get('short', preset.short))
+    if 'long' in data: preset.long = int(data.get('long', preset.long))
+    colors = data.get('colors', {})
+    if 'work' in colors: preset.color_work = colors.get('work')
+    if 'short' in colors: preset.color_short = colors.get('short')
+    if 'long' in colors: preset.color_long = colors.get('long')
+    if 'music' in data:
+        try:
+            preset.music = json.dumps(data.get('music') or [])
+        except Exception:
+            # ignorar si no se puede asignar
+            pass
+    try:
+        db.session.commit()
+        return jsonify(preset.to_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'update_pomodoro_preset error: {str(e)}'}), 500
 
 
 @main_bp.route('/api/pomodoro/presets/<int:preset_id>', methods=['DELETE'])
