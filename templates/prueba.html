@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario Interactivo</title>
-    <!-- Enlace a la hoja de estilos externa -->
+    <title>EduNote - Sistema de Tareas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    </head>
 <body>
     <aside class="barra-lateral">
         <div class="iconos-superior">
@@ -33,16 +31,16 @@
             {% endif %}
 
             <span id="sidebar-social-icons"></span>
-            <a href="#" id="open-social-modal" class="enlace-icono" title="Más redes" style="display:none;">
+            <a href="#" id="open-social-modal" class="enlace-icono" title="Más redes">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10z"/>
                 </svg>
             </a>
         </div>
         <div class="iconos-inferior">
-            <div style="position:relative;display:inline-block;">
-                <a href="{{ url_for('main.profile') }}" class="enlace-icono">
-                    <img src="{{ url_for('static', filename=current_user.profile_image) if current_user.is_authenticated and current_user.profile_image else url_for('static', filename='images/user_default.png') }}" alt="Usuario" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />
+            <div class="perfil-container">
+                <a href="{{ url_for('main.profile') }}" class="enlace-icono" title="Perfil">
+                    <img src="{{ url_for('static', filename=current_user.profile_image) if current_user.is_authenticated and current_user.profile_image else url_for('static', filename='images/user_default.png') }}" alt="Usuario" class="perfil-imagen" />
                 </a>
                 {% if current_user.is_authenticated %}
                     <span class="tooltip-nombre" style="position:absolute;left:50%;top:-32px;transform:translateX(-50%);background:#4c4cff;color:#fff;padding:3px 10px;border-radius:7px;font-size:0.80rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:10;">{{ current_user.name }}</span>
@@ -61,37 +59,140 @@
         </div>
     </aside>
 
-    <div class="calendar-app">
-        <div class="header-calendario">
-            <button id="prev-btn">&lt;</button>
-            <h2 id="mes-anio"></h2>
-            <button id="next-btn">&gt;</button>
+    <!-- Contenedor principal con layout 75-25 -->
+    <div class="contenedor-principal">
+        <!-- Columna Izquierda - Calendario (75-80%) -->
+        <div class="columna-calendario">
+            <div class="calendar-app">
+                <div class="calendario-header">
+                    <button class="add-task-btn" id="add-task-calendar">📅 Agregar Tarea</button>
+                    <div class="calendario-controles">
+                        <button id="prev-btn">&lt;</button>
+                        <h2 id="mes-anio"></h2>
+                        <button id="next-btn">&gt;</button>
+                    </div>
+                </div>
+                <div class="dias-semana">
+                    <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+                </div>
+                <div class="grid-dias" id="grid-dias"></div>
+            </div>
         </div>
-        <div class="dias-semana">
-            <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+
+        <!-- Columna Derecha - Barra Lateral Kanban (20-25%) -->
+        <div class="barra-lateral-kanban" id="kanban-sidebar">
+            <div class="kanban-header">
+                <h3>📋 Tareas</h3>
+                <button class="toggle-kanban" id="toggle-kanban" title="Colapsar/Expandir">⟷</button>
+            </div>
+            
+            <div class="kanban-content" id="kanban-content">
+                <button class="add-task-btn-kanban" id="add-task-kanban">➕ Nueva Tarea</button>
+                
+                <div class="kanban-sections">
+                    <div class="kanban-section">
+                        <div class="section-header inbox">
+                            <span class="section-icon">📥</span>
+                            <span class="section-title">Inbox</span>
+                            <span class="task-count" id="count-inbox">0</span>
+                        </div>
+                        <div class="kanban-tasks" id="kanban-inbox"></div>
+                    </div>
+                    
+                    <div class="kanban-section">
+                        <div class="section-header incompletas">
+                            <span class="section-icon">⏳</span>
+                            <span class="section-title">Pendientes</span>
+                            <span class="task-count" id="count-incompletas">0</span>
+                        </div>
+                        <div class="kanban-tasks" id="kanban-incompletas"></div>
+                    </div>
+                    
+                    <div class="kanban-section">
+                        <div class="section-header completas">
+                            <span class="section-icon">✅</span>
+                            <span class="section-title">Completas</span>
+                            <span class="task-count" id="count-completas">0</span>
+                        </div>
+                        <div class="kanban-tasks" id="kanban-completas"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="grid-dias" id="grid-dias"></div>
     </div>
 
+    <!-- Modal mejorado para tareas -->
     <div id="modal-form" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
-            <h3>Agregar Recordatorio</h3>
+            <h3 id="modal-title">Nueva Tarea</h3>
             <p>Día seleccionado: <span id="dia-seleccionado"></span></p>
-            <form id="recordatorio-form">
-                <label for="titulo">Título:</label>
-                <input type="text" id="titulo" required>
-                <label for="descripcion">Descripción:</label>
-                <textarea id="descripcion"></textarea>
-                <button type="submit">Guardar</button>
+            
+            <form id="tarea-form">
+                <!-- Información básica -->
+                <div class="form-section">
+                    <h4>📝 Información Básica</h4>
+                    <label for="titulo">Título *:</label>
+                    <input type="text" id="titulo" required>
+                    
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion" rows="3"></textarea>
+                    
+                    <label for="asunto">Asunto/Categoría:</label>
+                    <input type="text" id="asunto" placeholder="Ej: Matemáticas, Proyecto Personal, Trabajo...">
+                </div>
+
+                <!-- Fecha e importancia -->
+                <div class="form-section">
+                    <h4>📅 Programación</h4>
+                    <label for="fecha">Fecha (opcional):</label>
+                    <input type="date" id="fecha">
+                    <small class="text-helper">Si no seleccionas fecha, la tarea irá al Inbox</small>
+                    
+                    <label>Importancia:</label>
+                    <div class="botones-importancia">
+                        <div class="boton-importancia alta" data-importance="alta" title="Alta"></div>
+                        <div class="boton-importancia media" data-importance="media" title="Media"></div>
+                        <div class="boton-importancia baja seleccionada" data-importance="baja" title="Baja"></div>
+                    </div>
+                    <input type="hidden" id="importancia" value="baja">
+                </div>
+
+                <!-- Enlaces -->
+                <div class="form-section">
+                    <h4>🔗 Enlaces</h4>
+                    <div class="input-with-add">
+                        <input type="text" id="enlace-input" placeholder="Añadir enlace...">
+                        <button type="button" id="add-enlace-btn">+</button>
+                    </div>
+                    <div id="enlaces-tags" class="tags-container"></div>
+                </div>
+
+                <!-- Contactos -->
+                <div class="form-section">
+                    <h4>👥 Contactos</h4>
+                    <div class="input-with-add">
+                        <input type="text" id="contacto-input" placeholder="Añadir contacto...">
+                        <button type="button" id="add-contacto-btn">+</button>
+                    </div>
+                    <div id="contactos-tags" class="tags-container"></div>
+                </div>
+
+                <button type="submit" class="btn-submit-full">Guardar Tarea</button>
             </form>
-            <div id="recordatorios-lista"><h4>Recordatorios existentes:</h4><div id="recordatorios-existentes"></div></div>
+            
+            <div id="recordatorios-lista">
+                <h4>Tareas existentes:</h4>
+                <div id="recordatorios-existentes"></div>
+            </div>
         </div>
     </div>
 
     <div id="info-usuario"></div>
-    <script src="{{ url_for('static', filename='js/calendario.js') }}"></script>
+    
+    <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/sidebar-social.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tareas.js') }}"></script>
 
     <div id="social-modal" class="modal-lateral">
         <div class="modal-lateral-content">

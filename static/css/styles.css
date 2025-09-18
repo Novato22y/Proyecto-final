@@ -475,6 +475,10 @@ body {
     padding: 20px;
 }
 
+.modal[style*="display: flex"] {
+    display: flex !important;
+}
+
 .modal-content {
     background-color: white;
     padding: 25px;
@@ -890,6 +894,565 @@ body {
 .socialContainer:hover .socialSvg path,
 .enlace-icono:hover .socialSvg path {
     fill: white;
+}
+
+/* ========================================
+   LAYOUT REFACTORIZADO 75-25%
+   ======================================== */
+
+/* Nuevo layout 75-25% */
+.contenedor-principal {
+    display: flex;
+    gap: 15px;
+    height: calc(100vh - 40px);
+    padding: 20px;
+    margin-left: 80px; /* Espacio para sidebar */
+}
+
+/* Columna Izquierda - Calendario (75-80%) */
+.columna-calendario {
+    flex: 3;
+    min-width: 600px;
+}
+
+/* Columna Derecha - Barra Lateral Kanban (20-25%) */
+.barra-lateral-kanban {
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.barra-lateral-kanban.collapsed {
+    min-width: 50px;
+    max-width: 50px;
+    padding: 10px 5px;
+}
+
+.barra-lateral-kanban.collapsed .kanban-content {
+    display: none;
+}
+
+/* Header del Kanban */
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.kanban-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #2d3748;
+}
+
+.toggle-kanban {
+    background: #4c4cff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.toggle-kanban:hover {
+    background: #3a3aff;
+}
+
+/* Contenido del Kanban */
+.kanban-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.add-task-btn-kanban {
+    background: #4c4cff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    transition: background 0.2s;
+}
+
+.add-task-btn-kanban:hover {
+    background: #3a3aff;
+}
+
+/* Secciones del Kanban */
+.kanban-sections {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.kanban-section {
+    border-radius: 8px;
+    background: #f8fafc;
+    overflow: hidden;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+
+.section-header.inbox { background: #718096; }
+.section-header.incompletas { background: #f6ad55; }
+.section-header.completas { background: #38a169; }
+
+.section-icon {
+    font-size: 0.9rem;
+}
+
+.section-title {
+    flex: 1;
+    margin-left: 8px;
+}
+
+.task-count {
+    background: rgba(255,255,255,0.3);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+.kanban-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.task-card {
+    background: white;
+    border-radius: 6px;
+    padding: 8px 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-left: 3px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.task-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.task-card.alta { border-left-color: #e53e3e; }
+.task-card.media { border-left-color: #f6ad55; }
+.task-card.baja { border-left-color: #38a169; }
+
+.task-title {
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: #2d3748;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+.task-description {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-bottom: 6px;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.task-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #a0aec0;
+}
+
+.task-fecha {
+    background: #edf2f7;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.task-asunto {
+    background: #e2e8f0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.65rem;
+}
+
+.add-task-btn {
+    background: #4c4cff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    margin-bottom: 20px;
+}
+
+.add-task-btn:hover {
+    background: #3a3aff;
+}
+
+/* Modal mejorado para tareas */
+.modal-content {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.form-section {
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.form-section h4 {
+    margin: 0 0 8px 0;
+    color: #4a5568;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dynamic-list {
+    margin-top: 10px;
+}
+
+.dynamic-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.dynamic-item input {
+    flex: 1;
+}
+
+.remove-item {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.add-item {
+    background: #38a169;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+/* Nuevos estilos para campos dinámicos */
+.input-with-add {
+    display: flex !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.input-with-add input {
+    flex: 1 !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    padding: 6px 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 4px !important;
+    font-size: 0.8rem !important;
+    min-height: 28px !important;
+    width: auto !important;
+}
+
+.input-with-add button {
+    background: #38a169 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 6px 8px !important;
+    cursor: pointer !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap !important;
+    transition: background 0.2s !important;
+    min-width: 50px !important;
+    max-width: 80px !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    width: auto !important;
+}
+
+.input-with-add button:hover {
+    background: #2f855a !important;
+}
+
+/* Estilos específicos por ID para garantizar aplicación */
+#add-enlace-btn, #add-contacto-btn {
+    background: #38a169 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    padding: 8px !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    flex: 0 0 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+}
+
+#enlace-input, #contacto-input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+}
+
+/* Adaptaciones del calendario existente */
+.calendar-app {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+.calendario-controles {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 15px;
+}
+
+/* ========================================
+   SISTEMA DE TAGS PARA ENLACES Y CONTACTOS
+   ======================================== */
+
+/* Contenedores de tags */
+.tags-container {
+    margin-top: 6px;
+    min-height: 40px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f8f9fa;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: flex-start;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.tags-container:empty::after {
+    content: "No hay elementos agregados";
+    color: #9ca3af;
+    font-size: 0.75rem;
+    font-style: italic;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* Tags individuales */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3px 6px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    max-width: calc(100% - 8px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    margin: 1px;
+}
+
+.tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.tag span {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 4px;
+    line-height: 1.2;
+}
+
+/* Botón de eliminar tag */
+.remove-tag {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.remove-tag:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
+/* Botones para agregar tags */
+.btn-tag {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.btn-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+}
+
+/* Responsive para tags */
+@media (max-width: 768px) {
+    .tag {
+        font-size: 0.8rem;
+        padding: 3px 6px;
+    }
+    
+    .tag span {
+        max-width: 150px;
+    }
+    
+    .remove-tag {
+        width: 16px;
+        height: 16px;
+        font-size: 11px;
+    }
+}
+
+/* ========================================
+   ESTILOS ESPECÍFICOS PARA ELEMENTOS INLINE
+   ======================================== */
+
+/* Elementos de perfil y navegación */
+.enlace-icono-hidden {
+    display: none;
+}
+
+.perfil-container {
+    position: relative;
+    display: inline-block;
+}
+
+.perfil-imagen {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.tooltip-nombre {
+    position: absolute;
+    left: 50%;
+    top: -32px;
+    transform: translateX(-50%);
+    background: #4c4cff;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 7px;
+    font-size: 0.80rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.modal-hidden {
+    display: none;
+}
+
+.text-helper {
+    color: #718096;
+}
+
+.btn-submit-full {
+    width: 100%;
+    margin-top: 20px;
 }
 
 

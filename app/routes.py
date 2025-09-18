@@ -1,16 +1,192 @@
 
 # app/routes.py - Rutas y vistas de la aplicación
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from app.models import User
+from app.models import User, Tarea, Enlace, Contacto, Recordatorio
 from . import db, oauth
+from datetime import datetime, date
 
 
 main_bp = Blueprint('main', __name__)
 auth_bp = Blueprint('auth', __name__)
+
 # =============================
-# API de Recordatorios (Calendario)
+# API de Tareas (Nueva implementación)
+# =============================
+
+@main_bp.route('/api/tareas', methods=['GET'])
+@login_required
+def get_todas_tareas():
+    """Obtiene todas las tareas del usuario autenticado para el tablero Kanban."""
+    tareas = Tarea.query.filter_by(user_id=current_user.id).all()
+    return jsonify([tarea.to_dict() for tarea in tareas])
+
+@main_bp.route('/api/tareas/fecha/<fecha>', methods=['GET'])
+@login_required
+def get_tareas_por_fecha(fecha):
+    """Obtiene las tareas de una fecha específica para el calendario."""
+    try:
+        fecha_obj = datetime.strptime(fecha, '%Y-%m-%d').date()
+        tareas = Tarea.query.filter_by(fecha=fecha_obj, user_id=current_user.id).all()
+        return jsonify([tarea.to_dict() for tarea in tareas])
+    except ValueError:
+        return jsonify({'error': 'Formato de fecha inválido'}), 400
+
+@main_bp.route('/api/tareas', methods=['POST'])
+@login_required
+def crear_tarea():
+    """Crea una nueva tarea."""
+    data = request.get_json()
+    
+    try:
+        # Determinar el status inicial basado en si tiene fecha
+        fecha_str = data.get('fecha')
+        fecha_obj = None
+        status_inicial = 'inbox'
+        
+        if fecha_str:
+            fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            status_inicial = 'incompleta'
+        
+        # Crear la tarea
+        nueva_tarea = Tarea(
+            user_id=current_user.id,
+            titulo=data.get('titulo'),
+            descripcion=data.get('descripcion', ''),
+            fecha=fecha_obj,
+            importancia=data.get('importancia'),
+            asunto=data.get('asunto', ''),
+            status=status_inicial
+        )
+        
+        db.session.add(nueva_tarea)
+        db.session.flush()  # Para obtener el ID de la tarea
+        
+        # Agregar enlaces si existen
+        enlaces = data.get('enlaces', [])
+        for enlace_data in enlaces:
+            if isinstance(enlace_data, str):  # Si es solo una URL
+                nuevo_enlace = Enlace(tarea_id=nueva_tarea.id, url=enlace_data)
+            else:  # Si es un objeto con url y titulo
+                nuevo_enlace = Enlace(
+                    tarea_id=nueva_tarea.id,
+                    url=enlace_data.get('url'),
+                    titulo=enlace_data.get('titulo', '')
+                )
+            db.session.add(nuevo_enlace)
+        
+        # Agregar contactos si existen
+        contactos = data.get('contactos', [])
+        for contacto_data in contactos:
+            nuevo_contacto = Contacto(
+                tarea_id=nueva_tarea.id,
+                nombre=contacto_data.get('nombre'),
+                email=contacto_data.get('email', ''),
+                telefono=contacto_data.get('telefono', ''),
+                notas=contacto_data.get('notas', '')
+            )
+            db.session.add(nuevo_contacto)
+        
+        db.session.commit()
+        return jsonify({'success': True, 'id': nueva_tarea.id, 'tarea': nueva_tarea.to_dict()}), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@main_bp.route('/api/tareas/<int:id>', methods=['PUT'])
+@login_required
+def actualizar_tarea(id):
+    """Actualiza una tarea existente."""
+    tarea = Tarea.query.filter_by(id=id, user_id=current_user.id).first()
+    if not tarea:
+        return jsonify({'error': 'Tarea no encontrada'}), 404
+    
+    data = request.get_json()
+    
+    try:
+        # Actualizar campos básicos
+        if 'titulo' in data:
+            tarea.titulo = data['titulo']
+        if 'descripcion' in data:
+            tarea.descripcion = data['descripcion']
+        if 'importancia' in data:
+            tarea.importancia = data['importancia']
+        if 'asunto' in data:
+            tarea.asunto = data['asunto']
+        if 'status' in data:
+            tarea.status = data['status']
+        
+        # Manejar cambio de fecha
+        if 'fecha' in data:
+            if data['fecha']:
+                tarea.fecha = datetime.strptime(data['fecha'], '%Y-%m-%d').date()
+                # Si se añade fecha a una tarea del inbox, cambiar status
+                if tarea.status == 'inbox':
+                    tarea.status = 'incompleta'
+            else:
+                tarea.fecha = None
+        
+        # Actualizar enlaces si se proporcionan
+        if 'enlaces' in data:
+            # Eliminar enlaces existentes
+            Enlace.query.filter_by(tarea_id=tarea.id).delete()
+            
+            # Agregar nuevos enlaces
+            for enlace_data in data['enlaces']:
+                if isinstance(enlace_data, str):
+                    nuevo_enlace = Enlace(tarea_id=tarea.id, url=enlace_data)
+                else:
+                    nuevo_enlace = Enlace(
+                        tarea_id=tarea.id,
+                        url=enlace_data.get('url'),
+                        titulo=enlace_data.get('titulo', '')
+                    )
+                db.session.add(nuevo_enlace)
+        
+        # Actualizar contactos si se proporcionan
+        if 'contactos' in data:
+            # Eliminar contactos existentes
+            Contacto.query.filter_by(tarea_id=tarea.id).delete()
+            
+            # Agregar nuevos contactos
+            for contacto_data in data['contactos']:
+                nuevo_contacto = Contacto(
+                    tarea_id=tarea.id,
+                    nombre=contacto_data.get('nombre'),
+                    email=contacto_data.get('email', ''),
+                    telefono=contacto_data.get('telefono', ''),
+                    notas=contacto_data.get('notas', '')
+                )
+                db.session.add(nuevo_contacto)
+        
+        db.session.commit()
+        return jsonify({'success': True, 'tarea': tarea.to_dict()})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@main_bp.route('/api/tareas/<int:id>', methods=['DELETE'])
+@login_required
+def eliminar_tarea(id):
+    """Elimina una tarea y sus relaciones asociadas."""
+    tarea = Tarea.query.filter_by(id=id, user_id=current_user.id).first()
+    if not tarea:
+        return jsonify({'error': 'Tarea no encontrada'}), 404
+    
+    try:
+        db.session.delete(tarea)  # Los enlaces y contactos se eliminan automáticamente por cascade
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+# =============================
+# API de Recordatorios (Mantener compatibilidad con calendario existente)
+# =============================
 @main_bp.route('/api/recordatorios/<int:id>', methods=['PUT'])
 @login_required
 def actualizar_recordatorio(id):
@@ -25,8 +201,6 @@ def actualizar_recordatorio(id):
     db.session.commit()
     return jsonify({'success': True})
 # =============================
-from flask import jsonify
-from app.models import Recordatorio
 
 @main_bp.route('/api/recordatorios/<fecha>', methods=['GET'])
 @login_required
