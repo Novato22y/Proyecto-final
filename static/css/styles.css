@@ -828,7 +828,7 @@ body {
 .containerFour:hover { background-color: #128C7E; }
 .containerFive:hover { background-color: #4267B2; } /* Facebook */
 .containerSix:hover { background-color: #000000; }  /* TikTok */
-
+.containerSeven:hover { background-color: #FF0000; } /* YouTube */
 .socialContainer:active {
   transform: scale(0.9);
   transition-duration: .3s;
@@ -843,14 +843,53 @@ body {
 }
 
 /* Ensure containerOne..containerSix selectors exist (textual names) to match JS class names */
-.containerOne:hover { background-color: #d62976; color: white; }
-.containerTwo:hover { background-color: #00acee; color: white; }
+.containerOne:hover { background-color: #128C7E; color: white; }
+.containerTwo:hover { background-color: #d62976; color: white; }
 .containerThree:hover { background-color: #0072b1; color: white; }
-.containerFour:hover { background-color: #128C7E; color: white; }
+.containerFour:hover { background-color:  #4267B2; color: white; }
 .containerFive:hover { background-color: #4267B2; color: white; } /* Facebook */
 .containerSix:hover { background-color: #000000; color: white; }  /* TikTok */
+.containerSeven:hover { background-color: #FF0000; color: white; }
+
+/* Colores para GitHub y Discord */
+.containerEight:hover { background-color: #333333; color: white; } /* GitHub */
+.containerNine:hover { background-color: #5865F2; color: white; } /* Discord */
 
 @keyframes slide-in-top {
   0% { transform: translateY(-50px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
+
+/* ----------------------------- */
+/* Hover y estilos adicionales   */
+/* ----------------------------- */
+
+/* Mejora del hover general para enlaces e iconos sociales */
+.enlace-icono,
+.socialContainer {
+    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.enlace-icono:hover,
+.socialContainer:hover {
+    transform: translateY(-3px) scale(1.06);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* Color por red: si quieres asignar un color de fondo específico usa las clases containerX */
+/* Ejemplo: si agregas YouTube y en JS pones la clase containerSeven, añade aquí su color */
+
+
+/* Si quieres que los SVG hereden el color del contenedor y cambiar el color del icono al hover */
+.socialSvg { color: currentColor; }
+.socialContainer { color: #ffffff; }
+.socialContainer:hover .socialSvg { color: white; }
+
+/* Forzar cursor y color de los paths al hacer hover para evitar problemas de herencia */
+.socialContainer, .enlace-icono { cursor: pointer; }
+.socialContainer:hover .socialSvg path,
+.enlace-icono:hover .socialSvg path {
+    fill: white;
+}
+
+
