@@ -140,3 +140,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// Toggle simple para colapsar/expandir la barra lateral izquierda
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebar = document.querySelector('aside.barra-lateral');
+  if (!sidebar) return;
+
+  // Doble click en la barra para colapsar/expandir (puedes cambiar a botón si prefieres)
+  sidebar.addEventListener('dblclick', function() {
+    sidebar.classList.toggle('collapsed');
+    document.body.classList.toggle('sidebar-collapsed');
+  });
+
+  // También permitir colapso vía tecla 'b' (accesibilidad rápida)
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'b' || e.key === 'B') {
+      sidebar.classList.toggle('collapsed');
+      document.body.classList.toggle('sidebar-collapsed');
+    }
+  });
+});

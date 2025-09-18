@@ -129,3 +129,35 @@ class Recordatorio(db.Model):
     descripcion = db.Column(db.Text)
     importancia = db.Column(db.String(10), nullable=False, default='baja')
 
+
+# Presets para Pomodoro por usuario
+class PomodoroPreset(db.Model):
+    __tablename__ = 'pomodoro_presets'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(120), nullable=False)
+    work = db.Column(db.Integer, nullable=False, default=25)
+    short = db.Column(db.Integer, nullable=False, default=5)
+    long = db.Column(db.Integer, nullable=False, default=15)
+    color_work = db.Column(db.String(7), nullable=True)
+    color_short = db.Column(db.String(7), nullable=True)
+    color_long = db.Column(db.String(7), nullable=True)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user = db.relationship('User', backref='pomodoro_presets')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'work': self.work,
+            'short': self.short,
+            'long': self.long,
+            'colors': {
+                'work': self.color_work,
+                'short': self.color_short,
+                'long': self.color_long
+            },
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+

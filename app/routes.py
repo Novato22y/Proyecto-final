@@ -3,7 +3,7 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from app.models import User, Tarea, Enlace, Contacto, Recordatorio
+from app.models import User, Tarea, Enlace, Contacto, Recordatorio, PomodoroPreset
 from . import db, oauth
 from datetime import datetime, date
 
@@ -411,6 +411,56 @@ def ver_prueba():
 @main_bp.route('/calendario')
 def ver_calendario():
     return render_template('calendario.html')
+
+
+@main_bp.route('/pomodoro')
+
+def ver_pomodoro():
+    """Página del Pomodoro"""
+    return render_template('pomodoro.html', current_user=current_user)
+
+
+# API: Presets Pomodoro
+@main_bp.route('/api/pomodoro/presets', methods=['GET'])
+@login_required
+def list_pomodoro_presets():
+    presets = [p.to_dict() for p in current_user.pomodoro_presets]
+    return jsonify(presets)
+
+
+@main_bp.route('/api/pomodoro/presets', methods=['POST'])
+@login_required
+def create_pomodoro_preset():
+    data = request.get_json() or {}
+    # Limitar a 3 presets por usuario
+    count = PomodoroPreset.query.filter_by(user_id=current_user.id).count()
+    if count >= 3:
+        return jsonify({'error': 'Límite de 3 presets alcanzado'}), 400
+
+    preset = PomodoroPreset(
+        user_id=current_user.id,
+        name=data.get('name', 'Preset'),
+        work=int(data.get('work', 25)),
+        short=int(data.get('short', 5)),
+        long=int(data.get('long', 15)),
+        color_work=data.get('colors', {}).get('work'),
+        color_short=data.get('colors', {}).get('short'),
+        color_long=data.get('colors', {}).get('long')
+    )
+    db.session.add(preset)
+    db.session.commit()
+    return jsonify(preset.to_dict()), 201
+
+
+@main_bp.route('/api/pomodoro/presets/<int:preset_id>', methods=['DELETE'])
+@login_required
+def delete_pomodoro_preset(preset_id):
+    preset = PomodoroPreset.query.filter_by(id=preset_id, user_id=current_user.id).first()
+    if not preset:
+        return jsonify({'error': 'Preset no encontrado'}), 404
+    db.session.delete(preset)
+    db.session.commit()
+    return jsonify({'success': True})
 
 @main_bp.route('/upload_profile_photo', methods=['POST'])
 @login_required

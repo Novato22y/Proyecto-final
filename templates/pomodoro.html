@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro - EduNote</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <aside class="barra-lateral">
+        <div class="iconos-superior">
+            <!-- Ícono de tuerca (configuración) -->
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('admin.list_users') }}" class="enlace-icono" title="Panel de Admin">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0-6v2m0 16v2m8-8h2M4 12H2m15.36-6.36l1.42 1.42M6.34 17.66l-1.42 1.42m12.02 0l1.42-1.42M6.34 6.34L4.92 4.92" />
+                    </svg>
+                </a>
+            {% endif %}
+            <!-- Ícono para ir a la principal -->
+            <a href="{{ url_for('main.principal') }}" class="enlace-icono icono-activo" title="Ir a Principal">
+                <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h6m-6 0H9m6 0v-6m0 0l2 2m-2-2V3" />
+                </svg>
+            </a>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('admin.list_users') }}" class="enlace-icono" title="Panel de Admin">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                </a>
+            {% endif %}
+
+            <span id="sidebar-social-icons"></span>
+            <a href="#" id="open-social-modal" class="enlace-icono" title="Más redes">
+                <svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10z"/>
+                </svg>
+            </a>
+        </div>
+        <div class="iconos-inferior">
+            <div class="perfil-container">
+                <a href="{{ url_for('main.profile') }}" class="enlace-icono" title="Perfil">
+                    <img src="{{ url_for('static', filename=current_user.profile_image) if current_user.is_authenticated and current_user.profile_image else url_for('static', filename='images/user_default.png') }}" alt="Usuario" class="perfil-imagen" />
+                </a>
+                {% if current_user.is_authenticated %}
+                    <span class="tooltip-nombre" style="position:absolute;left:50%;top:-32px;transform:translateX(-50%);background:#4c4cff;color:#fff;padding:3px 10px;border-radius:7px;font-size:0.80rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:10;">{{ current_user.name }}</span>
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var icono = document.querySelector('.iconos-inferior .enlace-icono img');
+                        var tooltip = document.querySelector('.iconos-inferior .tooltip-nombre');
+                        if(icono && tooltip) {
+                            icono.addEventListener('mouseenter', function() { tooltip.style.opacity = '1'; });
+                            icono.addEventListener('mouseleave', function() { tooltip.style.opacity = '0'; });
+                        }
+                    });
+                    </script>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- Modal de configuración Pomodoro -->
+    <div id="pomodoro-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-pomodoro-modal">&times;</span>
+            <h3>Configuración Pomodoro</h3>
+
+            <form id="pomodoro-config-form">
+                <label>Nombre del preset:</label>
+                <input type="text" id="preset-name" placeholder="Trabajo 25/5">
+
+                <label>Work (min):</label>
+                <input type="number" id="preset-work" min="1" value="25">
+
+                <label>Short break (min):</label>
+                <input type="number" id="preset-short" min="1" value="5">
+
+                <label>Long break (min):</label>
+                <input type="number" id="preset-long" min="1" value="15">
+
+                <label>Color Work:</label>
+                <input type="color" id="color-work" value="#f56565">
+
+                <label>Color Short Break:</label>
+                <input type="color" id="color-short" value="#f6ad55">
+
+                <label>Color Long Break:</label>
+                <input type="color" id="color-long" value="#48bb78">
+
+                <div class="form-section">
+                    <h4>Música (YouTube links)</h4>
+                    <div id="config-music-links" class="tags-container"></div>
+                    <div class="input-with-add">
+                        <input type="text" id="config-music-input" placeholder="https://youtu.be/...">
+                        <button type="button" id="config-add-music">+</button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Alarma</h4>
+                    <label for="alarm-url">URL de alarma (mp3/ogg):</label>
+                    <input type="text" id="alarm-url" placeholder="https://.../alarm.mp3" />
+                    <div style="display:flex;gap:8px;margin-top:8px;">
+                        <button type="button" id="test-alarm">Probar sonido</button>
+                        <button type="button" id="save-alarm">Guardar alarma</button>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h4> Ciclos y Long Break </h4>
+                    <label for="cycles-before-long">Ciclos de trabajo antes de Long Break:</label>
+                    <input type="number" id="cycles-before-long" min="1" value="4" />
+                    <div style="margin-top:8px;">
+                        <small>Ej: 4 = después de 4 work → long</small>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button type="button" id="save-preset">Guardar preset</button>
+                    <button type="button" id="delete-preset">Eliminar preset</button>
+                </div>
+            </form>
+
+            <hr>
+            <div>
+                <h4>Presets guardados</h4>
+                <div id="config-presets-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/pomodoro.js') }}"></script>
+    <script>
+    {% if current_user and current_user.is_authenticated %}
+    window.APP_USER_ID = {{ current_user.id | tojson }};
+    {% else %}
+    window.APP_USER_ID = null;
+    {% endif %}
+    </script>
+</body>
+</html>

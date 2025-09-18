@@ -91,6 +91,24 @@ html {
     height: calc(100% - 40px);
 }
 
+/* Estado colapsado de la barra lateral izquierda: quitar espacio visual y padding */
+.barra-lateral.collapsed {
+    width: 0 !important;
+    min-width: 10px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    transition: width 0.25s ease, padding 0.25s ease, margin 0.25s ease;
+}
+
+/* Cuando la barra lateral está colapsada, quitar margen izquierdo que deja el contenedor principal
+   Usa el selector de hermano inmediato porque el HTML tiene <aside class="barra-lateral"> seguido
+   de <div class="contenedor-principal"> */
+.barra-lateral.collapsed + .contenedor-principal {
+    margin-left: 0 !important;
+    gap: 15px; /* conservar gap interno; ajustar si es necesario */
+}
+
 .iconos-superior,
 .iconos-inferior {
     display: flex;
@@ -298,11 +316,13 @@ pal para una vista de calendario de página completa. */
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 1400px;
+    /* max-width: 1400px; */ /* Puedes mantenerlo si lo necesitas */
     padding: 30px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */ /* Quita esto para que los elementos se estiren */
+    height: 100%; /* <-- AÑADIDO: Asegura que el contenedor principal ocupe toda la altura */
+    box-sizing: border-box; /* <-- AÑADIDO: Para un mejor cálculo del tamaño */
 }
 
 /* Cabecera del calendario (mes, año y botones de navegación) */
@@ -357,11 +377,15 @@ pal para una vista de calendario de página completa. */
 }
 
 /* Cuadrícula para los días del mes */
+/* Cuadrícula para los días del mes */
 .grid-dias {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    /* AÑADIDO: Haz que las filas se creen con igual altura, ocupando el espacio sobrante */
+    grid-auto-rows: 1fr; 
     gap: 8px;
     width: 100%;
+    flex: 1; /* <-- AÑADIDO: Permite que la grilla crezca para llenar el espacio vertical */
 }
 
 /* Estilo individual de cada día en la cuadrícula */
@@ -515,7 +539,11 @@ pal para una vista de calendario de página completa. */
     z-index: 100;
     left: 0;
     top: 0;
-    width: 15%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente. */
     justify-content: center;
@@ -535,6 +563,29 @@ pal para una vista de calendario de página completa. */
     max-width: 450px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     position: relative;
+}
+
+/* Fallback: forzar centrado del modal por si hay reglas en conflicto en el entorno */
+.modal[style*="display: flex"], .modal.show {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+}
+
+.modal[style*="display: flex"] .modal-content,
+.modal.show .modal-content {
+    margin: 0 auto !important;
+    position: relative !important;
+    left: auto !important;
+    transform: none !important;
+    box-sizing: border-box !important;
 }
 
 .modal-content h3 {
@@ -953,19 +1004,56 @@ pal para una vista de calendario de página completa. */
     display: flex;
     gap: 15px;
     height: calc(100vh - 40px);
-    padding: 10px 18px;
     margin-left: 5px; /* Espacio para sidebar (ajustado para estar más cerca) */
 
     border-radius: 12px; /* Suave rounding para destacar sobre el fondo */
     box-shadow: 0 8px 20px rgba(2,6,23,0.06); /* Sombra sutil */
     width: 100%;
-    max-width: 1400px;
+    max-width: 2000px;
+}
+
+/* Cuando la barra lateral izquierda esté colapsada reducimos su impacto visual */
+body.sidebar-collapsed .contenedor-principal {
+    margin-left: 0 !important;
+}
+
+/* Cuando la barra kanban derecha está colapsada queremos que el calendario gane espacio
+   y que el gap sea más pequeño para que no parezca un gran hueco. */
+/* (removed empty selector) */
+
+/* Regla más directa: reducir gap del layout cuando el body tiene clase sidebar-collapsed o kanban está colapsado */
+body.sidebar-collapsed .contenedor-principal,
+.contenedor-principal > .barra-lateral-kanban.collapsed ~ .columna-calendario,
+.contenedor-principal > .barra-lateral-kanban.collapsed ~ .contenedor-derecho {
+    gap: 8px;
+}
+
+/* Alternativa: si el kanban está colapsado, hacer que la columna-calendario tenga más flex (ocupe más) */
+.contenedor-principal > .barra-lateral-kanban.collapsed + .columna-calendario,
+.contenedor-principal > .barra-lateral-kanban.collapsed + .contenedor-derecho + .columna-calendario,
+.contenedor-principal > .columna-calendario {
+    flex: 4;
+}
+
+/* Cuando el contenedor principal tenga la clase kanban-collapsed, hacer que el calendario gane espacio
+   y reducir gap para que no quede ese hueco grande. */
+.contenedor-principal.kanban-collapsed {
+    gap: 8px;
+}
+.contenedor-principal.kanban-collapsed > .columna-calendario {
+    flex: 5; /* más espacio para el calendario */
+}
+.contenedor-principal.kanban-collapsed > .barra-lateral-kanban {
+    width: 56px !important;
+    min-width: 56px !important;
+    max-width: 56px !important;
 }
 
 /* Columna Izquierda - Calendario (75-80%) */
 .columna-calendario {
     flex: 3;
-    min-width: 600px;
+    min-width: 900px;
+
 }
 
 /* Asegura que las columnas del layout se estiren a la misma altura
@@ -1000,17 +1088,21 @@ pal para una vista de calendario de página completa. */
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    max-height: 855px;
 }
 
 .barra-lateral-kanban.collapsed {
-    /* Forzar ancho fijo cuando está colapsada para que no deje una columna vacía */
-    min-width: 50px;
-    max-width: 50px;
-    width: 50px;
-    flex: 0 0 50px;
-    padding: 6px 6px;
-    overflow: hidden;
-    align-items: center;
+    /* Ancho pequeño y consistente para la columna colapsada (ajustable). */
+    width: 56px !important;
+    min-width: 56px !important;
+    max-width: 56px !important;
+    flex: 0 0 56px !important; /* evita que flex crezca */
+    padding: 6px !important;
+    overflow: hidden !important;
+    border-radius: 12px;
+    transition: width 0.22s ease, padding 0.22s ease;
+    min-height: auto;
+    max-height: 855px;
 }
 
 .barra-lateral-kanban.collapsed .kanban-content {
@@ -1629,5 +1721,49 @@ pal para una vista de calendario de página completa. */
     width: 100%;
     margin-top: 20px;
 }
+
+/* Estilos específicos para Pomodoro */
+.pomodoro-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 760px;
+    margin: 20px auto;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.pomodoro-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.pomodoro-display .time {
+    font-size: 3rem;
+    font-weight: 700;
+}
+.pomodoro-display .controls button {
+    background: #4c4cff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.presets-list { display:flex; flex-direction:column; gap:8px; }
+.mini-music-box { background: #fafafa; padding: 8px; border-radius: 8px; }
+
+/* Colores por defecto para estados */
+.pomodoro-work { background: var(--pom-work, #fff); }
+.pomodoro-short { background: var(--pom-short, #fff); }
+.pomodoro-long { background: var(--pom-long, #fff); }
+
+/* Ajustes para modal de Pomodoro (ya existe modal genérico, añadimos especificidad) */
+#pomodoro-modal .modal-content {
+    max-width: 720px;
+}
+
 
 

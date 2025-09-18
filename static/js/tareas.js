@@ -366,8 +366,12 @@ class SistemaTareas {
         
         if (this.kanbanColapsado) {
             kanbanSection.classList.add('collapsed');
+            const cont = document.querySelector('.contenedor-principal');
+            if (cont) cont.classList.add('kanban-collapsed');
         } else {
             kanbanSection.classList.remove('collapsed');
+            const cont = document.querySelector('.contenedor-principal');
+            if (cont) cont.classList.remove('kanban-collapsed');
         }
     }
     
