@@ -33,16 +33,8 @@ class SistemaTareas {
             this.renderCalendario();
         });
         
-        // Botones agregar tarea
-        const btnCalendar = document.getElementById('add-task-calendar');
+        // Botones agregar tarea (solo Kanban permanece)
         const btnKanban = document.getElementById('add-task-kanban');
-        
-        if (btnCalendar) {
-            btnCalendar.addEventListener('click', () => {
-                this.abrirModal();
-            });
-        }
-        
         if (btnKanban) {
             btnKanban.addEventListener('click', () => {
                 this.abrirModal(null, true); // Sin fecha para que vaya a inbox
@@ -176,10 +168,27 @@ class SistemaTareas {
     agregarIndicadorTareas(divDia, fecha) {
         const tareasDelDia = this.todasLasTareas.filter(tarea => tarea.fecha === fecha);
         if (tareasDelDia.length > 0) {
-            const indicador = document.createElement('div');
-            indicador.className = 'indicador-tarea';
-            indicador.textContent = tareasDelDia.length;
-            divDia.appendChild(indicador);
+            // Contenedor para múltiples indicadores
+            const cont = document.createElement('div');
+            cont.className = 'indicadores-container';
+
+            tareasDelDia.forEach(tarea => {
+                const dot = document.createElement('span');
+                const imp = tarea.importancia || 'baja';
+                dot.className = `indicador-dot ${imp}`;
+                const titulo = tarea.titulo || 'Sin título';
+                dot.setAttribute('title', `${titulo} — ${imp}`);
+                dot.setAttribute('aria-label', `${titulo}. Prioridad: ${imp}`);
+                cont.appendChild(dot);
+            });
+
+            // Badge con número total (opcional, accesible)
+            const total = document.createElement('span');
+            total.className = 'indicador-total sr-only';
+            total.textContent = `${tareasDelDia.length} tareas`;
+            cont.appendChild(total);
+
+            divDia.appendChild(cont);
             divDia.classList.add('con-tareas');
         }
     }
@@ -210,7 +219,10 @@ class SistemaTareas {
         completas.innerHTML = '';
         console.log('Renderizando Kanban con tareas IDs:', this.todasLasTareas.map(t=>t.id));
         
-        // Organizar tareas por status
+        // Organizar tareas por status y contar para los badges
+        let countInbox = 0;
+        let countIncompletas = 0;
+        let countCompletas = 0;
         const seen = new Set();
         this.todasLasTareas.forEach(tarea => {
             if (seen.has(tarea.id)) {
@@ -223,15 +235,31 @@ class SistemaTareas {
             switch (tarea.status) {
                 case 'inbox':
                     inbox.appendChild(tarjetaTarea);
+                    countInbox++;
                     break;
                 case 'incompleta':
                     incompletas.appendChild(tarjetaTarea);
+                    countIncompletas++;
                     break;
                 case 'completa':
                     completas.appendChild(tarjetaTarea);
+                    countCompletas++;
+                    break;
+                default:
+                    // Si no tiene status conocido, considerarlo inbox por defecto
+                    inbox.appendChild(tarjetaTarea);
+                    countInbox++;
                     break;
             }
         });
+
+        // Actualizar badges numéricos en el DOM si existen
+        const elInbox = document.getElementById('count-inbox');
+        const elIncompletas = document.getElementById('count-incompletas');
+        const elCompletas = document.getElementById('count-completas');
+        if (elInbox) elInbox.textContent = String(countInbox);
+        if (elIncompletas) elIncompletas.textContent = String(countIncompletas);
+        if (elCompletas) elCompletas.textContent = String(countCompletas);
     }
     
     crearTarjetaTarea(tarea) {
@@ -545,10 +573,13 @@ class SistemaTareas {
             const container = document.getElementById('enlaces-tags');
             const tag = document.createElement('div');
             tag.className = 'tag';
-            tag.innerHTML = `
-                <a href="${valorCompleto}" target="_blank" rel="noopener noreferrer" class="tag-link" data-original-url="${valorOriginal}">${valorOriginal}</a>
-                <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
-            `;
+                tag.innerHTML = `
+                    <a href="${valorCompleto}" target="_blank" rel="noopener noreferrer" class="tag-link" data-original-url="${valorOriginal}">${valorOriginal}</a>
+                    <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
+                `;
+                // Asegurar que el link tenga clase para truncado visual
+                const link = tag.querySelector('.tag-link');
+                if (link) link.classList.add('tag-text');
             container.appendChild(tag);
             input.value = '';
             input.focus();
@@ -564,10 +595,10 @@ class SistemaTareas {
             const container = document.getElementById('contactos-tags');
             const tag = document.createElement('div');
             tag.className = 'tag';
-            tag.innerHTML = `
-                <span>${valor}</span>
-                <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
-            `;
+                tag.innerHTML = `
+                    <span class="tag-text">${valor}</span>
+                    <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
+                `;
             container.appendChild(tag);
             input.value = '';
             input.focus();
@@ -699,7 +730,7 @@ class SistemaTareas {
                 tag.className = 'tag';
                 const valor = enlace.titulo ? `${enlace.titulo} (${enlace.url})` : enlace.url;
                 tag.innerHTML = `
-                    <span>${valor}</span>
+                    <span class="tag-text">${valor}</span>
                     <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
                 `;
                 enlacesContainer.appendChild(tag);
@@ -715,7 +746,7 @@ class SistemaTareas {
                 tag.className = 'tag';
                 const valor = `${contacto.nombre}${contacto.email ? ' (' + contacto.email + ')' : ''}`;
                 tag.innerHTML = `
-                    <span>${valor}</span>
+                    <span class="tag-text">${valor}</span>
                     <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
                 `;
                 contactosContainer.appendChild(tag);
