@@ -5,11 +5,12 @@ class SistemaTareas {
     constructor() {
         this.fechaActual = new Date();
         this.fechaSeleccionada = null;
-        this.tareaEditando = null;
+        this.tareaEditandoId = null;
         this.kanbanColapsado = false;
         this.todasLasTareas = [];
+    this.isSaving = false;
         
-        this.init();
+    this.init();
     }
     
     init() {
@@ -89,12 +90,32 @@ class SistemaTareas {
         
         // Importancia
         document.querySelectorAll('.boton-importancia').forEach(btn => {
+            // Click event
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.boton-importancia').forEach(b => b.classList.remove('seleccionada'));
-                e.target.classList.add('seleccionada');
-                document.getElementById('importancia').value = e.target.dataset.importance;
+                this.seleccionarImportancia(e.target);
+            });
+            
+            // Keyboard events para accesibilidad
+            btn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.seleccionarImportancia(e.target);
+                }
             });
         });
+    }
+    
+    seleccionarImportancia(elemento) {
+        // Remover selección anterior
+        document.querySelectorAll('.boton-importancia').forEach(b => {
+            b.classList.remove('seleccionada');
+            b.setAttribute('aria-checked', 'false');
+        });
+        
+        // Seleccionar nuevo elemento
+        elemento.classList.add('seleccionada');
+        elemento.setAttribute('aria-checked', 'true');
+        document.getElementById('importancia').value = elemento.dataset.importance;
     }
     
     // === CALENDARIO ===
@@ -187,9 +208,16 @@ class SistemaTareas {
         inbox.innerHTML = '';
         incompletas.innerHTML = '';
         completas.innerHTML = '';
+        console.log('Renderizando Kanban con tareas IDs:', this.todasLasTareas.map(t=>t.id));
         
         // Organizar tareas por status
+        const seen = new Set();
         this.todasLasTareas.forEach(tarea => {
+            if (seen.has(tarea.id)) {
+                console.warn('Omitiendo tarea duplicada en memoria id=', tarea.id);
+                return;
+            }
+            seen.add(tarea.id);
             const tarjetaTarea = this.crearTarjetaTarea(tarea);
             
             switch (tarea.status) {
@@ -207,9 +235,36 @@ class SistemaTareas {
     }
     
     crearTarjetaTarea(tarea) {
+        console.log('Creando tarjeta para tarea id=', tarea.id);
+        // Evitar crear dos tarjetas con mismo id en DOM
+        const existing = document.querySelector(`.task-card[data-tarea-id="${tarea.id}"]`);
+        if (existing) {
+            console.warn('Tarjeta ya existe en DOM para id=', tarea.id, '; se reemplazara.');
+            existing.remove();
+        }
         const tarjeta = document.createElement('div');
         tarjeta.className = `task-card ${tarea.importancia || ''}`;
         tarjeta.dataset.tareaId = tarea.id;
+        
+        // Crear HTML para enlaces si existen
+        let enlacesHtml = '';
+        if (tarea.enlaces && tarea.enlaces.length > 0) {
+            enlacesHtml = `
+                <div class="task-enlaces" style="margin-top: 6px;">
+                    <span style="font-size: 0.7rem; color: #666;">🔗 Enlaces:</span>
+                    <div style="margin-top: 2px;">
+                        ${tarea.enlaces.map(enlaceObj => {
+                            // Manejar tanto objetos {url: "...", titulo: "..."} como strings directos
+                            const url = typeof enlaceObj === 'object' ? enlaceObj.url : enlaceObj;
+                            const titulo = typeof enlaceObj === 'object' ? (enlaceObj.titulo || url) : url;
+                            const displayText = titulo.length > 25 ? titulo.substring(0, 25) + '...' : titulo;
+                            const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+                            return `<a href="${fullUrl}" target="_blank" rel="noopener" style="font-size: 0.7rem; color: #0066cc; text-decoration: none; display: inline-block; margin-right: 8px;" title="${titulo}">🌐 ${displayText}</a>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
         
         tarjeta.innerHTML = `
             <div class="task-title">${tarea.titulo}</div>
@@ -218,6 +273,7 @@ class SistemaTareas {
                 <span class="task-asunto">${tarea.asunto || ''}</span>
                 <span class="task-fecha">${tarea.fecha || 'Sin fecha'}</span>
             </div>
+            ${enlacesHtml}
             <div class="task-actions" style="margin-top: 8px;">
                 <button onclick="sistemaTareas.editarTarea(${tarea.id})" style="font-size: 0.7rem; padding: 2px 6px; margin-right: 4px;">✏️</button>
                 <button onclick="sistemaTareas.eliminarTarea(${tarea.id})" style="font-size: 0.7rem; padding: 2px 6px; background: #e53e3e; color: white; border: none; border-radius: 3px;">🗑️</button>
@@ -330,15 +386,23 @@ class SistemaTareas {
     
     cerrarModal() {
         document.getElementById('modal-form').style.display = 'none';
-        this.tareaEditando = null;
         this.limpiarFormulario();
     }
     
     limpiarFormulario() {
         document.getElementById('tarea-form').reset();
         document.getElementById('importancia').value = 'baja';
-        document.querySelectorAll('.boton-importancia').forEach(b => b.classList.remove('seleccionada'));
-        document.querySelector('.boton-importancia.baja').classList.add('seleccionada');
+        
+        // Resetear importancia con atributos ARIA
+        document.querySelectorAll('.boton-importancia').forEach(b => {
+            b.classList.remove('seleccionada');
+            b.setAttribute('aria-checked', 'false');
+        });
+        const botonBaja = document.querySelector('.boton-importancia[data-importance="baja"]');
+        if (botonBaja) {
+            botonBaja.classList.add('seleccionada');
+            botonBaja.setAttribute('aria-checked', 'true');
+        }
         
         // Limpiar contenedores de tags
         document.getElementById('enlaces-tags').innerHTML = '';
@@ -347,53 +411,85 @@ class SistemaTareas {
         // Limpiar inputs
         document.getElementById('enlace-input').value = '';
         document.getElementById('contacto-input').value = '';
+        
+        // Limpiar el ID de edición
+        console.log('Limpiando tareaEditandoId, era:', this.tareaEditandoId);
+        this.tareaEditandoId = null;
     }
     
     async guardarTarea() {
         const datos = this.recogerDatosFormulario();
-        
+        console.log('=== GUARDANDO TAREA ===');
+        console.log('Datos a guardar:', datos);
+        console.log('tareaEditandoId antes de guardar:', this.tareaEditandoId);
+        console.log('¿Es edición?:', !!this.tareaEditandoId);
+        if (this.isSaving) {
+            console.warn('Ignorando guardado: ya hay una operación en curso');
+            return;
+        }
+
+        this.isSaving = true;
+        let response = null;
         try {
-            let response;
-            if (this.tareaEditando) {
-                response = await fetch(`/api/tareas/${this.tareaEditando}`, {
+            if (this.tareaEditandoId) {
+                console.log('Editando tarea existente ID:', this.tareaEditandoId);
+                const url = `/api/tareas/${this.tareaEditandoId}`;
+                console.log('Enviando fetch:', 'PUT', url);
+                response = await fetch(url, {
                     method: 'PUT',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(datos)
                 });
             } else {
-                response = await fetch('/api/tareas', {
+                const url = '/api/tareas';
+                console.log('Creando nueva tarea - Enviando fetch:', 'POST', url);
+                response = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(datos)
                 });
             }
-            
-            if (response.ok) {
+
+            if (response && response.ok) {
+                const result = await response.json();
+                console.log('Respuesta de la API:', result);
+
+                // Limpiar estado de edición PRIMERO
+                this.cerrarModal();
+
+                // Luego actualizar las vistas
                 await this.cargarTodasLasTareas();
                 this.renderKanban();
                 this.renderCalendario();
-                this.cerrarModal();
-                
+
                 if (datos.fecha) {
                     this.cargarTareasDelDia(datos.fecha);
                 }
-            } else {
+            } else if (response) {
                 const error = await response.json();
+                console.error('Error del servidor:', error);
                 alert('Error al guardar: ' + (error.error || 'Error desconocido'));
             }
         } catch (error) {
             console.error('Error:', error);
             alert('Error de conexión');
+        } finally {
+            this.isSaving = false;
+            console.log('tareaEditandoId después de guardar:', this.tareaEditandoId);
         }
     }
     
     recogerDatosFormulario() {
+        // Recoger importancia de los botones seleccionados
+        const importanciaSeleccionada = document.querySelector('.boton-importancia.seleccionada');
+        const importanciaValue = importanciaSeleccionada ? importanciaSeleccionada.dataset.importance : 'baja';
+        
         return {
             titulo: document.getElementById('titulo').value.trim(),
             descripcion: document.getElementById('descripcion').value.trim(),
             fecha: document.getElementById('fecha').value || null,
-            importancia: document.getElementById('importancia').value || null,
-            asunto: document.getElementById('asunto').value.trim() || null,
+            importancia: importanciaValue,
+            asunto: document.getElementById('asunto-categoria').value.trim() || null,
             enlaces: this.recogerEnlacesTags(),
             contactos: this.recogerContactosTags()
         };
@@ -401,12 +497,25 @@ class SistemaTareas {
     
     recogerEnlacesTags() {
         const enlaces = [];
-        document.querySelectorAll('#enlaces-tags .tag span').forEach(span => {
-            const texto = span.textContent.trim();
-            if (texto) {
-                enlaces.push(texto); // Como string simple
+        // Buscar elementos de enlace con prioridad al data-original-url
+        document.querySelectorAll('#enlaces-tags .tag .tag-link').forEach(element => {
+            const textoOriginal = element.dataset.originalUrl || element.textContent.trim();
+            if (textoOriginal) {
+                enlaces.push(textoOriginal);
             }
         });
+        
+        // Fallback para enlaces antiguos sin data-original-url
+        if (enlaces.length === 0) {
+            document.querySelectorAll('#enlaces-tags .tag span').forEach(element => {
+                const texto = element.textContent.trim();
+                if (texto) {
+                    enlaces.push(texto);
+                }
+            });
+        }
+        
+        console.log('Enlaces recolectados:', enlaces);
         return enlaces;
     }
     
@@ -424,19 +533,26 @@ class SistemaTareas {
     // === ENLACES Y CONTACTOS COMO TAGS ===
     agregarEnlaceTag() {
         const input = document.getElementById('enlace-input');
-        const valor = input.value.trim();
+        const valorOriginal = input.value.trim();
         
-        if (valor) {
+        if (valorOriginal) {
+            // Crear URL completa para el href
+            let valorCompleto = valorOriginal;
+            if (!valorOriginal.startsWith('http://') && !valorOriginal.startsWith('https://')) {
+                valorCompleto = 'https://' + valorOriginal;
+            }
+            
             const container = document.getElementById('enlaces-tags');
             const tag = document.createElement('div');
             tag.className = 'tag';
             tag.innerHTML = `
-                <span>${valor}</span>
+                <a href="${valorCompleto}" target="_blank" rel="noopener noreferrer" class="tag-link" data-original-url="${valorOriginal}">${valorOriginal}</a>
                 <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
             `;
             container.appendChild(tag);
             input.value = '';
             input.focus();
+            console.log('Enlace agregado visualmente:', valorOriginal);
         }
     }
     
@@ -460,14 +576,23 @@ class SistemaTareas {
     
     // === API CALLS ===
     async cargarTodasLasTareas() {
+        if (this.isLoading) {
+            console.warn('Ignorando cargarTodasLasTareas: ya hay una carga en curso');
+            return;
+        }
+        this.isLoading = true;
         try {
+            console.log('Fetching /api/tareas ...');
             const response = await fetch('/api/tareas');
             if (response.ok) {
                 this.todasLasTareas = await response.json();
+                console.log('Tareas cargadas:', this.todasLasTareas.map(t=>t.id));
                 this.renderKanban();
             }
         } catch (error) {
             console.error('Error al cargar tareas:', error);
+        } finally {
+            this.isLoading = false;
         }
     }
     
@@ -495,20 +620,54 @@ class SistemaTareas {
         tareas.forEach(tarea => {
             const div = document.createElement('div');
             div.className = 'tarea-existente';
+            const isCompleted = tarea.status === 'completa';
+            
             div.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8f9fa; margin: 4px 0; border-radius: 4px;">
-                    <div>
-                        <strong>${tarea.titulo}</strong>
-                        <br><small>${tarea.descripcion || ''}</small>
+                <div class="tarea-contenedor ${isCompleted ? 'tarea-completada' : ''}" data-tarea-id="${tarea.id}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: ${isCompleted ? '#d4edda' : '#f8f9fa'}; margin: 4px 0; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
+                    <div class="tarea-info" style="flex: 1; padding-right: 8px;">
+                        <strong style="${isCompleted ? 'text-decoration: line-through; opacity: 0.7;' : ''}">${tarea.titulo}</strong>
+                        <br><small style="${isCompleted ? 'text-decoration: line-through; opacity: 0.7;' : ''}">${tarea.descripcion || ''}</small>
                         <br><span class="badge ${tarea.importancia}">${tarea.importancia || 'sin prioridad'}</span>
                     </div>
-                    <div>
-                        <button onclick="sistemaTareas.editarTarea(${tarea.id})" style="margin: 0 2px; padding: 4px 8px; font-size: 0.8rem;">✏️</button>
-                        <button onclick="sistemaTareas.eliminarTarea(${tarea.id})" style="margin: 0 2px; padding: 4px 8px; font-size: 0.8rem; background: #dc3545; color: white; border: none; border-radius: 3px;">🗑️</button>
+                    <div class="tarea-botones" style="display: flex; gap: 2px;">
+                        <button class="btn-completar" data-action="completar" data-id="${tarea.id}" 
+                                style="padding: 6px 8px; font-size: 0.8rem; background: ${isCompleted ? '#6c757d' : '#28a745'}; color: white; border: none; border-radius: 3px; min-width: 28px; cursor: pointer;">
+                            ${isCompleted ? '↻' : '✓'}
+                        </button>
+                        <button class="btn-eliminar" data-action="eliminar" data-id="${tarea.id}" 
+                                style="padding: 6px 8px; font-size: 0.8rem; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">🗑️</button>
                     </div>
                 </div>
             `;
+            
+            // Agregar al contenedor primero
             container.appendChild(div);
+            
+            // Agregar event listeners usando delegación
+            const tareaContenedor = div.querySelector('.tarea-contenedor');
+            if (tareaContenedor) {
+                tareaContenedor.addEventListener('click', (e) => {
+                    console.log('Click detectado en tarea:', e.target);
+                    const button = e.target.closest('button');
+                    
+                    if (button) {
+                        console.log('Click en botón:', button);
+                        e.stopPropagation();
+                        const action = button.dataset.action;
+                        const id = parseInt(button.dataset.id);
+                        
+                        if (action === 'completar') {
+                            this.toggleCompletarTarea(id);
+                        } else if (action === 'eliminar') {
+                            this.eliminarTarea(id);
+                        }
+                    } else {
+                        // Click en la tarea (no en botones) - abrir modal
+                        console.log('Abriendo modal para tarea:', tarea.titulo);
+                        this.abrirTareaDetalle(tarea);
+                    }
+                });
+            }
         });
     }
     
@@ -516,14 +675,15 @@ class SistemaTareas {
         const tarea = this.todasLasTareas.find(t => t.id === id);
         if (!tarea) return;
         
-        this.tareaEditando = id;
+        console.log('Iniciando edición de tarea ID:', id);
         this.abrirModal(tarea.fecha);
+        this.tareaEditandoId = id;
         
         // Llenar formulario con datos existentes
         document.getElementById('titulo').value = tarea.titulo;
         document.getElementById('descripcion').value = tarea.descripcion || '';
         document.getElementById('fecha').value = tarea.fecha || '';
-        document.getElementById('asunto').value = tarea.asunto || '';
+        document.getElementById('asunto-categoria').value = tarea.asunto || '';
         document.getElementById('importancia').value = tarea.importancia || 'baja';
         
         // Seleccionar importancia
@@ -581,6 +741,110 @@ class SistemaTareas {
         } catch (error) {
             console.error('Error al eliminar tarea:', error);
         }
+    }
+    
+    async toggleCompletarTarea(id) {
+        console.log('Toggling tarea completada:', id);
+        try {
+            const tarea = this.todasLasTareas.find(t => t.id === id);
+            if (!tarea) {
+                console.log('Tarea no encontrada:', id);
+                return;
+            }
+            
+            // Toggle entre completa e incompleta
+            tarea.status = tarea.status === 'completa' ? 'incompleta' : 'completa';
+            
+            const response = await fetch(`/api/tareas/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: tarea.status })
+            });
+            
+            if (response.ok) {
+                await this.cargarTodasLasTareas();
+                this.renderKanban();
+                this.renderCalendario();
+                
+                // Actualizar lista si el modal está abierto
+                if (this.fechaSeleccionada) {
+                    this.cargarTareasDelDia(this.fechaSeleccionada);
+                }
+            }
+        } catch (error) {
+            console.error('Error al completar tarea:', error);
+        }
+    }
+    
+    abrirTareaDetalle(tarea) {
+        console.log('Abriendo tarea detalle:', tarea);
+        
+        // Preparar el modal con los datos de la tarea
+        document.getElementById('titulo').value = tarea.titulo || '';
+        document.getElementById('descripcion').value = tarea.descripcion || '';
+        document.getElementById('asunto-categoria').value = tarea.asunto || '';
+        document.getElementById('fecha').value = tarea.fecha || '';
+        
+        // Marcar la importancia
+        const importanciaBtns = document.querySelectorAll('.boton-importancia');
+        importanciaBtns.forEach(btn => {
+            btn.classList.remove('seleccionada');
+            btn.setAttribute('aria-checked', 'false');
+            if (btn.dataset.importance === tarea.importancia) {
+                btn.classList.add('seleccionada');
+                btn.setAttribute('aria-checked', 'true');
+            }
+        });
+        
+        // Llenar enlaces
+        const enlacesContainer = document.getElementById('enlaces-tags');
+        enlacesContainer.innerHTML = '';
+        if (tarea.enlaces && tarea.enlaces.length > 0) {
+            console.log('Cargando enlaces:', tarea.enlaces); // Debug
+            tarea.enlaces.forEach(enlaceObj => {
+                // Manejar tanto objetos {url: "...", titulo: "..."} como strings directos
+                const enlace = typeof enlaceObj === 'object' ? enlaceObj.url : enlaceObj;
+                const titulo = typeof enlaceObj === 'object' ? (enlaceObj.titulo || enlace) : enlace;
+                
+                // Crear URL completa para el href
+                let valorCompleto = enlace;
+                if (!enlace.startsWith('http://') && !enlace.startsWith('https://')) {
+                    valorCompleto = 'https://' + enlace;
+                }
+                
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `
+                    <a href="${valorCompleto}" target="_blank" rel="noopener noreferrer" class="tag-link" data-original-url="${enlace}">${titulo}</a>
+                    <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
+                `;
+                enlacesContainer.appendChild(tag);
+            });
+        }
+        
+        // Llenar contactos
+        const contactosContainer = document.getElementById('contactos-tags');
+        contactosContainer.innerHTML = '';
+        if (tarea.contactos && tarea.contactos.length > 0) {
+            tarea.contactos.forEach(contacto => {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `
+                    <span>${contacto}</span>
+                    <button type="button" class="remove-tag" onclick="this.parentElement.remove()">×</button>
+                `;
+                contactosContainer.appendChild(tag);
+            });
+        }
+        
+        // Abrir modal PRIMERO (esto limpia el formulario)
+        this.abrirModal();
+        
+        // DESPUÉS establecer el ID para edición (para que no se limpie)
+        console.log('Estableciendo ID para edición:', tarea.id);
+        this.tareaEditandoId = tarea.id;
     }
     
     // === UTILIDADES ===

@@ -138,8 +138,8 @@
                     <label for="descripcion">Descripción:</label>
                     <textarea id="descripcion" rows="3"></textarea>
                     
-                    <label for="asunto">Asunto/Categoría:</label>
-                    <input type="text" id="asunto" placeholder="Ej: Matemáticas, Proyecto Personal, Trabajo...">
+                    <label for="asunto-categoria">Asunto/Categoría:</label>
+                    <input type="text" id="asunto-categoria" placeholder="Ej: Matemáticas, Proyecto Personal, Trabajo...">
                 </div>
 
                 <!-- Fecha e importancia -->
@@ -149,11 +149,11 @@
                     <input type="date" id="fecha">
                     <small class="text-helper">Si no seleccionas fecha, la tarea irá al Inbox</small>
                     
-                    <label>Importancia:</label>
-                    <div class="botones-importancia">
-                        <div class="boton-importancia alta" data-importance="alta" title="Alta"></div>
-                        <div class="boton-importancia media" data-importance="media" title="Media"></div>
-                        <div class="boton-importancia baja seleccionada" data-importance="baja" title="Baja"></div>
+                    <label for="importancia" id="importancia-label">Importancia:</label>
+                    <div class="botones-importancia" role="radiogroup" aria-labelledby="importancia-label">
+                        <div class="boton-importancia alta" data-importance="alta" title="Alta" role="radio" aria-checked="false" tabindex="0"></div>
+                        <div class="boton-importancia media" data-importance="media" title="Media" role="radio" aria-checked="false" tabindex="0"></div>
+                        <div class="boton-importancia baja seleccionada" data-importance="baja" title="Baja" role="radio" aria-checked="true" tabindex="0"></div>
                     </div>
                     <input type="hidden" id="importancia" value="baja">
                 </div>
@@ -162,20 +162,22 @@
                 <div class="form-section">
                     <h4>🔗 Enlaces</h4>
                     <div class="input-with-add">
-                        <input type="text" id="enlace-input" placeholder="Añadir enlace...">
-                        <button type="button" id="add-enlace-btn">+</button>
+                        <label for="enlace-input" class="sr-only">Agregar enlace</label>
+                        <input type="text" id="enlace-input" placeholder="Añadir enlace..." aria-label="Enlace a agregar">
+                        <button type="button" id="add-enlace-btn" aria-label="Agregar enlace">+</button>
                     </div>
-                    <div id="enlaces-tags" class="tags-container"></div>
+                    <div id="enlaces-tags" class="tags-container" aria-label="Enlaces agregados"></div>
                 </div>
 
                 <!-- Contactos -->
                 <div class="form-section">
                     <h4>👥 Contactos</h4>
                     <div class="input-with-add">
-                        <input type="text" id="contacto-input" placeholder="Añadir contacto...">
-                        <button type="button" id="add-contacto-btn">+</button>
+                        <label for="contacto-input" class="sr-only">Agregar contacto</label>
+                        <input type="text" id="contacto-input" placeholder="Añadir contacto..." aria-label="Contacto a agregar">
+                        <button type="button" id="add-contacto-btn" aria-label="Agregar contacto">+</button>
                     </div>
-                    <div id="contactos-tags" class="tags-container"></div>
+                    <div id="contactos-tags" class="tags-container" aria-label="Contactos agregados"></div>
                 </div>
 
                 <button type="submit" class="btn-submit-full">Guardar Tarea</button>

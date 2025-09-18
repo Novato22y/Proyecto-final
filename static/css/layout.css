@@ -1,0 +1,52 @@
+/* layout.css - Contenedores principales y layout 75-25 */
+
+.barra-lateral {
+    width: 65px;
+    background-color: #ffffff;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px;
+    height: calc(100% - 40px);
+}
+
+.iconos-superior,
+.iconos-inferior {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contenedor-principal {
+    display: flex;
+    gap: 15px;
+    height: calc(100vh - 40px);
+    padding: 20px;
+    margin-left: 80px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1400px;
+    padding: 30px;
+}
+
+.columna-calendario { flex: 3; min-width: 600px; }
+.barra-lateral-kanban {
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.barra-lateral-kanban.collapsed { min-width: 50px; max-width: 50px; padding: 10px 5px; }
+.barra-lateral-kanban.collapsed .kanban-content { display: none; }
+
+.kanban-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #e2e8f0; }

@@ -1,145 +1,21 @@
-/*
-  ESTRUCTURA DEL ARCHIVO CSS:
-  1.  IMPORTACIONES Y ESTILOS GLOBALES
-      - Importación de fuentes
-      - Estilos para <body> y estilos generales.
-  2.  ESTRUCTURA PRINCIPAL (LAYOUT)
-      - Barra Lateral (Sidebar)
-      - Sección Izquierda
-      - Sección Derecha
-  3.  COMPONENTES ESPECÍFICOS
-      - Planificador (Planner)
-      - Reloj y Calendario (Widgets en la sección izquierda)
-      - Lista de Tareas (To-Do list en la sección derecha)
-      - Tarjeta de Perfil (Estilo de posicionamiento)
-      - Aplicación de Calendario Completa (Standalone)
-  4.  MODAL (Ventana emergente)
-      - Estilos para el contenedor del modal.
-      - Formulario y lista de recordatorios dentro del modal.
-  5.  ELEMENTOS DE UI REUTILIZABLES
-      - Botones (Importancia, navegación, etc.)
-      - Iconos
-      - Etiquetas y otros elementos visuales.
+/* styles.css - Wrapper para importar módulos separados.
+   Mantiene compatibilidad con el enlace original en las plantillas.
+   Los estilos reales ahora están en archivos modulares dentro de la misma carpeta.
 */
 
-/* -------------------------------------------------------------------------- */
-/*                 1. IMPORTACIONES Y ESTILOS GLOBALES                        */
-/* -------------------------------------------------------------------------- */
+@import url('base.css');
+@import url('layout.css');
+@import url('kanban.css');
+@import url('modal.css');
+@import url('components.css');
+@import url('social.css');
+@import url('tags.css');
+@import url('calendar.css');
+@import url('utilities.css');
 
-/* Importa la fuente 'Inter' desde Google Fonts para un diseño moderno y limpio. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-/* Estilos generales del cuerpo de la página. */
-body {
-    /* Define la fuente principal para toda la aplicación. */
-    font-family: 'Inter', sans-serif;
-    /* Establece un color de fondo gris suave. */
-    background-color: #e2e8f0;
-    /* Utiliza Flexbox para organizar los contenedores principales. */
-    display: flex;
-    /* Alinea los contenedores hijos para que tengan la misma altura. */
-    align-items: stretch;
-    /* Añade un espacio de 20px entre los contenedores principales. */
-    gap: 20px;
-    /* Añade un espacio de 20px alrededor de toda la página. */
-    padding: 20px;
-    /* Asegura que el cuerpo ocupe el 100% de la altura de la ventana del navegador. */
-    height: 100vh;
-    /* Evita que aparezca una barra de scroll en la página principal. */
-    overflow: hidden;
-    /* Asegura que el padding y el borde se incluyan en el cálculo total del tamaño. */
-    box-sizing: border-box;
-    /* Elimina el margen por defecto del navegador. */
-    margin: 0;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                     2. ESTRUCTURA PRINCIPAL (LAYOUT)                       */
-/* -------------------------------------------------------------------------- */
-
-/* --- Barra Lateral (Sidebar) --- */
-.barra-lateral {
-    width: 65px;
-    background-color: #ffffff;
-    padding: 20px 0;
-    display: flex;
-    flex-direction: column; /* Apila los iconos verticalmente. */
-    justify-content: space-between; /* Espacia los iconos superiores e inferiores. */
-    align-items: center; /* Centra los iconos horizontalmente. */
-    border-radius: 12px;
-    /* La altura se ajusta para no tocar los bordes superior/inferior de la página. */
-    height: calc(100% - 40px);
-}
-
-.iconos-superior,
-.iconos-inferior {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* --- Sección Izquierda (Contiene Planner y Widgets) --- */
-.seccion-izquierda {
-    flex: 1; /* Permite que la sección ocupe el espacio disponible. */
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    min-width: 300px; /* Ancho mínimo para mantener la legibilidad. */
-    height: calc(100% - 40px);
-}
-
-/* --- Sección Derecha (Contiene Tareas y Estadísticas) --- */
-.seccion-derecha {
-    flex: 1; /* Ocupa el mismo espacio que la sección izquierda. */
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    height: calc(100% - 40px);
-}
-
-/* Contenedor blanco genérico (usado en la sección derecha) */
-.contenedor-blanco {
-    background: #fff;
-    border-radius: 24px;
-    margin: 0;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    padding: 30px;
-    height: 100%;
-    overflow-y: hidden; /* Evita el scroll en este contenedor específico. */
-    box-sizing: border-box;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                       3. COMPONENTES ESPECÍFICOS                           */
-/* -------------------------------------------------------------------------- */
-
-/* --- Planificador (Sección Izquierda) --- */
-.lista-planificador {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1; /* Permite que la lista crezca y ocupe el espacio. */
-    overflow-y: auto; /* Añade scroll si los elementos exceden la altura. */
-}
-
-.item-planificador {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.item-planificador:hover {
+/* Nota: para debugging rápido puedes volver a editar este archivo.
+   Los navegadores aplican las @import en orden; mantenemos el mismo árbol
+   de dependencias que en el archivo monolítico original. */
     transform: translateY(-2px); /* Efecto de elevación al pasar el ratón. */
 }
 
@@ -271,7 +147,8 @@ body {
 }
 
 /* --- Aplicación de Calendario Completa (Standalone) --- */
-/* Contenedor principal para una vista de calendario de página completa. */
+/* 
+pal para una vista de calendario de página completa. */
 .calendar-app {
     background-color: #ffffff;
     border-radius: 12px;
@@ -907,6 +784,12 @@ body {
     height: calc(100vh - 40px);
     padding: 20px;
     margin-left: 80px; /* Espacio para sidebar */
+
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1400px;
+    padding: 30px;
 }
 
 /* Columna Izquierda - Calendario (75-80%) */
@@ -1258,6 +1141,57 @@ body {
     width: auto !important;
 }
 
+/* Estilos para tareas completadas */
+.tarea-completada {
+    background: #d4edda !important;
+    opacity: 0.8;
+}
+
+.tarea-contenedor:hover {
+    background: #e9ecef !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tarea-completada:hover {
+    background: #c3e6cb !important;
+}
+
+/* Estilos para los botones de las tareas */
+.tarea-botones {
+    display: flex !important;
+    gap: 4px !important;
+}
+
+.btn-completar, .btn-eliminar {
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-weight: bold !important;
+}
+
+.btn-completar:hover {
+    transform: scale(1.05) !important;
+    opacity: 0.9 !important;
+}
+
+.btn-eliminar:hover {
+    transform: scale(1.05) !important;
+    opacity: 0.9 !important;
+}
+
+/* Clase para accesibilidad - solo visible para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Adaptaciones del calendario existente */
 .calendar-app {
     background: #fff;
@@ -1345,26 +1279,45 @@ body {
     line-height: 1.2;
 }
 
+/* Estilo para enlaces dentro de tags */
+.tag-link {
+    color: white !important;
+    text-decoration: none;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 4px;
+    line-height: 1.2;
+    display: inline-block;
+}
+
+.tag-link:hover {
+    text-decoration: underline;
+    color: #f0f8ff !important;
+}
+
 /* Botón de eliminar tag */
 .remove-tag {
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
     border-radius: 50%;
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 8px;
     cursor: pointer;
     transition: background 0.2s ease;
     flex-shrink: 0;
     margin-left: 4px;
+    font-weight: bold;
 }
 
 .remove-tag:hover {
-    background: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.4);
     transform: scale(1.1);
 }
 
