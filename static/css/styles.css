@@ -1,25 +1,10 @@
 /*
   ESTRUCTURA DEL ARCHIVO CSS:
   1.  IMPORTACIONES Y ESTILOS GLOBALES
-      - Importación de fuentes
-      - Estilos para <body> y estilos generales.
   2.  ESTRUCTURA PRINCIPAL (LAYOUT)
-      - Barra Lateral (Sidebar)
-      - Sección Izquierda
-      - Sección Derecha
   3.  COMPONENTES ESPECÍFICOS
-      - Planificador (Planner)
-      - Reloj y Calendario (Widgets en la sección izquierda)
-      - Lista de Tareas (To-Do list en la sección derecha)
-      - Tarjeta de Perfil (Estilo de posicionamiento)
-      - Aplicación de Calendario Completa (Standalone)
   4.  MODAL (Ventana emergente)
-      - Estilos para el contenedor del modal.
-      - Formulario y lista de recordatorios dentro del modal.
   5.  ELEMENTOS DE UI REUTILIZABLES
-      - Botones (Importancia, navegación, etc.)
-      - Iconos
-      - Etiquetas y otros elementos visuales.
 */
 
 /* -------------------------------------------------------------------------- */
@@ -31,44 +16,33 @@
 
 /* Estilos generales del cuerpo de la página. */
 body {
-    /* Define la fuente principal para toda la aplicación. */
-    font-family: 'Inter', sans-serif;
-    /* Restaurado: color de fondo gris suave para toda la página. */
-    background-color: #e2e8f0;
-    /* Utiliza Flexbox para organizar los contenedores principales. */
-    display: flex;
-    /* Alinea los contenedores hijos para que tengan la misma altura. */
-    align-items: stretch;
-    /* Añade un espacio de 20px entre los contenedores principales. */
-    gap: 20px;
-    /* Añade un espacio alrededor de la página (reducido para compactar). */
-    padding: 12px;
-    /* Asegura que el cuerpo ocupe el 100% de la altura de la ventana del navegador. */
-    height: 100vh;
-    /* Permitir scroll si el contenido excede la altura de la ventana. */
-    overflow: auto;
-    /* Asegura que el padding y el borde se incluyan en el cálculo total del tamaño. */
-    box-sizing: border-box;
-    /* Elimina el margen por defecto del navegador. */
-    margin: 0;
+    font-family: 'Inter', sans-serif; /* Establece la fuente principal de la página. */
+    background-color: #e2e8f0; /* Define un color de fondo gris claro. */
+    display: flex; /* Activa el modelo de caja flexible (Flexbox) para alinear los elementos hijos. */
+    align-items: stretch; /* Estira los elementos hijos para que ocupen toda la altura del contenedor. */
+    gap: 20px; /* Crea un espacio de 20px entre los elementos hijos directos. */
+    padding: 12px; /* Añade un relleno interno de 12px alrededor del contenido del body. */
+    height: 100vh; /* Establece la altura del body al 100% de la altura de la ventana gráfica (viewport height). */
+    overflow: auto; /* Muestra barras de desplazamiento si el contenido excede el tamaño del body. */
+    box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el cálculo total del ancho y alto. */
+    margin: 0; /* Elimina el margen por defecto del navegador para el body. */
 }
 
 /* Asegurar que el html también ocupe el 100% para referencias de altura */
 html {
-    height: 100%;
+    height: 100%; /* Establece la altura del elemento html al 100% para que el body pueda usar vh correctamente. */
 }
 
 /* Forzar que el contenedor principal y sus columnas llenen la altura disponible */
 .contenedor-principal {
-    /* Forzar altura fija para que las columnas internas se estiren igual */
-    height: calc(100vh - 40px);
+    height: calc(100vh - 40px); /* Calcula la altura restando 40px a la altura total de la ventana, para dejar espacio al padding. */
 }
 
 .columna-calendario,
 .barra-lateral-kanban,
 .barra-lateral,
 .contenedor-derecho {
-    height: 100%;
+    height: 100%; /* Establece que todas estas clases de columna ocupen el 100% de la altura de su contenedor padre. */
 }
 
 
@@ -78,79 +52,74 @@ html {
 
 /* --- Barra Lateral (Sidebar) --- */
 .barra-lateral {
-    width: 60px;
-    background-color: #ffffff;
-    padding: 12px 0;
-    display: flex;
-    flex-direction: column; /* Apila los iconos verticalmente. */
-    justify-content: space-between; /* Espacia los iconos superiores e inferiores. */
-    align-items: center; /* Centra los iconos horizontalmente. */
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    /* La altura se ajusta para no tocar los bordes superior/inferior de la página. */
-    height: calc(100% - 40px);
+    width: 60px; /* Define un ancho fijo de 60px para la barra lateral. */
+    background-color: #ffffff; /* Establece el color de fondo a blanco. */
+    padding: 12px 0; /* Añade un relleno de 12px arriba/abajo y 0 a los lados. */
+    display: flex; /* Habilita Flexbox para los elementos internos. */
+    flex-direction: column; /* Apila los elementos hijos verticalmente. */
+    justify-content: space-between; /* Distribuye el espacio sobrante entre los elementos hijos. */
+    align-items: center; /* Centra los elementos hijos horizontalmente. */
+    border-radius: 12px; /* Redondea las esquinas con un radio de 12px. */
+    transition: all 0.3s ease; /* Anima todas las propiedades que cambien durante 0.3 segundos con una curva suave. */
+    height: calc(100% - 40px); /* Calcula la altura restando 40px al 100% del contenedor padre. */
 }
 
-/* Estado colapsado de la barra lateral izquierda: quitar espacio visual y padding */
 .barra-lateral.collapsed {
-    width: 0 !important;
-    min-width: 10px !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-    transition: width 0.25s ease, padding 0.25s ease, margin 0.25s ease;
+    width: 0 !important; /* Fuerza el ancho a 0 cuando la barra está colapsada, ocultándola. */
+    min-width: 10px !important; /* Establece un ancho mínimo para mantener una pequeña visibilidad o para la transición. */
+    padding: 0 !important; /* Elimina el padding cuando está colapsada. */
+    overflow: hidden !important; /* Oculta cualquier contenido que se desborde. */
+    border-radius: 0 !important; /* Elimina el redondeo de las esquinas. */
+    transition: width 0.25s ease, padding 0.25s ease, margin 0.25s ease; /* Anima específicamente el ancho, padding y margen. */
 }
 
-/* Cuando la barra lateral está colapsada, quitar margen izquierdo que deja el contenedor principal
-   Usa el selector de hermano inmediato porque el HTML tiene <aside class="barra-lateral"> seguido
-   de <div class="contenedor-principal"> */
-.barra-lateral.collapsed + .contenedor-principal {
-    margin-left: 0 !important;
-    gap: 15px; /* conservar gap interno; ajustar si es necesario */
+.barra-lateral.collapsed+.contenedor-principal {
+    margin-left: 0 !important; /* Elimina el margen izquierdo del contenedor principal cuando la barra está colapsada. */
+    gap: 15px; /* Establece el espacio entre los elementos del contenedor principal. */
 }
 
 .iconos-superior,
 .iconos-inferior {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila los iconos verticalmente. */
+    gap: 16px; /* Crea un espacio de 16px entre cada icono. */
 }
 
 /* --- Sección Izquierda (Contiene Planner y Widgets) --- */
 .seccion-izquierda {
-    flex: 1; /* Permite que la sección ocupe el espacio disponible. */
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: transparent;
-    padding: 12px;
-    border-radius: 0;
-    min-width: 300px; /* Ancho mínimo para mantener la legibilidad. */
-    height: calc(100% - 40px);
+    flex: 1; /* Hace que la sección ocupe todo el espacio disponible en el eje principal. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila los elementos hijos verticalmente. */
+    gap: 20px; /* Crea un espacio de 20px entre los elementos hijos. */
+    background-color: transparent; /* Establece el fondo como transparente. */
+    padding: 12px; /* Añade un relleno interno de 12px. */
+    border-radius: 0; /* Sin esquinas redondeadas. */
+    min-width: 300px; /* Define un ancho mínimo de 300px para evitar que se comprima demasiado. */
+    height: calc(100% - 40px); /* Calcula la altura. */
 }
 
 /* --- Sección Derecha (Contiene Tareas y Estadísticas) --- */
 .seccion-derecha {
-    flex: 1; /* Ocupa el mismo espacio que la sección izquierda. */
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background-color: transparent;
-    padding: 12px;
-    border-radius: 0;
-    height: calc(100% - 40px);
+    flex: 1; /* Ocupa todo el espacio flexible disponible. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila los elementos verticalmente. */
+    gap: 12px; /* Espacio de 12px entre elementos hijos. */
+    background-color: transparent; /* Fondo transparente. */
+    padding: 12px; /* Relleno interno de 12px. */
+    border-radius: 0; /* Sin esquinas redondeadas. */
+    height: calc(100% - 40px); /* Calcula la altura. */
 }
 
 /* Contenedor blanco genérico (usado en la sección derecha) */
 .contenedor-blanco {
-    background: #fff;
-    border-radius: 0;
-    margin: 0;
-    box-shadow: none;
-    padding: 18px;
-    height: 100%;
-    overflow-y: auto;
-    box-sizing: border-box;
+    background: #fff; /* Fondo blanco. */
+    border-radius: 0; /* Sin esquinas redondeadas. */
+    margin: 0; /* Sin margen exterior. */
+    box-shadow: none; /* Sin sombra. */
+    padding: 18px; /* Relleno interno de 18px. */
+    height: 100%; /* Ocupa el 100% de la altura de su padre. */
+    overflow-y: auto; /* Muestra una barra de desplazamiento vertical si el contenido se desborda. */
+    box-sizing: border-box; /* Incluye padding y borde en el cálculo del tamaño total. */
 }
 
 /* -------------------------------------------------------------------------- */
@@ -159,374 +128,378 @@ html {
 
 /* --- Planificador (Sección Izquierda) --- */
 .lista-planificador {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1; /* Permite que la lista crezca y ocupe el espacio. */
-    overflow-y: auto; /* Añade scroll si los elementos exceden la altura. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila los elementos verticalmente. */
+    gap: 15px; /* Espacio de 15px entre elementos. */
+    flex: 1; /* Ocupa el espacio flexible disponible. */
+    overflow-y: auto; /* Permite el desplazamiento vertical si es necesario. */
 }
 
 .item-planificador {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    cursor: pointer;
-    transition: transform 0.2s;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos hijos. */
+    align-items: center; /* Centra los elementos hijos verticalmente. */
+    padding: 10px 14px; /* Relleno interno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Añade una sombra sutil. */
+    cursor: pointer; /* Cambia el cursor a una mano para indicar que es clickeable. */
+    transition: transform 0.2s; /* Anima la propiedad 'transform' durante 0.2 segundos. */
 }
 
 .item-planificador:hover {
-    transform: translateY(-2px); /* Efecto de elevación al pasar el ratón. */
+    transform: translateY(-2px); /* Eleva ligeramente el elemento al pasar el cursor sobre él. */
 }
 
 /* --- Reloj y Calendario (Widgets en Sección Izquierda) --- */
 .tarjeta-reloj {
-    background-color: #4c4cff;
-    color: #ffffff;
-    padding: 12px;
-    border-radius: 12px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    background-color: #4c4cff; /* Fondo de color azul. */
+    color: #ffffff; /* Texto de color blanco. */
+    padding: 12px; /* Relleno interno de 12px. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    text-align: center; /* Centra el texto. */
+    position: relative; /* Permite posicionar elementos hijos de forma absoluta dentro de este. */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra más pronunciada. */
 }
 
 .hora-texto {
-    font-size: 2.4rem;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1;
+    font-size: 2.4rem; /* Tamaño de fuente grande para la hora. */
+    font-weight: 600; /* Peso de fuente semigrueso. */
+    margin: 0; /* Sin margen. */
+    line-height: 1; /* Altura de línea ajustada para el texto grande. */
 }
 
 .sub-texto-hora {
-    font-size: 1.5rem;
-    font-weight: 400;
-    vertical-align: super; /* Alinea el texto AM/PM como superíndice. */
+    font-size: 1.5rem; /* Tamaño de fuente para el texto secundario (AM/PM). */
+    font-weight: 400; /* Peso de fuente normal. */
+    vertical-align: super; /* Alinea el texto como un superíndice. */
 }
 
 .dia-texto {
-    margin: 5px 0 0;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+    margin: 5px 0 0; /* Margen superior de 5px. */
+    font-size: 0.9rem; /* Tamaño de fuente para el día. */
+    color: rgba(255, 255, 255, 0.8); /* Color blanco con 80% de opacidad. */
 }
 
 .tarjeta-calendario {
-    background-color: #ffffff;
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    background-color: #ffffff; /* Fondo blanco. */
+    padding: 12px; /* Relleno interno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Sombra sutil. */
 }
 
 .encabezado-calendario {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos. */
+    align-items: center; /* Centra verticalmente los elementos. */
+    margin-bottom: 20px; /* Margen inferior de 20px. */
 }
 
 .texto-mes {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #2d3748;
+    font-size: 1.05rem; /* Tamaño de fuente para el mes. */
+    font-weight: 600; /* Peso de fuente semigrueso. */
+    color: #2d3748; /* Color de texto gris oscuro. */
 }
 
 /* --- Lista de Tareas (Sección Derecha) --- */
 .encabezado-todo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
 }
 
 .titulo-seccion {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2d3748;
+    margin: 0; /* Sin margen. */
+    font-size: 2rem; /* Tamaño de fuente grande. */
+    font-weight: 700; /* Peso de fuente grueso. */
+    color: #2d3748; /* Color gris oscuro. */
 }
 
 .subtitulo {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #718096;
+    font-size: 1rem; /* Tamaño de fuente estándar. */
+    font-weight: 600; /* Peso de fuente semigrueso. */
+    color: #718096; /* Color gris. */
 }
 
 .lista-tareas {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1; /* Ocupa el espacio disponible. */
-    overflow-y: auto; /* Añade scroll si es necesario. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    gap: 15px; /* Espacio entre tareas. */
+    flex: 1; /* Ocupa el espacio flexible. */
+    overflow-y: auto; /* Permite desplazamiento vertical. */
 }
 
 .item-tarea {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
+    background-color: #ffffff; /* Fondo blanco. */
+    padding: 15px 20px; /* Relleno interno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra muy sutil. */
 }
 
 .texto-placeholder {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #a0aec0;
-    background-color: #ffffff;
-    padding: 15px 20px;
-    border-radius: 12px;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    gap: 10px; /* Espacio entre el icono y el texto. */
+    color: #a0aec0; /* Color de texto gris claro. */
+    background-color: #ffffff; /* Fondo blanco. */
+    padding: 15px 20px; /* Relleno interno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
 }
 
-/* Sección de estadísticas en la parte inferior derecha */
 .seccion-estadisticas {
-    margin-top: auto; /* Empuja esta sección al final del contenedor flex. */
+    margin-top: auto; /* Empuja esta sección hacia la parte inferior del contenedor flexible. */
 }
 
 .item-estadistica {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    padding: 15px 20px;
-    border-radius: 12px;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
+    background-color: #ffffff; /* Fondo blanco. */
+    padding: 15px 20px; /* Relleno interno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
 }
 
 /* --- Tarjeta de Perfil (Estilo de posicionamiento) --- */
-/* Contenedor para la página de perfil, permite el centrado absoluto. */
 .profile-container {
-    position: relative;
-    height: 100vh;
+    position: relative; /* Establece un contexto de posicionamiento para elementos hijos absolutos. */
+    height: 100vh; /* Ocupa toda la altura de la ventana. */
 }
 
-/* Centra la tarjeta de perfil perfectamente en su contenedor. */
 .profile-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: absolute; /* Posiciona el elemento con respecto a su ancestro posicionado más cercano. */
+    top: 50%; /* Lo mueve al 50% desde la parte superior. */
+    left: 50%; /* Lo mueve al 50% desde la izquierda. */
+    transform: translate(-50%, -50%); /* Lo desplaza -50% de su propio tamaño para centrarlo perfectamente. */
 }
 
 /* --- Aplicación de Calendario Completa (Standalone) --- */
-/* 
-pal para una vista de calendario de página completa. */
 .calendar-app {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    /* max-width: 1400px; */ /* Puedes mantenerlo si lo necesitas */
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */ /* Quita esto para que los elementos se estiren */
-    height: 100%; /* <-- AÑADIDO: Asegura que el contenedor principal ocupe toda la altura */
-    box-sizing: border-box; /* <-- AÑADIDO: Para un mejor cálculo del tamaño */
+    background-color: #ffffff; /* Fondo blanco. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra pronunciada. */
+    width: 100%; /* Ocupa el 100% del ancho de su contenedor. */
+    padding: 30px; /* Relleno interno generoso. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    height: 100%; /* Ocupa el 100% de la altura de su contenedor. */
+    box-sizing: border-box; /* Incluye padding en el cálculo del tamaño. */
 }
 
-/* Cabecera del calendario (mes, año y botones de navegación) */
 .header-calendario {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
+    width: 100%; /* Ancho completo. */
+    margin-bottom: 20px; /* Margen inferior. */
 }
 
 .header-calendario h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #333;
-    text-transform: capitalize;
-    user-select: none; /* Evita que el texto se pueda seleccionar. */
+    font-size: 1.8rem; /* Tamaño de fuente para el título del mes. */
+    font-weight: 700; /* Peso de fuente grueso. */
+    color: #333; /* Color de texto oscuro. */
+    text-transform: capitalize; /* Pone en mayúscula la primera letra de cada palabra. */
+    user-select: none; /* Evita que el usuario pueda seleccionar el texto. */
 }
 
 .header-calendario button {
-    background-color: #e2e8f0;
-    color: #333;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    background-color: #e2e8f0; /* Fondo gris claro para los botones de navegación. */
+    color: #333; /* Texto oscuro. */
+    border: none; /* Sin borde. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    padding: 10px 15px; /* Relleno interno. */
+    font-size: 1.2rem; /* Tamaño de fuente. */
+    font-weight: 600; /* Peso de fuente semigrueso. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: background-color 0.2s, transform 0.2s; /* Anima el color de fondo y la transformación. */
 }
 
 .header-calendario button:hover {
-    background-color: #cbd5e1;
-    transform: scale(1.05);
+    background-color: #cbd5e1; /* Cambia el color de fondo al pasar el cursor. */
+    transform: scale(1.05); /* Agranda ligeramente el botón. */
 }
 
-/* Fila con los nombres de los días de la semana */
 .dias-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr); /* 7 columnas de igual tamaño. */
-    text-align: center;
-    gap: 4px;
-    width: 100%;
-    margin-bottom: 10px;
+    display: grid; /* Habilita CSS Grid Layout. */
+    grid-template-columns: repeat(7, 1fr); /* Crea 7 columnas de igual fracción de ancho. */
+    text-align: center; /* Centra el texto en las celdas. */
+    gap: 4px; /* Espacio de 4px entre las celdas. */
+    width: 100%; /* Ancho completo. */
+    margin-bottom: 10px; /* Margen inferior. */
 }
 
 .dia-nombre {
-    font-weight: 500;
-    color: #718096;
-    font-size: 0.8rem;
-    padding: 10px 0;
+    font-weight: 500; /* Peso de fuente medio. */
+    color: #718096; /* Color de texto gris. */
+    font-size: 0.8rem; /* Tamaño de fuente pequeño. */
+    padding: 10px 0; /* Relleno vertical. */
 }
 
-/* Cuadrícula para los días del mes */
-/* Cuadrícula para los días del mes */
 .grid-dias {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    /* AÑADIDO: Haz que las filas se creen con igual altura, ocupando el espacio sobrante */
-    grid-auto-rows: 1fr; 
-    gap: 8px;
-    width: 100%;
-    flex: 1; /* <-- AÑADIDO: Permite que la grilla crezca para llenar el espacio vertical */
+    display: grid; /* Habilita CSS Grid Layout. */
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas de igual ancho. */
+    grid-auto-rows: 1fr; /* Hace que todas las filas tengan la misma altura. */
+    gap: 8px; /* Espacio de 8px entre celdas. */
+    width: 100%; /* Ancho completo. */
+    flex: 1; /* Ocupa el espacio flexible restante en el contenedor del calendario. */
 }
 
-/* Estilo individual de cada día en la cuadrícula */
 .dia {
-    position: relative;
-    background-color: #f7fafc;
-    border-radius: 8px;
-    padding: 12px 6px 6px 6px;
-    min-height: 68px;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
-    border: 2px solid transparent;
+    position: relative; /* Contexto de posicionamiento para el número del día. */
+    background-color: #f7fafc; /* Fondo gris muy claro. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    padding: 12px 6px 6px 6px; /* Relleno interno. */
+    min-height: 68px; /* Altura mínima para cada celda de día. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila el contenido verticalmente. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: background-color 0.2s, border-color 0.2s; /* Anima el color de fondo y del borde. */
+    border: 2px solid transparent; /* Borde transparente para evitar que el layout salte al añadir un borde visible. */
 }
 
 .dia:hover {
-    background-color: #edf2f7;
-    border-color: #a0aec0;
+    background-color: #edf2f7; /* Cambia el color de fondo al pasar el cursor. */
+    border-color: #a0aec0; /* Muestra un borde gris. */
 }
 
 .dia.vacio {
-    background-color: transparent;
-    cursor: default;
-    border-color: transparent;
+    background-color: transparent; /* Fondo transparente para los días fuera del mes actual. */
+    cursor: default; /* Cursor por defecto (no clickeable). */
+    border-color: transparent; /* Sin borde visible. */
 }
 
 .numero-dia {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #4a5568;
+    position: absolute; /* Posiciona el número con respecto a la celda del día. */
+    top: 5px; /* 5px desde la parte superior. */
+    right: 5px; /* 5px desde la derecha. */
+    font-size: 1rem; /* Tamaño de fuente. */
+    font-weight: 700; /* Peso de fuente grueso. */
+    color: #4a5568; /* Color gris oscuro. */
 }
 
-/* Estilos para el día actual */
-.dia.hoy, .fecha-activa {
-    background-color: #4c4cff; /* Azul para consistencia con otros elementos activos */
-    color: #ffffff;
-    font-weight: 600;
+.dia.hoy,
+.fecha-activa {
+    background-color: #4c4cff; /* Fondo azul para el día actual o seleccionado. */
+    color: #ffffff; /* Texto blanco. */
+    font-weight: 600; /* Texto semigrueso. */
 }
 
 .dia.hoy .numero-dia {
-    color: white;
+    color: white; /* El número del día actual también es blanco. */
 }
 
-/* Fecha inactiva (mes anterior/siguiente) */
 .fecha-inactiva {
-    color: #a0aec0;
+    color: #a0aec0; /* Color gris claro para los números de días de otros meses. */
 }
 
-/* Indicadores de recordatorios dentro de cada día */
 .dia .recordatorio-item {
-    color: white;
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 0.8rem;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Corta el texto largo con "..." */
-    white-space: nowrap;
-    margin-top: 5px;
-    transition: background-color 0.2s;
+    color: white; /* Texto blanco para los recordatorios. */
+    border-radius: 6px; /* Esquinas redondeadas. */
+    padding: 4px 8px; /* Relleno interno. */
+    font-size: 0.8rem; /* Tamaño de fuente pequeño. */
+    overflow: hidden; /* Oculta el texto que se desborda. */
+    text-overflow: ellipsis; /* Añade "..." si el texto es demasiado largo. */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas. */
+    margin-top: 5px; /* Margen superior. */
+    transition: background-color 0.2s; /* Anima el color de fondo. */
 }
 
 .dia .recordatorio-item:hover {
-    filter: brightness(1.1); /* Aclara ligeramente el color al pasar el ratón. */
+    filter: brightness(1.1); /* Aclara ligeramente el color al pasar el cursor. */
 }
 
-/* Colores de recordatorios por importancia */
-.dia .recordatorio-item.alta { background-color: #e53e3e; }
-.dia .recordatorio-item.media { background-color: #f6ad55; color: #333; }
-.dia .recordatorio-item.baja { background-color: #38a169; }
+.dia .recordatorio-item.alta {
+    background-color: #e53e3e; /* Fondo rojo para prioridad alta. */
+}
 
-/* Indicador pequeño por día en calendario (punto coloreado) */
+.dia .recordatorio-item.media {
+    background-color: #f6ad55; /* Fondo naranja para prioridad media. */
+    color: #333; /* Texto oscuro para mejor contraste. */
+}
+
+.dia .recordatorio-item.baja {
+    background-color: #38a169; /* Fondo verde para prioridad baja. */
+}
+
 .indicador-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 3px 4px 0 0;
-    vertical-align: middle;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    display: inline-block; /* Permite establecer ancho y alto. */
+    width: 10px; /* Ancho del punto. */
+    height: 10px; /* Alto del punto. */
+    border-radius: 50%; /* Lo hace circular. */
+    margin: 3px 4px 0 0; /* Margen. */
+    vertical-align: middle; /* Alinea verticalmente con el texto. */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); /* Sombra sutil. */
 }
-.indicador-dot.alta { background: #e53e3e; }
-.indicador-dot.media { background: #f6ad55; }
-.indicador-dot.baja { background: #38a169; }
 
-/* Ajuste para cuando el día tiene contenido - empujar el número oculto */
-.dia.con-tareas { padding-bottom: 8px; }
+.indicador-dot.alta {
+    background: #e53e3e; /* Color rojo para prioridad alta. */
+}
 
-/* Contenedor para múltiples puntos dentro de un día */
+.indicador-dot.media {
+    background: #f6ad55; /* Color naranja para prioridad media. */
+}
+
+.indicador-dot.baja {
+    background: #38a169; /* Color verde para prioridad baja. */
+}
+
+.dia.con-tareas {
+    padding-bottom: 8px; /* Aumenta el padding inferior si el día tiene tareas. */
+}
+
 .indicadores-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
-    margin-top: 4px;
+    display: flex; /* Habilita Flexbox. */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea si no caben. */
+    gap: 3px; /* Espacio entre puntos. */
+    margin-top: 4px; /* Margen superior. */
 }
 
-.indicador-total { font-size: 0.75rem; color: #718096; }
+.indicador-total {
+    font-size: 0.75rem; /* Tamaño de fuente muy pequeño. */
+    color: #718096; /* Color gris. */
+}
 
-/* --- Layout para calendario y contenedor derecho --- */
 .calendario-contenedor {
-    display: flex;
-    gap: 16px;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
+    display: flex; /* Habilita Flexbox. */
+    gap: 16px; /* Espacio entre el calendario y la barra lateral derecha. */
+    justify-content: flex-start; /* Alinea los elementos al inicio. */
+    align-items: flex-start; /* Alinea los elementos al inicio en el eje transversal. */
+    width: 100%; /* Ancho completo. */
+    max-width: 1400px; /* Ancho máximo para el layout. */
+    margin: 0 auto; /* Centra el contenedor horizontalmente. */
 }
 
-/* --- Contenedor derecho junto al calendario --- */
 .contenedor-derecho {
-    flex: 1;
-    background: transparent;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 14px;
-    min-width: 280px;
-    max-width: 350px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    height: 100%;
+    flex: 1; /* Ocupa el espacio flexible. */
+    background: transparent; /* Fondo transparente. */
+    border-radius: 0; /* Sin esquinas redondeadas. */
+    box-shadow: none; /* Sin sombra. */
+    padding: 14px; /* Relleno interno. */
+    min-width: 280px; /* Ancho mínimo. */
+    max-width: 350px; /* Ancho máximo. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    gap: 12px; /* Espacio entre elementos. */
+    height: 100%; /* Altura completa. */
 }
 
 .seccion-derecha.seccion-1 {
-    background: #e3e6ff;
-    border-radius: 10px;
-    padding: 16px;
+    background: #e3e6ff; /* Fondo azul claro. */
+    border-radius: 10px; /* Esquinas redondeadas. */
+    padding: 16px; /* Relleno interno. */
 }
+
 .seccion-derecha.seccion-2 {
-    background: #f0f4ff;
-    border-radius: 10px;
-    padding: 16px;
+    background: #f0f4ff; /* Fondo azul muy claro. */
+    border-radius: 10px; /* Esquinas redondeadas. */
+    padding: 16px; /* Relleno interno. */
 }
+
 .seccion-derecha.seccion-3 {
-    background: #e3ffe6;
-    border-radius: 10px;
-    padding: 16px;
+    background: #e3ffe6; /* Fondo verde claro. */
+    border-radius: 10px; /* Esquinas redondeadas. */
+    padding: 16px; /* Relleno interno. */
 }
 
 /* -------------------------------------------------------------------------- */
@@ -534,126 +507,122 @@ pal para una vista de calendario de página completa. */
 /* -------------------------------------------------------------------------- */
 
 .modal {
-    display: none; /* Oculto por defecto, se muestra con JavaScript. */
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente. */
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    display: none; /* Oculta el modal por defecto. */
+    position: fixed; /* Lo posiciona con respecto a la ventana del navegador, permaneciendo fijo al hacer scroll. */
+    z-index: 100; /* Se asegura de que esté por encima de otros elementos. */
+    left: 0; /* Posición a la izquierda. */
+    top: 0; /* Posición arriba. */
+    right: 0; /* Posición a la derecha. */
+    bottom: 0; /* Posición abajo. */
+    width: 100%; /* Ancho completo. */
+    height: 100%; /* Altura completa. */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente. */
+    justify-content: center; /* Centra el contenido horizontalmente. */
+    align-items: center; /* Centra el contenido verticalmente. */
+    padding: 20px; /* Relleno por si el contenido es grande. */
 }
 
 .modal[style*="display: flex"] {
-    display: flex !important;
+    display: flex !important; /* Fuerza la visualización del modal cuando se añade 'display: flex' inline (por JS). */
 }
 
 .modal-content {
-    background-color: white;
-    padding: 25px;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 450px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    position: relative;
+    background-color: white; /* Fondo blanco para el contenido del modal. */
+    padding: 25px; /* Relleno interno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    width: 100%; /* Ancho del 100% de su contenedor. */
+    max-width: 450px; /* Ancho máximo para el contenido. */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad. */
+    position: relative; /* Contexto de posicionamiento para el botón de cerrar. */
 }
 
-/* Fallback: forzar centrado del modal por si hay reglas en conflicto en el entorno */
-.modal[style*="display: flex"], .modal.show {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    left: 0 !important;
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    padding: 0 !important;
+.modal[style*="display: flex"],
+.modal.show {
+    display: flex !important; /* Asegura que el modal se muestre como flex. */
+    justify-content: center !important; /* Centra horizontalmente. */
+    align-items: center !important; /* Centra verticalmente. */
+    left: 0 !important; /* Resetea la posición izquierda. */
+    top: 0 !important; /* Resetea la posición superior. */
+    right: 0 !important; /* Resetea la posición derecha. */
+    bottom: 0 !important; /* Resetea la posición inferior. */
+    width: 100% !important; /* Ancho completo. */
+    height: 100% !important; /* Altura completa. */
+    padding: 0 !important; /* Sin relleno en el contenedor del modal. */
 }
 
 .modal[style*="display: flex"] .modal-content,
 .modal.show .modal-content {
-    margin: 0 auto !important;
-    position: relative !important;
-    left: auto !important;
-    transform: none !important;
-    box-sizing: border-box !important;
+    margin: 0 auto !important; /* Centra el contenido horizontalmente. */
+    position: relative !important; /* Resetea la posición. */
+    left: auto !important; /* Resetea la posición. */
+    transform: none !important; /* Resetea cualquier transformación. */
+    box-sizing: border-box !important; /* Asegura el cálculo correcto del tamaño. */
 }
 
 .modal-content h3 {
-    margin-top: 0;
-    font-size: 1.5rem;
-    color: #333;
+    margin-top: 0; /* Elimina el margen superior del título. */
+    font-size: 1.5rem; /* Tamaño de fuente. */
+    color: #333; /* Color de texto oscuro. */
 }
 
-/* --- Formulario del Modal --- */
 .modal-content label {
-    display: block;
-    margin-top: 15px;
-    font-weight: 600;
-    color: #4a5568;
+    display: block; /* Hace que la etiqueta ocupe su propia línea. */
+    margin-top: 15px; /* Margen superior. */
+    font-weight: 600; /* Texto semigrueso. */
+    color: #4a5568; /* Color gris oscuro. */
 }
 
 .modal-content input,
 .modal-content textarea {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid #cbd5e1;
-    font-family: 'Inter', sans-serif;
-    resize: vertical;
+    width: calc(100% - 20px); /* Ancho del 100% menos el padding (20px). */
+    padding: 10px; /* Relleno interno. */
+    margin-top: 5px; /* Margen superior. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    border: 1px solid #cbd5e1; /* Borde gris claro. */
+    font-family: 'Inter', sans-serif; /* Usa la fuente principal. */
+    resize: vertical; /* Permite al usuario redimensionar el textarea solo verticalmente. */
 }
 
 .modal-content button {
-    background-color: #4299e1;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-    width: 100%;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    background-color: #4299e1; /* Fondo azul. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    padding: 12px 20px; /* Relleno. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    margin-top: 20px; /* Margen superior. */
+    width: 100%; /* Ancho completo. */
+    font-size: 1rem; /* Tamaño de fuente. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: background-color 0.2s; /* Anima el color de fondo. */
 }
 
 .modal-content button:hover {
-    background-color: #3182ce;
+    background-color: #3182ce; /* Color de fondo más oscuro al pasar el cursor. */
 }
 
-/* --- Lista de Recordatorios en el Modal --- */
 #recordatorios-lista {
-    margin-top: 20px;
+    margin-top: 20px; /* Margen superior para la lista de recordatorios. */
 }
 
 .recordatorio-detalle {
-    background-color: #e2e8f0;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #e2e8f0; /* Fondo gris claro. */
+    padding: 10px; /* Relleno. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    margin-bottom: 10px; /* Margen inferior. */
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
 }
 
 .recordatorio-detalle h4 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #2d3748;
+    margin: 0; /* Sin margen. */
+    font-size: 1.1rem; /* Tamaño de fuente. */
+    color: #2d3748; /* Color gris oscuro. */
 }
 
 .recordatorio-detalle p {
-    margin: 5px 0 0;
-    color: #4a5568;
+    margin: 5px 0 0; /* Margen superior. */
+    color: #4a5568; /* Color gris. */
 }
 
 /* -------------------------------------------------------------------------- */
@@ -661,977 +630,1031 @@ pal para una vista de calendario de página completa. */
 /* -------------------------------------------------------------------------- */
 
 /* --- Botones --- */
-
-/* Botones de selección de importancia (Alta, Media, Baja) */
 .botones-importancia {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 15px;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-around; /* Distribuye el espacio uniformemente. */
+    margin-top: 15px; /* Margen superior. */
 }
 
 .boton-importancia {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
+    width: 35px; /* Ancho. */
+    height: 35px; /* Alto. */
+    border-radius: 50%; /* Lo hace circular. */
+    border: 2px solid transparent; /* Borde transparente por defecto. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: transform 0.2s, border-color 0.2s; /* Anima la transformación y el color del borde. */
 }
 
 .boton-importancia:hover {
-    transform: scale(1.1);
+    transform: scale(1.1); /* Agranda el botón al pasar el cursor. */
 }
 
-.boton-importancia.alta { background-color: #e53e3e; }
-.boton-importancia.media { background-color: #f6ad55; }
-.boton-importancia.baja { background-color: #38a169; }
+.boton-importancia.alta {
+    background-color: #e53e3e; /* Fondo rojo para prioridad alta. */
+}
 
-/* Estilo para el botón de importancia seleccionado */
+.boton-importancia.media {
+    background-color: #f6ad55; /* Fondo naranja para prioridad media. */
+}
+
+.boton-importancia.baja {
+    background-color: #38a169; /* Fondo verde para prioridad baja. */
+}
+
 .boton-importancia.seleccionada {
-    border-color: #4a5568;
-    box-shadow: 0 0 0 2px #4a5568;
+    border-color: #4a5568; /* Borde oscuro para indicar selección. */
+    box-shadow: 0 0 0 2px #4a5568; /* Sombra exterior que simula un segundo borde. */
 }
 
-/* Botón "+" para añadir tareas */
 .boton-mas {
-    background-color: transparent;
-    border: 1px solid #a0aec0;
-    color: #a0aec0;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    background-color: transparent; /* Fondo transparente. */
+    border: 1px solid #a0aec0; /* Borde gris. */
+    color: #a0aec0; /* Color del icono (el signo '+'). */
+    width: 30px; /* Ancho. */
+    height: 30px; /* Alto. */
+    border-radius: 50%; /* Circular. */
+    display: flex; /* Habilita Flexbox. */
+    justify-content: center; /* Centra horizontalmente el contenido. */
+    align-items: center; /* Centra verticalmente el contenido. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: border-color 0.2s, color 0.2s; /* Anima el color del borde y del texto. */
 }
 
 .boton-mas:hover {
-    border-color: #4c4cff;
-    color: #4c4cff;
+    border-color: #4c4cff; /* Borde azul al pasar el cursor. */
+    color: #4c4cff; /* Color azul para el icono. */
 }
 
-/* Botón para cerrar el modal */
 .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #aaa;
-    cursor: pointer;
-    transition: color 0.2s;
-    background: none;
-    border: none;
+    position: absolute; /* Lo posiciona con respecto al '.modal-content'. */
+    top: 10px; /* 10px desde arriba. */
+    right: 15px; /* 15px desde la derecha. */
+    font-size: 1.8rem; /* Tamaño grande para la 'X'. */
+    font-weight: 700; /* Texto grueso. */
+    color: #aaa; /* Color gris claro. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: color 0.2s; /* Anima el color. */
+    background: none; /* Sin fondo. */
+    border: none; /* Sin borde. */
 }
 
 .close-btn:hover {
-    color: #555;
+    color: #555; /* Color más oscuro al pasar el cursor. */
 }
 
-/* Botón para eliminar recordatorios */
 .eliminar-btn {
-    background: none;
-    border: none;
-    font-size: 1.1rem;
-    cursor: pointer;
-    color: #e53e3e;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background 0.2s;
+    background: none; /* Sin fondo. */
+    border: none; /* Sin borde. */
+    font-size: 1.1rem; /* Tamaño del icono. */
+    cursor: pointer; /* Cursor de mano. */
+    color: #e53e3e; /* Color rojo. */
+    width: 28px; /* Ancho. */
+    height: 28px; /* Alto. */
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    justify-content: center; /* Centra horizontalmente. */
+    border-radius: 50%; /* Lo hace circular para el efecto hover. */
+    transition: background 0.2s; /* Anima el color de fondo. */
 }
 
 .eliminar-btn:hover {
-    background: #fde8e8;
+    background: #fde8e8; /* Fondo rojo muy claro al pasar el cursor. */
 }
 
 
 /* --- Iconos --- */
 .enlace-icono {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    color: #a0aec0;
-    transition: background-color 0.3s, color 0.3s;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    justify-content: center; /* Centra horizontalmente. */
+    width: 40px; /* Ancho. */
+    height: 40px; /* Alto. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    color: #a0aec0; /* Color gris para el icono. */
+    transition: background-color 0.3s, color 0.3s; /* Anima el color de fondo y del icono. */
 }
 
 .enlace-icono:hover {
-    background-color: #e2e8f0;
-    color: #4a5568;
+    background-color: #e2e8f0; /* Fondo gris claro al pasar el cursor. */
+    color: #4a5568; /* Color gris oscuro para el icono. */
 }
 
-/* Estilo para el icono de la página activa en la barra lateral */
 .enlace-icono.icono-activo {
-    background-color: #4c4cff;
-    color: #ffffff;
+    background-color: #4c4cff; /* Fondo azul para el icono activo. */
+    color: #ffffff; /* Icono blanco. */
 }
 
 .icono-luna {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 2rem;
+    position: absolute; /* Posicionamiento absoluto. */
+    top: 20px; /* Desde arriba. */
+    right: 20px; /* Desde la derecha. */
+    font-size: 2rem; /* Tamaño del icono. */
 }
 
 .icono-navegacion {
-    width: 20px;
-    height: 20px;
-    color: #a0aec0;
-    cursor: pointer;
+    width: 20px; /* Ancho. */
+    height: 20px; /* Alto. */
+    color: #a0aec0; /* Color gris. */
+    cursor: pointer; /* Cursor de mano. */
 }
 
-/* Tamaños de iconos */
-.tamano-icono { width: 24px; height: 24px; }
-.tamano-icono-pequeno { width: 18px; height: 18px; }
-.icono-pequeno { width: 16px; height: 16px; color: #a0aec0; }
-.icono-pequeno-gris { width: 16px; height: 16px; color: #a0aec0; }
-.icono-gris { color: #a0aec0; width: 20px; height: 20px; }
+.tamano-icono {
+    width: 24px; /* Ancho. */
+    height: 24px; /* Alto. */
+}
+
+.tamano-icono-pequeno {
+    width: 18px; /* Ancho. */
+    height: 18px; /* Alto. */
+}
+
+.icono-pequeno {
+    width: 16px; /* Ancho. */
+    height: 16px; /* Alto. */
+    color: #a0aec0; /* Color gris. */
+}
+
+.icono-pequeno-gris {
+    width: 16px; /* Ancho. */
+    height: 16px; /* Alto. */
+    color: #a0aec0; /* Color gris. */
+}
+
+.icono-gris {
+    color: #a0aec0; /* Color gris. */
+    width: 20px; /* Ancho. */
+    height: 20px; /* Alto. */
+}
 
 
 /* --- Otros Elementos UI --- */
-
-/* Grupos de elementos para alineación rápida con Flexbox */
 .grupo-icono-texto {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    gap: 10px; /* Espacio entre el icono y el texto. */
 }
 
 .grupo-texto-numero {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #718096;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    gap: 5px; /* Espacio entre texto y número. */
+    color: #718096; /* Color gris. */
 }
 
-/* Etiqueta de texto (Ej: "Design") */
 .texto-etiqueta {
-    background-color: #e2e8f0;
-    color: #4c4cff;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 0.8rem;
+    background-color: #e2e8f0; /* Fondo gris claro. */
+    color: #4c4cff; /* Texto azul. */
+    font-weight: 500; /* Peso de fuente medio. */
+    padding: 4px 10px; /* Relleno. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    font-size: 0.8rem; /* Tamaño de fuente pequeño. */
 }
 
-/* Texto azul para resaltar */
 .texto-azul {
-    color: #4c4cff;
-    font-weight: 600;
+    color: #4c4cff; /* Color azul. */
+    font-weight: 600; /* Texto semigrueso. */
 }
 
 .contador {
-    font-weight: 600;
-    color: #4c4cff;
+    font-weight: 600; /* Texto semigrueso. */
+    color: #4c4cff; /* Color azul. */
 }
 
-/* Etiquetas de importancia para la lista de recordatorios */
 .importancia-label {
-    display: inline-block;
-    margin-left: 10px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    font-weight: 600;
-    color: #fff;
+    display: inline-block; /* Permite establecer padding y otras propiedades de bloque. */
+    margin-left: 10px; /* Margen izquierdo. */
+    padding: 2px 8px; /* Relleno. */
+    border-radius: 12px; /* Esquinas muy redondeadas (forma de píldora). */
+    font-size: 0.85em; /* Tamaño de fuente relativo. */
+    font-weight: 600; /* Texto semigrueso. */
+    color: #fff; /* Texto blanco. */
 }
-.importancia-label.alta { background-color: #e53e3e; }
-.importancia-label.media { background-color: #f6ad55; color: #333; }
-.importancia-label.baja { background-color: #38a169; }
-/* styles.css */
 
-/* --- Modal que aparece desde la barra lateral --- */
+.importancia-label.alta {
+    background-color: #e53e3e; /* Fondo rojo. */
+}
+
+.importancia-label.media {
+    background-color: #f6ad55; /* Fondo naranja. */
+    color: #333; /* Texto oscuro para mejor contraste. */
+}
+
+.importancia-label.baja {
+    background-color: #38a169; /* Fondo verde. */
+}
+
 .modal-lateral {
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    transition: background-color 0.3s ease;
+    display: none; /* Oculto por defecto. */
+    position: fixed; /* Posición fija en la pantalla. */
+    z-index: 1000; /* Capa superior. */
+    left: 0; /* Posición. */
+    top: 0; /* Posición. */
+    width: 100%; /* Ancho completo. */
+    height: 100%; /* Altura completa. */
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro semitransparente. */
+    transition: background-color 0.3s ease; /* Anima el color de fondo. */
 }
 
 .modal-lateral-content {
-    background-color: #ffffff;
-    position: absolute;
-    top: 20px;
-    left: 85px; /* (ancho de la barra lateral + un poco de espacio) */
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    width: auto;
-    transform: translateX(-20px);
-    opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    background-color: #ffffff; /* Fondo blanco. */
+    position: absolute; /* Posición absoluta. */
+    top: 20px; /* Desde arriba. */
+    left: 85px; /* Desde la izquierda (junto a la barra lateral principal). */
+    padding: 20px; /* Relleno. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra. */
+    width: auto; /* El ancho se ajusta al contenido. */
+    transform: translateX(-20px); /* Lo desplaza a la izquierda inicialmente para la animación. */
+    opacity: 0; /* Lo hace invisible inicialmente. */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Anima su aparición. */
 }
 
-/* Estado visible del modal */
 .modal-lateral.visible {
-    display: flex !important;
+    display: flex !important; /* Lo hace visible. */
 }
 
 .modal-lateral.visible .modal-lateral-content {
-    transform: translateX(0);
-    opacity: 1;
+    transform: translateX(0); /* Lo vuelve a su posición original. */
+    opacity: 1; /* Lo hace completamente visible. */
 }
 
-/* Fallback: if some JS sets inline style `display: block` ensure modal shows as flex */
 .modal-lateral[style*="display: block"] {
-    display: flex !important;
-    justify-content: flex-start;
-    align-items: flex-start;
+    display: flex !important; /* Asegura que se muestre como flex. */
+    justify-content: flex-start; /* Alinea al inicio. */
+    align-items: flex-start; /* Alinea al inicio. */
 }
 
-/* Botón para cerrar el modal lateral */
 .close-lateral-modal {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+    color: #aaa; /* Color del botón de cerrar. */
+    float: right; /* Lo alinea a la derecha. */
+    font-size: 28px; /* Tamaño de fuente. */
+    font-weight: bold; /* Texto en negrita. */
+    cursor: pointer; /* Cursor de mano. */
 }
 
 .close-lateral-modal:hover,
 .close-lateral-modal:focus {
-    color: black;
-    text-decoration: none;
+    color: black; /* Cambia de color al pasar el cursor o al enfocar. */
+    text-decoration: none; /* Sin subrayado. */
 }
 
-/* --- Estilos para los íconos de redes sociales --- */
 .card {
-  width: fit-content;
-  height: fit-content;
-  background-color: rgb(238, 238, 238);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px 25px;
-  gap: 20px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055);
+    width: fit-content; /* Ancho ajustado al contenido. */
+    height: fit-content; /* Alto ajustado al contenido. */
+    background-color: rgb(238, 238, 238); /* Fondo gris claro. */
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    justify-content: center; /* Centra horizontalmente. */
+    padding: 25px 25px; /* Relleno. */
+    gap: 20px; /* Espacio entre elementos. */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055); /* Sombra sutil. */
 }
 
 .socialContainer {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background-color: rgb(44, 44, 44);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  transition-duration: .3s;
+    width: 52px; /* Ancho. */
+    height: 52px; /* Alto. */
+    border-radius: 50%; /* Circular. */
+    background-color: rgb(44, 44, 44); /* Fondo oscuro. */
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    justify-content: center; /* Centra horizontalmente. */
+    overflow: hidden; /* Oculta el contenido que se desborde (para la animación). */
+    transition-duration: .3s; /* Duración de la transición. */
 }
 
-.containerOne:hover { background-color: #d62976; }
-.containerTwo:hover { background-color: #00acee; }
-.containerThree:hover { background-color: #0072b1; }
-.containerFour:hover { background-color: #128C7E; }
-.containerFive:hover { background-color: #4267B2; } /* Facebook */
-.containerSix:hover { background-color: #000000; }  /* TikTok */
-.containerSeven:hover { background-color: #FF0000; } /* YouTube */
+.containerOne:hover {
+    background-color: #128C7E; /* Cambia el fondo a color WhatsApp. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerTwo:hover {
+    background-color: #d62976; /* Cambia el fondo a color Instagram. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerThree:hover {
+    background-color: #0072b1; /* Cambia el fondo a color LinkedIn. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerFour:hover {
+    background-color: #4267B2; /* Cambia el fondo a color Facebook. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerFive:hover {
+    background-color: #4267B2; /* Cambia el fondo a color Facebook. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerSix:hover {
+    background-color: #000000; /* Cambia el fondo a color X/Twitter. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerSeven:hover {
+    background-color: #FF0000; /* Cambia el fondo a color YouTube. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerEight:hover {
+    background-color: #333333; /* Cambia el fondo a color GitHub. */
+    color: white; /* Color del icono a blanco. */
+}
+
+.containerNine:hover {
+    background-color: #5865F2; /* Cambia el fondo a color Discord. */
+    color: white; /* Color del icono a blanco. */
+}
+
 .socialContainer:active {
-  transform: scale(0.9);
-  transition-duration: .3s;
+    transform: scale(0.9); /* Encoge el contenedor al hacer clic. */
+    transition-duration: .3s; /* Duración de la transición. */
 }
 
-.socialSvg { width: 17px; display: block; }
-/* Make SVG icons inherit text color so hover backgrounds can change the icon color via color property */
-.socialSvg path { fill: currentColor; }
+.socialSvg {
+    width: 17px; /* Ancho del icono SVG. */
+    display: block; /* Para evitar espacios extra debajo del SVG. */
+}
+
+.socialSvg path {
+    fill: currentColor; /* El color de relleno del SVG será el mismo que el color de texto del contenedor. */
+}
 
 .socialContainer:hover .socialSvg {
-    animation: slide-in-top 0.3s both;
+    animation: slide-in-top 0.3s both; /* Aplica la animación 'slide-in-top' al pasar el cursor. */
 }
-
-/* Ensure containerOne..containerSix selectors exist (textual names) to match JS class names */
-.containerOne:hover { background-color: #128C7E; color: white; }
-.containerTwo:hover { background-color: #d62976; color: white; }
-.containerThree:hover { background-color: #0072b1; color: white; }
-.containerFour:hover { background-color:  #4267B2; color: white; }
-.containerFive:hover { background-color: #4267B2; color: white; } /* Facebook */
-.containerSix:hover { background-color: #000000; color: white; }  /* TikTok */
-.containerSeven:hover { background-color: #FF0000; color: white; }
-
-/* Colores para GitHub y Discord */
-.containerEight:hover { background-color: #333333; color: white; } /* GitHub */
-.containerNine:hover { background-color: #5865F2; color: white; } /* Discord */
 
 @keyframes slide-in-top {
-  0% { transform: translateY(-50px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+    0% {
+        transform: translateY(-50px); /* Comienza 50px por encima y oculto. */
+        opacity: 0; /* Opacidad 0. */
+    }
+
+    100% {
+        transform: translateY(0); /* Termina en su posición normal. */
+        opacity: 1; /* Opacidad 1. */
+    }
 }
 
-/* ----------------------------- */
-/* Hover y estilos adicionales   */
-/* ----------------------------- */
-
-/* Mejora del hover general para enlaces e iconos sociales */
 .enlace-icono,
 .socialContainer {
-    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease; /* Define transiciones suaves. */
 }
 
 .enlace-icono:hover,
 .socialContainer:hover {
-    transform: translateY(-3px) scale(1.06);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transform: translateY(-3px) scale(1.06); /* Eleva y agranda el icono. */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Añade una sombra más pronunciada. */
 }
 
-/* Color por red: si quieres asignar un color de fondo específico usa las clases containerX */
-/* Ejemplo: si agregas YouTube y en JS pones la clase containerSeven, añade aquí su color */
+.socialSvg {
+    color: currentColor; /* El color del SVG hereda el del contenedor. */
+}
 
+.socialContainer {
+    color: #ffffff; /* El color inicial del SVG es blanco. */
+}
 
-/* Si quieres que los SVG hereden el color del contenedor y cambiar el color del icono al hover */
-.socialSvg { color: currentColor; }
-.socialContainer { color: #ffffff; }
-.socialContainer:hover .socialSvg { color: white; }
+.socialContainer:hover .socialSvg {
+    color: white; /* Asegura que el color del SVG sea blanco al pasar el cursor. */
+}
 
-/* Forzar cursor y color de los paths al hacer hover para evitar problemas de herencia */
-.socialContainer, .enlace-icono { cursor: pointer; }
+.socialContainer,
+.enlace-icono {
+    cursor: pointer; /* Cursor de mano. */
+}
+
 .socialContainer:hover .socialSvg path,
 .enlace-icono:hover .socialSvg path {
-    fill: white;
+    fill: white; /* Asegura que el relleno del path del SVG sea blanco al pasar el cursor. */
 }
 
 /* ========================================
    LAYOUT REFACTORIZADO 75-25%
    ======================================== */
 
-/* Nuevo layout 75-25% */
 .contenedor-principal {
-    display: flex;
-    gap: 15px;
-    height: calc(100vh - 40px);
-    margin-left: 5px; /* Espacio para sidebar (ajustado para estar más cerca) */
-
-    border-radius: 12px; /* Suave rounding para destacar sobre el fondo */
-    box-shadow: 0 8px 20px rgba(2,6,23,0.06); /* Sombra sutil */
-    width: 100%;
-    max-width: 2000px;
+    display: flex; /* Habilita Flexbox. */
+    gap: 15px; /* Espacio entre columnas. */
+    height: calc(100vh - 40px); /* Altura calculada. */
+    margin-left: 5px; /* Pequeño margen izquierdo. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.06); /* Sombra sutil. */
+    width: 100%; /* Ancho completo. */
+    max-width: 2000px; /* Ancho máximo. */
 }
 
-/* Cuando la barra lateral izquierda esté colapsada reducimos su impacto visual */
 body.sidebar-collapsed .contenedor-principal {
-    margin-left: 0 !important;
+    margin-left: 0 !important; /* Elimina el margen si la barra lateral principal está colapsada. */
 }
 
-/* Cuando la barra kanban derecha está colapsada queremos que el calendario gane espacio
-   y que el gap sea más pequeño para que no parezca un gran hueco. */
-/* (removed empty selector) */
-
-/* Regla más directa: reducir gap del layout cuando el body tiene clase sidebar-collapsed o kanban está colapsado */
 body.sidebar-collapsed .contenedor-principal,
-.contenedor-principal > .barra-lateral-kanban.collapsed ~ .columna-calendario,
-.contenedor-principal > .barra-lateral-kanban.collapsed ~ .contenedor-derecho {
-    gap: 8px;
+.contenedor-principal>.barra-lateral-kanban.collapsed~.columna-calendario,
+.contenedor-principal>.barra-lateral-kanban.collapsed~.contenedor-derecho {
+    gap: 8px; /* Reduce el espacio entre columnas si la barra lateral está colapsada. */
 }
 
-/* Alternativa: si el kanban está colapsado, hacer que la columna-calendario tenga más flex (ocupe más) */
-.contenedor-principal > .barra-lateral-kanban.collapsed + .columna-calendario,
-.contenedor-principal > .barra-lateral-kanban.collapsed + .contenedor-derecho + .columna-calendario,
-.contenedor-principal > .columna-calendario {
-    flex: 4;
+.contenedor-principal>.barra-lateral-kanban.collapsed+.columna-calendario,
+.contenedor-principal>.barra-lateral-kanban.collapsed+.contenedor-derecho+.columna-calendario,
+.contenedor-principal>.columna-calendario {
+    flex: 4; /* Asigna 4 partes del espacio flexible a la columna del calendario. */
 }
 
-/* Cuando el contenedor principal tenga la clase kanban-collapsed, hacer que el calendario gane espacio
-   y reducir gap para que no quede ese hueco grande. */
 .contenedor-principal.kanban-collapsed {
-    gap: 8px;
-}
-.contenedor-principal.kanban-collapsed > .columna-calendario {
-    flex: 5; /* más espacio para el calendario */
-}
-.contenedor-principal.kanban-collapsed > .barra-lateral-kanban {
-    width: 56px !important;
-    min-width: 56px !important;
-    max-width: 56px !important;
+    gap: 8px; /* Reduce el espacio. */
 }
 
-/* Columna Izquierda - Calendario (75-80%) */
+.contenedor-principal.kanban-collapsed>.columna-calendario {
+    flex: 5; /* Da más espacio al calendario si el kanban está colapsado. */
+}
+
+.contenedor-principal.kanban-collapsed>.barra-lateral-kanban {
+    width: 56px !important; /* Ancho fijo para el kanban colapsado. */
+    min-width: 56px !important; /* Ancho mínimo. */
+    max-width: 56px !important; /* Ancho máximo. */
+}
+
 .columna-calendario {
-    flex: 3;
-    min-width: 900px;
-
+    flex: 3; /* Asigna 3 partes del espacio flexible. */
+    min-width: 900px; /* Ancho mínimo para que el calendario no se deforme. */
 }
 
-/* Asegura que las columnas del layout se estiren a la misma altura
-   y que sus contenidos puedan hacer scroll internamente cuando sea necesario. */
-.contenedor-principal > .columna-calendario,
-.contenedor-principal > .barra-lateral-kanban,
-.contenedor-principal > .contenedor-derecho {
-    display: flex;
-    flex-direction: column;
-    min-height: 0; /* permite que los hijos con overflow funcionen correctamente */
+.contenedor-principal>.columna-calendario,
+.contenedor-principal>.barra-lateral-kanban,
+.contenedor-principal>.contenedor-derecho {
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    min-height: 0; /* Evita problemas de desbordamiento en contenedores flex. */
 }
 
-/* Hacer que los contenedores que contienen contenido desplazable ocupen el espacio disponible */
 .columna-calendario .calendar-app,
 .contenedor-principal .contenedor-derecho,
 .contenedor-principal .contenedor-blanco,
 .barra-lateral-kanban .kanban-content {
-    flex: 1 1 auto;
-    min-height: 0; /* evita que el contenido interno fuerce el tamaño del contenedor */
-    overflow: auto;
+    flex: 1 1 auto; /* Permite que el elemento crezca y se encoja, base auto. */
+    min-height: 0; /* Evita problemas de desbordamiento. */
+    overflow: auto; /* Permite scroll si el contenido se desborda. */
 }
 
-/* Columna Derecha - Barra Lateral Kanban (20-25%) */
 .barra-lateral-kanban {
-    flex: 1;
-    min-width: 280px;
-    max-width: 350px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    max-height: 855px;
+    flex: 1; /* Asigna 1 parte del espacio flexible (proporción 3:1 o 4:1 con el calendario). */
+    min-width: 280px; /* Ancho mínimo. */
+    max-width: 350px; /* Ancho máximo. */
+    background: #fff; /* Fondo blanco. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    padding: 15px; /* Relleno. */
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08); /* Sombra. */
+    transition: all 0.3s ease; /* Anima todos los cambios. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    max-height: 884px; /* Altura máxima. */
 }
 
 .barra-lateral-kanban.collapsed {
-    /* Ancho pequeño y consistente para la columna colapsada (ajustable). */
-    width: 56px !important;
-    min-width: 56px !important;
-    max-width: 56px !important;
-    flex: 0 0 56px !important; /* evita que flex crezca */
-    padding: 6px !important;
-    overflow: hidden !important;
-    border-radius: 12px;
-    transition: width 0.22s ease, padding 0.22s ease;
-    min-height: auto;
-    max-height: 855px;
+    width: 56px !important; /* Ancho fijo colapsado. */
+    min-width: 56px !important; /* Ancho mínimo. */
+    max-width: 56px !important; /* Ancho máximo. */
+    flex: 0 0 56px !important; /* No crece, no se encoge, base de 56px. */
+    padding: 6px !important; /* Reduce el relleno. */
+    overflow: hidden !important; /* Oculta el contenido desbordado. */
+    border-radius: 12px; /* Mantiene las esquinas redondeadas. */
+    transition: width 0.22s ease, padding 0.22s ease; /* Anima el ancho y el relleno. */
+    min-height: auto; /* Altura mínima automática. */
+    max-height: 900px; /* Altura máxima. */
 }
 
 .barra-lateral-kanban.collapsed .kanban-content {
-    display: none;
+    display: none; /* Oculta el contenido del kanban. */
 }
 
-/* Ocultar elementos internos que ocupan alto/espacio al colapsar, mantener el toggle visible */
 .barra-lateral-kanban.collapsed .kanban-header h3,
 .barra-lateral-kanban.collapsed .task-count,
 .barra-lateral-kanban.collapsed .add-task-btn-kanban,
 .barra-lateral-kanban.collapsed .section-title {
-    display: none !important;
+    display: none !important; /* Oculta varios elementos de texto e interfaz. */
 }
 
 .barra-lateral-kanban.collapsed .toggle-kanban {
-    /* Centrar el botón de toggle cuando está colapsado */
-    margin: 0 auto;
+    margin: 0 auto; /* Centra el botón de expandir/colapsar. */
 }
 
-/* Header del Kanban */
 .kanban-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e2e8f0;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
+    margin-bottom: 15px; /* Margen inferior. */
+    padding-bottom: 10px; /* Relleno inferior. */
+    border-bottom: 1px solid #e2e8f0; /* Línea divisoria inferior. */
 }
 
 .kanban-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: #2d3748;
+    margin: 0; /* Sin margen. */
+    font-size: 1rem; /* Tamaño de fuente. */
+    color: #2d3748; /* Color gris oscuro. */
 }
 
 .toggle-kanban {
-    background: #4c4cff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: background 0.2s;
+    background: #4c4cff; /* Fondo azul. */
+    color: rgb(247, 247, 247); /* Texto casi blanco. */
+    border: none; /* Sin borde. */
+    border-radius: 6px; /* Esquinas redondeadas. */
+    padding: 6px 10px; /* Relleno. */
+    cursor: pointer; /* Cursor de mano. */
+    font-size: 0.8rem; /* Tamaño de fuente pequeño. */
+    transition: background 0.2s; /* Anima el fondo. */
 }
 
 .toggle-kanban:hover {
-    background: #3a3aff;
+    background: #3a3aff; /* Fondo azul más oscuro. */
 }
 
-/* Contenido del Kanban */
 .kanban-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    flex: 1; /* Ocupa el espacio flexible. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    overflow: hidden; /* Oculta el desbordamiento. */
 }
 
 .add-task-btn-kanban {
-    background: #4c4cff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 15px;
-    transition: background 0.2s;
+    background: #4c4cff; /* Fondo azul. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    padding: 8px 12px; /* Relleno. */
+    cursor: pointer; /* Cursor de mano. */
+    font-size: 0.9rem; /* Tamaño de fuente. */
+    font-weight: 600; /* Texto semigrueso. */
+    margin-bottom: 15px; /* Margen inferior. */
+    transition: background 0.2s; /* Anima el fondo. */
 }
 
 .add-task-btn-kanban:hover {
-    background: #3a3aff;
+    background: #3a3aff; /* Fondo azul más oscuro. */
 }
 
-/* Secciones del Kanban */
 .kanban-sections {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    flex: 1; /* Ocupa el espacio flexible. */
+    overflow-y: auto; /* Permite scroll vertical. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    gap: 30px; /* Espacio grande entre secciones. */
 }
 
 .kanban-section {
-    border-radius: 8px;
-    background: #f8fafc;
-    overflow: hidden;
+    border-radius: 8px; /* Esquinas redondeadas. */
+    background: #f8fafc; /* Fondo gris muy claro. */
+    overflow: hidden; /* Oculta el desbordamiento. */
 }
 
 .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: white;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    padding: 10px 12px; /* Relleno. */
+    font-size: 0.85rem; /* Tamaño de fuente. */
+    font-weight: 600; /* Texto semigrueso. */
+    color: white; /* Texto blanco. */
 }
 
-.section-header.inbox { background: #718096; }
-.section-header.incompletas { background: #f6ad55; }
-.section-header.completas { background: #38a169; }
+.section-header.inbox {
+    background: #718096; /* Fondo gris para la bandeja de entrada. */
+}
+
+.section-header.incompletas {
+    background: #f6ad55; /* Fondo naranja para tareas incompletas. */
+}
+
+.section-header.completas {
+    background: #38a169; /* Fondo verde para tareas completas. */
+}
 
 .section-icon {
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* Tamaño del icono de la sección. */
 }
 
 .section-title {
-    flex: 1;
-    margin-left: 8px;
+    flex: 1; /* Ocupa el espacio flexible. */
+    margin-left: 8px; /* Margen izquierdo. */
 }
 
 .task-count {
-    background: rgba(255,255,255,0.3);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    min-width: 20px;
-    text-align: center;
+    background: rgba(255, 255, 255, 0.3); /* Fondo blanco semitransparente. */
+    padding: 2px 8px; /* Relleno. */
+    border-radius: 12px; /* Forma de píldora. */
+    font-size: 0.75rem; /* Tamaño de fuente pequeño. */
+    min-width: 20px; /* Ancho mínimo. */
+    text-align: center; /* Texto centrado. */
 }
 
 .kanban-tasks {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 6px;
-    max-height: 300px;
-    overflow-y: auto;
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    gap: 8px; /* Espacio entre tareas. */
+    padding: 6px; /* Relleno. */
+    max-height: 300px; /* Altura máxima antes de hacer scroll. */
+    overflow-y: auto; /* Permite scroll vertical. */
 }
 
 .task-card {
-    background: white;
-    border-radius: 6px;
-    padding: 6px 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border-left: 3px solid #e2e8f0;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.85rem;
+    background: white; /* Fondo blanco. */
+    border-radius: 6px; /* Esquinas redondeadas. */
+    padding: 6px 8px; /* Relleno. */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra sutil. */
+    border-left: 3px solid #e2e8f0; /* Borde izquierdo para indicar estado/prioridad. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: all 0.2s; /* Anima todas las propiedades. */
+    font-size: 0.85rem; /* Tamaño de fuente. */
 }
 
 .task-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transform: translateY(-1px); /* Eleva la tarjeta. */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada. */
 }
 
-.task-card.alta { border-left-color: #e53e3e; }
-.task-card.media { border-left-color: #f6ad55; }
-.task-card.baja { border-left-color: #38a169; }
+.task-card.alta {
+    border-left-color: #e53e3e; /* Borde rojo para prioridad alta. */
+}
+
+.task-card.media {
+    border-left-color: #f6ad55; /* Borde naranja para prioridad media. */
+}
+
+.task-card.baja {
+    border-left-color: #38a169; /* Borde verde para prioridad baja. */
+}
 
 .task-title {
-    font-weight: 600;
-    margin-bottom: 3px;
-    color: #2d3748;
-    font-size: 0.8rem;
-    line-height: 1.3;
+    font-weight: 600; /* Texto semigrueso. */
+    margin-bottom: 3px; /* Margen inferior. */
+    color: #2d3748; /* Color gris oscuro. */
+    font-size: 0.8rem; /* Tamaño de fuente. */
+    line-height: 1.3; /* Altura de línea. */
 }
 
 .task-description {
-    font-size: 0.75rem;
-    color: #718096;
-    margin-bottom: 6px;
-    line-height: 1.2;
-    display: -webkit-box;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 0.75rem; /* Tamaño de fuente pequeño. */
+    color: #718096; /* Color gris. */
+    margin-bottom: 6px; /* Margen inferior. */
+    line-height: 1.2; /* Altura de línea. */
+    display: -webkit-box; /* Propiedad necesaria para truncar texto. */
+    line-clamp: 2; /* Limita el texto a 2 líneas. */
+    -webkit-line-clamp: 2; /* Versión con prefijo para compatibilidad. */
+    -webkit-box-orient: vertical; /* Orientación vertical para el truncado. */
+    overflow: hidden; /* Oculta el texto que se desborda. */
 }
 
 .task-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.7rem;
-    color: #a0aec0;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
+    font-size: 0.7rem; /* Tamaño de fuente muy pequeño. */
+    color: #a0aec0; /* Color gris claro. */
 }
 
 .task-fecha {
-    background: #edf2f7;
-    padding: 1px 4px;
-    border-radius: 3px;
+    background: #edf2f7; /* Fondo gris claro. */
+    padding: 1px 4px; /* Relleno. */
+    border-radius: 3px; /* Esquinas redondeadas. */
 }
 
 .task-asunto {
-    background: #e2e8f0;
-    padding: 1px 4px;
-    border-radius: 3px;
-    font-size: 0.65rem;
+    background: #e2e8f0; /* Fondo gris claro. */
+    padding: 1px 4px; /* Relleno. */
+    border-radius: 3px; /* Esquinas redondeadas. */
+    font-size: 0.65rem; /* Tamaño de fuente extra pequeño. */
 }
 
 .add-task-btn {
-    background: #4c4cff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.2s;
-    margin-bottom: 20px;
+    background: #4c4cff; /* Fondo azul. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    padding: 12px 20px; /* Relleno. */
+    cursor: pointer; /* Cursor de mano. */
+    font-weight: 600; /* Texto semigrueso. */
+    transition: background 0.2s; /* Anima el fondo. */
+    margin-bottom: 20px; /* Margen inferior. */
 }
 
 .add-task-btn:hover {
-    background: #3a3aff;
+    background: #3a3aff; /* Fondo azul más oscuro. */
 }
 
-/* Modal mejorado para tareas */
 .modal-content {
-    max-width: 600px;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-width: 600px; /* Ancho máximo para el modal de tarea. */
+    max-height: 80vh; /* Altura máxima del 80% de la ventana. */
+    overflow-y: auto; /* Permite scroll vertical si el contenido es demasiado alto. */
 }
 
 .form-section {
-    margin-bottom: 18px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 18px; /* Margen inferior. */
+    padding-bottom: 12px; /* Relleno inferior. */
+    border-bottom: 1px solid #e2e8f0; /* Línea divisoria. */
 }
 
 .form-section:last-child {
-    border-bottom: none;
+    border-bottom: none; /* Elimina la línea en la última sección. */
 }
 
 .form-section h4 {
-    margin: 0 0 8px 0;
-    color: #4a5568;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    margin: 0 0 8px 0; /* Margen. */
+    color: #4a5568; /* Color gris. */
+    font-size: 0.85rem; /* Tamaño de fuente. */
+    font-weight: 600; /* Texto semigrueso. */
+    text-transform: uppercase; /* Texto en mayúsculas. */
+    letter-spacing: 0.3px; /* Espaciado entre letras. */
 }
 
 .dynamic-list {
-    margin-top: 10px;
+    margin-top: 10px; /* Margen superior. */
 }
 
 .dynamic-item {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
-    align-items: center;
+    display: flex; /* Habilita Flexbox. */
+    gap: 10px; /* Espacio entre elementos. */
+    margin-bottom: 8px; /* Margen inferior. */
+    align-items: center; /* Centra verticalmente. */
 }
 
 .dynamic-item input {
-    flex: 1;
+    flex: 1; /* Ocupa el espacio flexible. */
 }
 
 .remove-item {
-    background: #e53e3e;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-    font-size: 0.8rem;
+    background: #e53e3e; /* Fondo rojo. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    border-radius: 4px; /* Esquinas redondeadas. */
+    padding: 4px 8px; /* Relleno. */
+    cursor: pointer; /* Cursor de mano. */
+    font-size: 0.8rem; /* Tamaño de fuente. */
 }
 
 .add-item {
-    background: #38a169;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    margin-top: 5px;
+    background: #38a169; /* Fondo verde. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    border-radius: 4px; /* Esquinas redondeadas. */
+    padding: 6px 12px; /* Relleno. */
+    cursor: pointer; /* Cursor de mano. */
+    font-size: 0.8rem; /* Tamaño de fuente. */
+    margin-top: 5px; /* Margen superior. */
 }
 
-/* Nuevos estilos para campos dinámicos */
 .input-with-add {
-    display: flex !important;
-    gap: 6px !important;
-    margin-bottom: 8px !important;
-    align-items: stretch !important;
-    justify-content: space-between !important;
-    width: 100% !important;
+    display: flex !important; /* Habilita Flexbox. */
+    gap: 6px !important; /* Espacio entre input y botón. */
+    margin-bottom: 8px !important; /* Margen inferior. */
+    align-items: stretch !important; /* Estira los elementos para que tengan la misma altura. */
+    justify-content: space-between !important; /* Distribuye el espacio. */
+    width: 100% !important; /* Ancho completo. */
 }
 
 .input-with-add input {
-    flex: 1 !important;
-    flex-grow: 1 !important;
-    flex-shrink: 1 !important;
-    padding: 6px 8px !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 4px !important;
-    font-size: 0.8rem !important;
-    min-height: 28px !important;
-    width: auto !important;
+    flex: 1 !important; /* Ocupa el espacio flexible. */
+    flex-grow: 1 !important; /* Permite crecer. */
+    flex-shrink: 1 !important; /* Permite encogerse. */
+    padding: 6px 8px !important; /* Relleno. */
+    border: 1px solid #e2e8f0 !important; /* Borde. */
+    border-radius: 4px !important; /* Esquinas redondeadas. */
+    font-size: 0.8rem !important; /* Tamaño de fuente. */
+    min-height: 28px !important; /* Altura mínima. */
+    width: auto !important; /* Ancho automático. */
 }
 
 .input-with-add button {
-    background: #38a169 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 4px !important;
-    padding: 6px 8px !important;
-    cursor: pointer !important;
-    font-size: 0.7rem !important;
-    white-space: nowrap !important;
-    transition: background 0.2s !important;
-    min-width: 50px !important;
-    max-width: 80px !important;
-    flex-shrink: 0 !important;
-    flex-grow: 0 !important;
-    width: auto !important;
+    background: #38a169 !important; /* Fondo verde. */
+    color: white !important; /* Texto blanco. */
+    border: none !important; /* Sin borde. */
+    border-radius: 4px !important; /* Esquinas redondeadas. */
+    padding: 6px 8px !important; /* Relleno. */
+    cursor: pointer !important; /* Cursor de mano. */
+    font-size: 0.7rem !important; /* Tamaño de fuente pequeño. */
+    white-space: nowrap !important; /* Evita que el texto del botón se parta. */
+    transition: background 0.2s !important; /* Anima el fondo. */
+    min-width: 50px !important; /* Ancho mínimo. */
+    max-width: 80px !important; /* Ancho máximo. */
+    flex-shrink: 0 !important; /* Evita que el botón se encoja. */
+    flex-grow: 0 !important; /* Evita que el botón crezca. */
+    width: auto !important; /* Ancho automático. */
 }
 
 .input-with-add button:hover {
-    background: #2f855a !important;
+    background: #2f855a !important; /* Fondo verde más oscuro. */
 }
 
-/* Estilos específicos por ID para garantizar aplicación */
-#add-enlace-btn, #add-contacto-btn {
-    background: #38a169 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 50% !important;
-    padding: 8px !important;
-    font-size: 1rem !important;
-    font-weight: bold !important;
-    min-width: 36px !important;
-    max-width: 36px !important;
-    width: 36px !important;
-    height: 36px !important;
-    flex: 0 0 36px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
+#add-enlace-btn,
+#add-contacto-btn {
+    background: #38a169 !important; /* Fondo verde. */
+    color: white !important; /* Texto blanco. */
+    border: none !important; /* Sin borde. */
+    border-radius: 50% !important; /* Circular. */
+    padding: 8px !important; /* Relleno. */
+    font-size: 1rem !important; /* Tamaño de fuente. */
+    font-weight: bold !important; /* Negrita. */
+    min-width: 36px !important; /* Ancho mínimo. */
+    max-width: 36px !important; /* Ancho máximo. */
+    width: 36px !important; /* Ancho. */
+    height: 36px !important; /* Alto. */
+    flex: 0 0 36px !important; /* Tamaño fijo en el layout flex. */
+    display: flex !important; /* Habilita Flexbox. */
+    align-items: center !important; /* Centra verticalmente. */
+    justify-content: center !important; /* Centra horizontalmente. */
+    cursor: pointer !important; /* Cursor de mano. */
 }
 
-#enlace-input, #contacto-input {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    width: auto !important;
+#enlace-input,
+#contacto-input {
+    flex: 1 1 auto !important; /* Ocupa el espacio disponible. */
+    min-width: 0 !important; /* Permite que se encoja por debajo de su tamaño de contenido. */
+    width: auto !important; /* Ancho automático. */
 }
 
-/* Estilos para tareas completadas */
 .tarea-completada {
-    background: #d4edda !important;
-    opacity: 0.8;
+    background: #d4edda !important; /* Fondo verde claro para tareas completadas. */
+    opacity: 0.8; /* Reduce la opacidad. */
 }
 
 .tarea-contenedor:hover {
-    background: #e9ecef !important;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #e9ecef !important; /* Fondo gris claro al pasar el cursor. */
+    transform: translateY(-1px); /* Eleva el contenedor. */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Añade sombra. */
 }
 
 .tarea-completada:hover {
-    background: #c3e6cb !important;
+    background: #c3e6cb !important; /* Fondo verde un poco más oscuro al pasar el cursor. */
 }
 
-/* Estilos para los botones de las tareas */
 .tarea-botones {
-    display: flex !important;
-    gap: 4px !important;
+    display: flex !important; /* Habilita Flexbox. */
+    gap: 4px !important; /* Espacio entre botones. */
 }
 
-.btn-completar, .btn-eliminar {
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    font-weight: bold !important;
+.btn-completar,
+.btn-eliminar {
+    cursor: pointer !important; /* Cursor de mano. */
+    transition: all 0.2s ease !important; /* Anima todas las propiedades. */
+    font-weight: bold !important; /* Negrita. */
 }
 
 .btn-completar:hover {
-    transform: scale(1.05) !important;
-    opacity: 0.9 !important;
+    transform: scale(1.05) !important; /* Agranda el botón. */
+    opacity: 0.9 !important; /* Ligeramente transparente. */
 }
 
 .btn-eliminar:hover {
-    transform: scale(1.05) !important;
-    opacity: 0.9 !important;
+    transform: scale(1.05) !important; /* Agranda el botón. */
+    opacity: 0.9 !important; /* Ligeramente transparente. */
 }
 
-/* Clase para accesibilidad - solo visible para lectores de pantalla */
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; /* Lo saca del flujo normal del documento. */
+    width: 1px; /* Ancho mínimo. */
+    height: 1px; /* Alto mínimo. */
+    padding: 0; /* Sin relleno. */
+    margin: -1px; /* Margen negativo para asegurar que no ocupe espacio. */
+    overflow: hidden; /* Oculta el contenido. */
+    clip: rect(0, 0, 0, 0); /* Técnica antigua para ocultar visualmente. */
+    white-space: nowrap; /* Evita que el texto se divida. */
+    border: 0; /* Sin borde. */
 }
 
-/* Adaptaciones del calendario existente */
 .calendar-app {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    height: 100%;
-    overflow: auto; /* Evitar que el calendario empuje la altura del layout */
+    background: #fff; /* Fondo blanco. */
+    border-radius: 12px; /* Esquinas redondeadas. */
+    padding: 20px; /* Relleno. */
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08); /* Sombra. */
+    height: 100%; /* Altura completa. */
+    overflow: auto; /* Permite scroll. */
 }
 
 .calendario-controles {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    gap: 15px; /* Espacio entre controles. */
 }
 
 .calendario-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 15px;
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    align-items: center; /* Centra verticalmente. */
+    margin-bottom: 20px; /* Margen inferior. */
+    border-bottom: 1px solid #e2e8f0; /* Línea divisoria. */
+    padding-bottom: 15px; /* Relleno inferior. */
 }
 
 /* ========================================
    SISTEMA DE TAGS PARA ENLACES Y CONTACTOS
    ======================================== */
 
-/* Contenedores de tags */
 .tags-container {
-    margin-top: 6px;
-    min-height: 40px;
-    max-height: 120px;
-    overflow-y: auto;
-    padding: 8px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    background: #f8f9fa;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    align-items: flex-start;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    position: relative;
+    margin-top: 6px; /* Margen superior. */
+    min-height: 40px; /* Altura mínima. */
+    max-height: 120px; /* Altura máxima antes de hacer scroll. */
+    overflow-y: auto; /* Permite scroll vertical. */
+    padding: 8px; /* Relleno. */
+    border: 1px solid #e0e0e0; /* Borde. */
+    border-radius: 6px; /* Esquinas redondeadas. */
+    background: #f8f9fa; /* Fondo gris claro. */
+    display: flex; /* Habilita Flexbox. */
+    flex-wrap: wrap; /* Permite que las etiquetas se ajusten a la siguiente línea. */
+    gap: 4px; /* Espacio entre etiquetas. */
+    align-items: flex-start; /* Alinea las etiquetas al inicio. */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra interior. */
+    position: relative; /* Contexto de posicionamiento para el texto de placeholder. */
 }
 
 .tags-container:empty::after {
-    content: "No hay elementos agregados";
-    color: #9ca3af;
-    font-size: 0.75rem;
-    font-style: italic;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
+    content: "No hay elementos agregados"; /* Texto que se muestra cuando no hay etiquetas. */
+    color: #9ca3af; /* Color del texto. */
+    font-size: 0.75rem; /* Tamaño de fuente. */
+    font-style: italic; /* Cursiva. */
+    position: absolute; /* Posición absoluta. */
+    top: 50%; /* Centra verticalmente. */
+    left: 50%; /* Centra horizontalmente. */
+    transform: translate(-50%, -50%); /* Ajuste fino para el centrado. */
+    pointer-events: none; /* Evita que el texto sea interactivo. */
 }
 
-/* Tags individuales */
 .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(135deg, #6b6ef0 0%, #7257b8 100%);
-    color: white;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    max-width: calc(100% - 8px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
-    margin: 2px;
-    align-self: flex-start;
+    display: inline-flex; /* Muestra como un bloque flexible en línea. */
+    align-items: center; /* Centra verticalmente. */
+    gap: 6px; /* Espacio entre el texto y el botón de eliminar. */
+    background: linear-gradient(135deg, #6b6ef0 0%, #7257b8 100%); /* Fondo degradado. */
+    color: white; /* Texto blanco. */
+    padding: 6px 10px; /* Relleno. */
+    border-radius: 999px; /* Forma de píldora. */
+    font-size: 0.85rem; /* Tamaño de fuente. */
+    max-width: calc(100% - 8px); /* Ancho máximo. */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); /* Sombra sutil. */
+    transition: transform 0.12s ease, box-shadow 0.12s ease; /* Anima la transformación y la sombra. */
+    margin: 2px; /* Pequeño margen. */
+    align-self: flex-start; /* Alinea la etiqueta al inicio de la línea. */
 }
 
-.tag:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+.tag:hover {
+    transform: translateY(-2px); /* Eleva la etiqueta. */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12); /* Sombra más pronunciada. */
+}
 
 .tag .tag-text {
-    display: inline-block;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1.2;
+    display: inline-block; /* Muestra como bloque en línea. */
+    max-width: 160px; /* Ancho máximo. */
+    overflow: hidden; /* Oculta el desbordamiento. */
+    text-overflow: ellipsis; /* Añade "..." si el texto es muy largo. */
+    white-space: nowrap; /* Evita el salto de línea. */
+    line-height: 1.2; /* Altura de línea. */
 }
 
-/* Estilo para enlaces dentro de tags */
 .tag .tag-link {
-    color: white !important;
-    text-decoration: none;
-    max-width: 140px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: inline-block;
+    color: white !important; /* Color del enlace. */
+    text-decoration: none; /* Sin subrayado. */
+    max-width: 140px; /* Ancho máximo. */
+    overflow: hidden; /* Oculta el desbordamiento. */
+    text-overflow: ellipsis; /* Añade "...". */
+    white-space: nowrap; /* Evita el salto de línea. */
+    display: inline-block; /* Muestra como bloque en línea. */
 }
 
-.tag .tag-link:hover { text-decoration: underline; color: #f0f8ff !important; }
+.tag .tag-link:hover {
+    text-decoration: underline; /* Subraya al pasar el cursor. */
+    color: #f0f8ff !important; /* Cambia ligeramente el color. */
+}
 
-/* Botón de eliminar tag (pequeño, centrado) */
 .tags-container .remove-tag {
-    background: rgba(0,0,0,0.18) !important;
-    border: none !important;
-    color: #ffffff !important;
-    border-radius: 50% !important;
-    width: 20px !important;
-    height: 20px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 12px !important;
-    line-height: 1 !important;
-    padding: 0 !important;
-    cursor: pointer !important;
-    transition: background 0.12s ease !important;
-    margin-left: 6px !important;
+    background: rgba(0, 0, 0, 0.18) !important; /* Fondo oscuro semitransparente. */
+    border: none !important; /* Sin borde. */
+    color: #ffffff !important; /* Color del icono 'X'. */
+    border-radius: 50% !important; /* Circular. */
+    width: 20px !important; /* Ancho. */
+    height: 20px !important; /* Alto. */
+    display: inline-flex !important; /* Muestra como flex en línea. */
+    align-items: center !important; /* Centra verticalmente. */
+    justify-content: center !important; /* Centra horizontalmente. */
+    font-size: 12px !important; /* Tamaño de la 'X'. */
+    line-height: 1 !important; /* Altura de línea. */
+    padding: 0 !important; /* Sin relleno. */
+    cursor: pointer !important; /* Cursor de mano. */
+    transition: background 0.12s ease !important; /* Anima el fondo. */
+    margin-left: 6px !important; /* Margen izquierdo. */
 }
 
-.tags-container .remove-tag:hover { background: rgba(0,0,0,0.30) !important; transform: scale(1.05) !important; }
+.tags-container .remove-tag:hover {
+    background: rgba(0, 0, 0, 0.30) !important; /* Fondo más oscuro. */
+    transform: scale(1.05) !important; /* Agranda ligeramente. */
+}
 
-/* Forzar reset de estilos heredados de botones dentro del modal para los botones de eliminar tags */
-.tag > .remove-tag,
+.tag>.remove-tag,
 .tag .remove-tag {
-    all: unset;
-    display: inline-flex !important;
+    all: unset; /* Resetea todos los estilos por defecto del botón. */
+    display: inline-flex !important; /* Aplica los estilos de nuevo. */
     align-items: center !important;
     justify-content: center !important;
     width: 20px !important;
     height: 20px !important;
     border-radius: 50% !important;
-    background: rgba(0,0,0,0.18) !important;
+    background: rgba(0, 0, 0, 0.18) !important;
     color: white !important;
     font-size: 12px !important;
     cursor: pointer !important;
@@ -1639,40 +1662,41 @@ body.sidebar-collapsed .contenedor-principal,
     line-height: 1 !important;
 }
 
-.tag > .remove-tag:hover,
-.tag .remove-tag:hover { background: rgba(0,0,0,0.30) !important; transform: scale(1.05) !important; }
+.tag>.remove-tag:hover,
+.tag .remove-tag:hover {
+    background: rgba(0, 0, 0, 0.30) !important; /* Fondo más oscuro. */
+    transform: scale(1.05) !important; /* Agranda. */
+}
 
-/* Botones para agregar tags */
 .btn-tag {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 8px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); /* Fondo degradado. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    padding: 8px 12px; /* Relleno. */
+    border-radius: 6px; /* Esquinas redondeadas. */
+    font-size: 0.9rem; /* Tamaño de fuente. */
+    cursor: pointer; /* Cursor de mano. */
+    transition: all 0.2s ease; /* Anima todo. */
+    margin-top: 8px; /* Margen superior. */
 }
 
 .btn-tag:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+    transform: translateY(-1px); /* Eleva el botón. */
+    box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3); /* Añade sombra de color. */
 }
 
-/* Responsive para tags */
 @media (max-width: 768px) {
     .tag {
-        font-size: 0.8rem;
-        padding: 3px 6px;
+        font-size: 0.8rem; /* Reduce el tamaño de fuente en pantallas pequeñas. */
+        padding: 3px 6px; /* Reduce el relleno. */
     }
-    
+
     .tag span {
-        max-width: 150px;
+        max-width: 150px; /* Reduce el ancho máximo del texto. */
     }
-    
+
     .remove-tag {
-        width: 16px;
+        width: 16px; /* Reduce el tamaño del botón de eliminar. */
         height: 16px;
         font-size: 11px;
     }
@@ -1682,95 +1706,109 @@ body.sidebar-collapsed .contenedor-principal,
    ESTILOS ESPECÍFICOS PARA ELEMENTOS INLINE
    ======================================== */
 
-/* Elementos de perfil y navegación */
 .enlace-icono-hidden {
-    display: none;
+    display: none; /* Oculta un elemento. */
 }
 
 .perfil-container {
-    position: relative;
-    display: inline-block;
+    position: relative; /* Contexto de posicionamiento para el tooltip. */
+    display: inline-block; /* Muestra como bloque en línea. */
 }
 
 .perfil-imagen {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 40px; /* Ancho. */
+    height: 40px; /* Alto. */
+    border-radius: 50%; /* Circular. */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse. */
 }
 
 .tooltip-nombre {
-    position: absolute;
-    left: 50%;
-    top: -32px;
-    transform: translateX(-50%);
-    background: #4c4cff;
-    color: #fff;
-    padding: 3px 10px;
-    border-radius: 7px;
-    font-size: 0.80rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    z-index: 10;
+    position: absolute; /* Posición absoluta. */
+    left: 50%; /* Centra horizontalmente. */
+    top: -32px; /* Posiciona por encima del icono. */
+    transform: translateX(-50%); /* Ajuste fino del centrado. */
+    background: #4c4cff; /* Fondo azul. */
+    color: #fff; /* Texto blanco. */
+    padding: 3px 10px; /* Relleno. */
+    border-radius: 7px; /* Esquinas redondeadas. */
+    font-size: 0.80rem; /* Tamaño de fuente. */
+    white-space: nowrap; /* Evita el salto de línea. */
+    opacity: 0; /* Oculto por defecto. */
+    pointer-events: none; /* No interactivo. */
+    transition: opacity 0.2s; /* Anima la opacidad. */
+    z-index: 10; /* Se asegura de que esté por encima de otros elementos. */
 }
 
 .modal-hidden {
-    display: none;
+    display: none; /* Oculta un modal. */
 }
 
 .text-helper {
-    color: #718096;
+    color: #718096; /* Color para texto de ayuda. */
 }
 
 .btn-submit-full {
-    width: 100%;
-    margin-top: 20px;
+    width: 100%; /* Ancho completo. */
+    margin-top: 20px; /* Margen superior. */
 }
 
-/* Estilos específicos para Pomodoro */
 .pomodoro-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    max-width: 760px;
-    margin: 20px auto;
-    box-shadow: 0 8px 30px rgba(2,6,23,0.06);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    background: #ffffff; /* Fondo blanco. */
+    border-radius: 16px; /* Esquinas redondeadas. */
+    padding: 20px; /* Relleno. */
+    max-width: 760px; /* Ancho máximo. */
+    margin: 20px auto; /* Margen y centrado horizontal. */
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.06); /* Sombra. */
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    gap: 16px; /* Espacio entre elementos. */
 }
+
 .pomodoro-display {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    display: flex; /* Habilita Flexbox. */
+    align-items: center; /* Centra verticalmente. */
+    justify-content: space-between; /* Distribuye el espacio. */
+    gap: 12px; /* Espacio. */
 }
+
 .pomodoro-display .time {
-    font-size: 3rem;
-    font-weight: 700;
+    font-size: 3rem; /* Tamaño grande para el temporizador. */
+    font-weight: 700; /* Negrita. */
 }
+
 .pomodoro-display .controls button {
-    background: #4c4cff;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
+    background: #4c4cff; /* Fondo azul. */
+    color: white; /* Texto blanco. */
+    border: none; /* Sin borde. */
+    padding: 8px 12px; /* Relleno. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+    cursor: pointer; /* Cursor de mano. */
 }
-.presets-list { display:flex; flex-direction:column; gap:8px; }
-.mini-music-box { background: #fafafa; padding: 8px; border-radius: 8px; }
 
-/* Colores por defecto para estados */
-.pomodoro-work { background: var(--pom-work, #fff); }
-.pomodoro-short { background: var(--pom-short, #fff); }
-.pomodoro-long { background: var(--pom-long, #fff); }
+.presets-list {
+    display: flex; /* Habilita Flexbox. */
+    flex-direction: column; /* Apila verticalmente. */
+    gap: 8px; /* Espacio. */
+}
 
-/* Ajustes para modal de Pomodoro (ya existe modal genérico, añadimos especificidad) */
+.mini-music-box {
+    background: #fafafa; /* Fondo gris muy claro. */
+    padding: 8px; /* Relleno. */
+    border-radius: 8px; /* Esquinas redondeadas. */
+}
+
+.pomodoro-work {
+    background: var(--pom-work, #fff); /* Usa una variable CSS para el fondo, con un fallback a blanco. */
+}
+
+.pomodoro-short {
+    background: var(--pom-short, #fff); /* Usa una variable CSS para el fondo, con un fallback a blanco. */
+}
+
+.pomodoro-long {
+    background: var(--pom-long, #fff); /* Usa una variable CSS para el fondo, con un fallback a blanco. */
+}
+
 #pomodoro-modal .modal-content {
-    max-width: 720px;
+    max-width: 720px; /* Ancho máximo específico para el modal de pomodoro. */
 }
-
-
-
