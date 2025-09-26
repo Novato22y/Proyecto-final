@@ -320,6 +320,15 @@ html {
     transform: scale(1.05); /* Agranda ligeramente el botón. */
 }
 
+/* En pantallas pequeñas, reorganizar el header para que no se rompa */
+@media (max-width: 720px) {
+    .header-calendario {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
+
 .dias-semana {
     display: grid; /* Habilita CSS Grid Layout. */
     grid-template-columns: repeat(7, 1fr); /* Crea 7 columnas de igual fracción de ancho. */

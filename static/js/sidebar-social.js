@@ -44,7 +44,7 @@ if (typeof window.socialNetworks === 'undefined') {
   {
     name: 'TikTok',
     url: 'https://tiktok.com',
-    svg: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TikTok</title><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>`
+    svg: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TikTok</title><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>`
   },
   {
     name: 'YouTube',
@@ -68,8 +68,8 @@ if (typeof window.socialNetworks === 'undefined') {
 } // otherwise keep existing window.socialNetworks
 
 // estado local que puede venir del servidor
-// no remote socials in restored version
-let remoteSocials = null;
+// evitar redeclaración si se carga el script más de una vez
+if (typeof window.remoteSocials === 'undefined') window.remoteSocials = null;
 
 function renderSocialIcons() {
   const sidebar = document.getElementById('sidebar-social-icons');
@@ -156,3 +156,67 @@ document.addEventListener('DOMContentLoaded', function() {
   const sidebar = document.querySelector('aside.barra-lateral');
   if (!sidebar) return;
 });
+
+// --- Modo día / noche (Sol <-> Luna) ---------------------------------------
+// Añade soporte para el botón #toggle-sun-moon y persiste la preferencia en
+// localStorage bajo la clave 'theme' con valores 'light'|'dark'.
+(function() {
+  const THEME_KEY = 'theme';
+  const ICON_ID = 'icon-sun-moon';
+  const BUTTON_ID = 'toggle-sun-moon';
+
+  const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="4"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/></g></svg>`;
+  const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="tamano-icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+
+  function applyTheme(theme) {
+    const root = document.documentElement || document.body;
+    if (theme === 'dark') {
+      root.classList.add('dark-mode');
+    } else {
+      root.classList.remove('dark-mode');
+    }
+    // actualizar icono sin reemplazar el parentNode para no eliminar listeners
+    const btn = document.getElementById(BUTTON_ID);
+    if (btn) {
+      const current = btn.querySelector('svg[aria-hidden]');
+      const newSvg = (theme === 'dark') ? moonSvg : sunSvg;
+      if (current) {
+        // reemplaza el SVG existente
+        current.outerHTML = newSvg;
+      } else {
+        // si no existe, insertarlo al inicio del botón
+        btn.insertAdjacentHTML('afterbegin', newSvg);
+      }
+    }
+  // actualizar estado aria del botón usando la misma variable `btn`
+  if (btn) btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+  }
+
+  function initThemeFromStorage() {
+    const stored = localStorage.getItem(THEME_KEY);
+    const theme = stored === 'dark' ? 'dark' : 'light';
+    applyTheme(theme);
+  }
+
+  function toggleTheme() {
+    const now = localStorage.getItem(THEME_KEY) === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, now);
+    applyTheme(now);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // inicializar desde storage
+    initThemeFromStorage();
+
+    const btn = document.getElementById(BUTTON_ID);
+    if (!btn) return;
+    // proteger contra doble attach si script se ejecuta más de una vez
+    if (btn._themeListenerAttached) return;
+    btn._themeListenerAttached = true;
+
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleTheme();
+    });
+  });
+})();
