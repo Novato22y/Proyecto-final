@@ -172,8 +172,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const root = document.documentElement || document.body;
     if (theme === 'dark') {
       root.classList.add('dark-mode');
+      ensureDarkCssLoaded();
     } else {
       root.classList.remove('dark-mode');
+      removeDarkCss();
     }
     // actualizar icono sin reemplazar el parentNode para no eliminar listeners
     const btn = document.getElementById(BUTTON_ID);
@@ -190,6 +192,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   // actualizar estado aria del botón usando la misma variable `btn`
   if (btn) btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+  }
+
+  // Cargar / descargar dinámicamente el CSS de modo oscuro
+  function ensureDarkCssLoaded() {
+    const existing = document.getElementById('dark-mode-css');
+    if (existing) return;
+    const link = document.createElement('link');
+    link.id = 'dark-mode-css';
+    link.rel = 'stylesheet';
+    // usar url_for no está disponible aquí; la ruta relativa desde la página es /static/css/dark-mode.css
+    link.href = '/static/css/dark-mode.css';
+    link.onload = () => { console.log('dark-mode.css cargado'); };
+    link.onerror = () => { console.warn('error cargando dark-mode.css'); };
+    document.head.appendChild(link);
+  }
+
+  function removeDarkCss() {
+    const existing = document.getElementById('dark-mode-css');
+    if (existing) existing.parentNode.removeChild(existing);
   }
 
   function initThemeFromStorage() {

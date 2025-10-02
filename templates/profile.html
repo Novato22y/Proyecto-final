@@ -53,6 +53,44 @@
         .profile-img-edit:hover .icono-lapiz {
             opacity: 1;
         }
+        /* Nuevos estilos para organizar el formulario */
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            margin-top: 12px;
+            width: 100%;
+        }
+        .input-full {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+        }
+        .row .half {
+            flex: 1;
+        }
+        .actions-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 18px;
+            width: 100%;
+        }
+        .btn-primary {
+            background:#4c4cff;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;
+        }
+        .btn-danger {
+            background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;
+        }
     </style>
 </head>
 
@@ -81,29 +119,43 @@
                 <p style="font-size:1rem;color:#718096;margin-bottom:8px;"><strong>Rol:</strong> {{ user.role | capitalize }}</p>
             </div>
             <!-- Input para nombre -->
-            <form action="{{ url_for('main.update_name') }}" method="POST" style="margin-top:18px;">
-                <label for="nuevo_nombre" style="font-weight:500;color:#2d3748;">Nombre:</label>
-                <input type="text" id="nuevo_nombre" name="nuevo_nombre" value="{{ user.name }}" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;margin:0 8px 0 8px;">
-                <button type="submit" style="background:#4c4cff;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;">Actualizar</button>
+            <form action="{{ url_for('main.update_name') }}" method="POST" style="margin-top:6px;width:100%;">
+                <div class="form-row">
+                    <label for="nuevo_nombre" style="font-weight:500;color:#2d3748;">Nombre:</label>
+                    <input type="text" id="nuevo_nombre" name="nuevo_nombre" value="{{ user.name }}" class="input-full">
+                    <div style="display:flex;justify-content:flex-start;margin-top:6px;">
+                        <button type="submit" class="btn-primary">Actualizar</button>
+                    </div>
+                </div>
             </form>
             <!-- Inputs para contraseña -->
             {% if not user.password_hash %}
-                <form action="{{ url_for('main.update_password') }}" method="POST" style="margin-top:18px;">
-                    <label for="nueva_contrasena" style="font-weight:500;color:#2d3748;">Crear contraseña:</label>
-                    <input type="password" id="nueva_contrasena" name="nueva_contrasena" placeholder="Nueva contraseña" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;margin:0 8px 0 8px;">
-                    <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" placeholder="Confirmar contraseña" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;margin:0 8px 0 8px;">
-                    <button type="submit" style="background:#4c4cff;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;">Crear contraseña</button>
+                <form action="{{ url_for('main.update_password') }}" method="POST" style="margin-top:12px;width:100%;">
+                    <div class="form-row">
+                        <label for="nueva_contrasena" style="font-weight:500;color:#2d3748;">Crear contraseña:</label>
+                        <input type="password" id="nueva_contrasena" name="nueva_contrasena" placeholder="Nueva contraseña" class="input-full">
+                        <div class="row">
+                            <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" placeholder="Confirmar contraseña" class="half input-full">
+                            <button type="submit" class="btn-primary">Crear contraseña</button>
+                        </div>
+                    </div>
                 </form>
             {% else %}
-                <form action="{{ url_for('main.update_password') }}" method="POST" style="margin-top:18px;">
-                    <button type="submit" style="background:#4c4cff;color:#fff;border:none;border-radius:6px;padding:6px 16px;cursor:pointer;">Cambiar contraseña</button>
+                <form action="{{ url_for('main.update_password') }}" method="POST" style="margin-top:12px;width:100%;">
+                    <div style="display:flex;justify-content:flex-start;">
+                        <button type="submit" class="btn-primary">Cambiar contraseña</button>
+                    </div>
                 </form>
             {% endif %}
-            <!-- Botón volver -->
-            <a href="{{ url_for('main.principal') }}" class="perfil-volver" style="background:#4c4cff;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:1rem;cursor:pointer;transition:background 0.2s;display:inline-block;margin-top:24px;text-decoration:none;">Volver</a>
-            <form action="{{ url_for('auth.logout') }}" method="get" style="margin-bottom: 1rem;">
-                <button type="submit" style="background:#e74c3c;color:#fff;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-size:1rem;display: inline-block;">Cerrar sesión</button>
-            </form>
+            <!-- Botones Volver y Cerrar sesión en una fila -->
+            <div class="actions-row">
+                <a href="{{ url_for('main.principal') }}" class="perfil-volver" style="text-decoration:none;">
+                    <button type="button" class="btn-primary">Volver</button>
+                </a>
+                <form action="{{ url_for('auth.logout') }}" method="get" style="margin:0;">
+                    <button type="submit" class="btn-danger">Cerrar sesión</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>

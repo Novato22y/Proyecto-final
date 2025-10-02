@@ -1,0 +1,64 @@
+/* Dark mode overrides - cargado dinámicamente */
+:root {
+    --bg: #071226;
+    --panel: #0b1524;
+    --muted: #9aa6b2;
+    --text: #e6eef8;
+    --accent: #7c83ff;
+    --danger: #ff7b7b;
+    --warning: #ffd08a;
+    --success: #7fe08a;
+}
+
+html, body {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+/* Sidebar */
+.barra-lateral {
+    background-color: var(--panel) !important;
+}
+.enlace-icono {
+    color: var(--muted) !important;
+}
+.enlace-icono.icono-activo {
+    background-color: var(--accent) !important;
+    color: #fff !important;
+}
+
+/* Calendar */
+.calendar-app {
+    background-color: #071226 !important;
+    color: var(--text) !important;
+}
+.dia {
+    background-color: #0b1b2b !important;
+    color: var(--text) !important;
+    border-color: transparent !important;
+}
+.dia.vacio {
+    background-color: transparent !important;
+}
+.numero-dia {
+    color: var(--muted) !important;
+}
+.dia.hoy,
+.fecha-activa {
+    background-color: var(--accent) !important;
+    color: #fff !important;
+}
+
+/* Recordatorio items */
+.dia .recordatorio-item.alta { background-color: var(--danger) !important; color: #fff !important; }
+.dia .recordatorio-item.media { background-color: var(--warning) !important; color: #111 !important; }
+.dia .recordatorio-item.baja { background-color: var(--success) !important; color: #06211a !important; }
+
+/* Otros ajustes visuales */
+.contenedor-derecho, .contenedor-blanco, .tarjeta-calendario {
+    background: #071826 !important;
+    color: var(--text) !important;
+}
+
+/* Ensure icons show up */
+.socialSvg { color: var(--muted) !important; }
