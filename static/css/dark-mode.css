@@ -29,7 +29,8 @@ html, body {
 
 /* Calendar */
 .calendar-app {
-    background-color: #071226 !important;
+    /* usar mismo fondo que la barra lateral para cohesión visual */
+    background-color: var(--panel) !important;
     color: var(--text) !important;
 }
 .dia {
@@ -56,7 +57,7 @@ html, body {
 
 /* Otros ajustes visuales */
 .contenedor-derecho, .contenedor-blanco, .tarjeta-calendario {
-    background: #071826 !important;
+    background: var(--panel) !important;
     color: var(--text) !important;
 }
 

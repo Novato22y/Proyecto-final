@@ -16,6 +16,15 @@ class User(UserMixin, db.Model):
     # Campo para el rol del usuario. True si es admin.
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
+    @property
+    def role(self):
+        """Devuelve una cadena representando el rol del usuario para las vistas.
+
+        Retorna 'administrador' si is_admin es True, de lo contrario 'usuario'.
+        Esto permite que las plantillas usen `user.role | capitalize` sin errores.
+        """
+        return 'administrador' if self.is_admin else 'usuario'
+
     # --- Nuevo campo para Google Sign-In ---
     google_id = db.Column(db.String(120), unique=True, nullable=True, index=True)
 
